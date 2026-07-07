@@ -554,43 +554,104 @@
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
     @keyframes fadeIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
 
-    /* ── MOBILE ──────────────────────────────────────────────────── */
+    /* ── TABLET ──────────────────────────────────────────────────── */
     @media (max-width: 1100px) {
-      .main-wrap { grid-template-columns: 240px 1fr 260px; }
+      .main-wrap { grid-template-columns: 220px 1fr 260px; gap: 12px; }
     }
 
+    /* ── MOBILE LANDSCAPE / SMALL TABLET ────────────────────────── */
     @media (max-width: 900px) {
       .main-wrap {
         grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        padding: 12px;
+        padding: 10px; gap: 12px;
       }
-      .sidebar-wrapper {
-        position: static; height: auto; order: 2;
-      }
+      .player-col    { order: 1; }
+      .right-sidebar { order: 2; position: static; display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; }
+      .sidebar-wrapper { order: 3; position: static; height: auto; }
       .custom-scroll-track { display: none; }
+
       .channel-sidebar {
-        height: auto;
-        display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        overflow: visible;
+        height: auto; overflow: visible;
+        display: flex; flex-direction: column; gap: 0;
         background: var(--bg2); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 12px; gap: 6px;
+        border-radius: var(--radius); padding: 0;
       }
-      .cat-label { display: none; }
-      .right-sidebar { position: static; order: 3; }
-      .player-col { order: 1; }
+      .cat-label {
+        display: block; padding: 10px 12px 4px; margin: 0;
+        border-top: 1px solid var(--border);
+      }
+      .cat-label:first-child { border-top: none; }
+
+      /* Каналы горизонтальный скролл */
+      .cat-group {
+        display: flex; overflow-x: auto; gap: 8px;
+        padding: 6px 12px 12px; scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+      }
+      .cat-group::-webkit-scrollbar { height: 3px; }
+      .cat-group::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+      .ch-item {
+        flex-shrink: 0; scroll-snap-align: start;
+        flex-direction: column; align-items: center;
+        width: 78px; padding: 10px 6px; text-align: center; gap: 5px;
+      }
+      .ch-icon-s { width: 44px; height: 44px; font-size: 11px; border-radius: 12px; }
+      .ch-name-s { font-size: 11px; line-height: 1.2; }
+      .ch-desc-s  { display: none; }
+      .live-indicator { position: absolute; top: 5px; right: 5px; }
+
+      .tg-cta-card { flex: 1; min-width: 220px; }
+      .ad-rect-wrap { flex: 1; min-width: 260px; min-height: 80px; }
+      .ad-placeholder-rect { width: 100%; height: auto; min-height: 60px; }
+      .ad-rect-wrap-2 { display: none; }
+
+      /* 728x90 не вмещается на мобиле — скрыть */
+      .ad-leaderboard { display: none; }
+      .ad-below { display: none; }
+
       nav { display: none; }
     }
 
+    /* ── MOBILE PORTRAIT ─────────────────────────────────────────── */
     @media (max-width: 600px) {
-      header { padding: 0 14px; gap: 10px; }
+      header { padding: 0 12px; height: 52px; gap: 8px; }
+      .logo { font-size: 20px; letter-spacing: 0; }
+      .logo-flag { font-size: 22px; }
       .live-count { display: none; }
+      .tg-header-btn { padding: 7px 12px; font-size: 12px; gap: 5px; }
       .tg-header-btn span { display: none; }
-      .main-wrap { padding: 8px; gap: 10px; }
-      .channel-sidebar { grid-template-columns: 1fr 1fr; }
-      .ad-placeholder { height: 50px; }
+      .tg-icon { font-size: 18px; }
+
+      .main-wrap { padding: 8px; gap: 8px; }
+      .right-sidebar { flex-direction: column; }
+      .tg-cta-card  { min-width: unset; }
+      .ad-rect-wrap { min-width: unset; }
+
+      /* Каналы — grid 2 колонки */
+      .cat-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        overflow: visible; padding: 6px 10px 10px; gap: 6px;
+      }
+      .ch-item { width: auto; scroll-snap-align: none; }
+
+      .np-name { font-size: 14px; }
+      .ctrl-btn { padding: 6px 10px; font-size: 11px; }
     }
-  </style>
+
+    /* ── SMALL PHONES ────────────────────────────────────────────── */
+    @media (max-width: 400px) {
+      .logo { font-size: 17px; }
+      .logo-flag { font-size: 19px; }
+      .tg-header-btn { padding: 6px 10px; }
+      .main-wrap { padding: 6px; gap: 6px; }
+      .cat-group { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); }
+      .ch-item { padding: 8px 4px; }
+      .ch-icon-s { width: 38px; height: 38px; }
+    }
+    </style>
 </head>
 <body>
 
@@ -957,6 +1018,11 @@ function buildSidebar(filter = '') {
     label.textContent = group.label;
     sidebar.appendChild(label);
 
+    // Группа для горизонтального скролла на мобиле
+    const catGroup = document.createElement('div');
+    catGroup.className = 'cat-group';
+    sidebar.appendChild(catGroup);
+
     matchingChannels.forEach(ch => {
       const item = document.createElement('div');
       item.className = 'ch-item' + (currentCh?.id === ch.id ? ' active' : '');
@@ -969,7 +1035,7 @@ function buildSidebar(filter = '') {
         </div>
         <div class="live-indicator"></div>`;
       item.onclick = () => openChannel(ch);
-      sidebar.appendChild(item);
+      catGroup.appendChild(item);
     });
   });
 }
