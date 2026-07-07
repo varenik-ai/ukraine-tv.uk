@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="uk" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ═══ SEO: Title & Description ═══ -->
+  <title>Україна ТВ — Дивитись онлайн безкоштовно | 36 каналів наживо 24/7</title>
+  <meta name="description" content="Дивіться 36 українських телеканалів онлайн безкоштовно та без реєстрації — Перший канал, 5 Канал, Україна 24, 1+1, Суспільне, регіональні та музичні канали. Пряма трансляція 24/7." />
+  <meta name="keywords" content="українське тв онлайн, дивитись тв безкоштовно, перший канал онлайн, україна 24 онлайн, 5 канал онлайн, телебачення онлайн, українські канали, суспільне онлайн, тв наживо" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="author" content="Україна ТВ" />
+  <!-- ⚠️ Замените ukraine-tv.uk на реальный домен после покупки -->
+  <link rel="canonical" href="https://ukraine-tv.uk/" />
+
+  <!-- ═══ Open Graph (Facebook, Telegram preview) ═══ -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Україна ТВ" />
+  <meta property="og:title"       content="Україна ТВ — 36 каналів наживо безкоштовно" />
+  <meta property="og:description" content="36 українських телеканалів онлайн — без реєстрації, безкоштовно, 24/7. Новини, розваги, кіно, музика, дитячі та регіональні канали." />
+  <meta property="og:url"         content="https://ukraine-tv.uk/" />
+  <meta property="og:locale"      content="uk_UA" />
+  <!-- og:image: добавьте ссылку на превью 1200x630px -->
+  <!-- <meta property="og:image" content="https://ukraine-tv.uk/og-image.jpg" /> -->
+
+  <!-- ═══ Twitter Card ═══ -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Україна ТВ — 36 каналів наживо" />
+  <meta name="twitter:description" content="Дивіться українські телеканали онлайн безкоштовно та без реєстрації." />
+
+  <!-- ═══ JSON-LD Structured Data ═══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://ukraine-tv.uk/#website",
+        "url": "https://ukraine-tv.uk/",
+        "name": "Україна ТВ",
+        "description": "36 українських телеканалів наживо — безкоштовно, без реєстрації, 24/7",
+        "inLanguage": "uk-UA",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://ukraine-tv.uk/?q={search_term_string}" },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://ukraine-tv.uk/#org",
+        "name": "Україна ТВ",
+        "url": "https://ukraine-tv.uk/",
+        "sameAs": ["https://t.me/UkraineTVHub"]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Головна", "item": "https://ukraine-tv.uk/" },
+          { "@type": "ListItem", "position": 2, "name": "Канали наживо", "item": "https://ukraine-tv.uk/#channels" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <meta name="theme-color" content="#0a0a14" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ADSTERA: замените комментарии на реальные коды из кабинета
+       ═══════════════════════════════════════════════════════════ -->
+
+  <style>
+    :root {
+      --bg:        #080810;
+      --bg2:       #0f0f1c;
+      --bg3:       #151525;
+      --card:      #12121f;
+      --border:    #1e1e32;
+      --border2:   #252540;
+      --accent:    #005BBB;
+      --accent2:   #0077ff;
+      --yellow:    #FFD500;
+      --text:      #e2e2f0;
+      --muted:     #555570;
+      --muted2:    #383855;
+      --red:       #e53935;
+      --green:     #2e7d32;
+      --radius:    14px;
+      --radius-sm: 8px;
+      --shadow:    0 4px 24px rgba(0,0,0,.6);
+      --tg-color:  #229ED9;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior:smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── SCROLLBAR ────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* Скрыть нативный скроллбар — заменён кастомным */
+    .channel-sidebar::-webkit-scrollbar { display: none; }
+    .channel-sidebar { scrollbar-width: none; }
+
+    /* Кастомный всегда-видимый скроллбар */
+    .sidebar-wrapper {
+      position: sticky; top: 76px;
+      height: calc(100vh - 120px);
+      display: flex; gap: 6px;
+    }
+    .custom-scroll-track {
+      width: 6px; flex-shrink: 0;
+      background: var(--bg3); border-radius: 4px;
+      position: relative; cursor: pointer;
+    }
+    .custom-scroll-thumb {
+      width: 100%; min-height: 28px;
+      background: var(--yellow); border-radius: 4px;
+      position: absolute; top: 0; left: 0;
+      cursor: grab; transition: background .15s;
+    }
+    .custom-scroll-thumb:hover  { background: #ffe033; }
+    .custom-scroll-thumb:active { cursor: grabbing; background: #ffec5c; }
+
+    /* ── HEADER ───────────────────────────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,8,16,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 24px; height: 60px;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 30px; font-weight: 900; letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+    .logo .blue   { color: var(--accent2); }
+    .logo .yellow { color: var(--yellow); }
+    .logo-flag { font-size: 33px; }
+
+    nav {
+      display: flex; gap: 4px; margin-left: 8px;
+    }
+    nav a {
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      transition: all .2s;
+    }
+    nav a:hover, nav a.active { background: var(--bg3); color: var(--text); }
+
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+    .live-count {
+      font-size: 12px; color: var(--muted);
+      background: var(--bg3); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px;
+    }
+    .live-dot-sm { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse 1.2s infinite; }
+
+    .tg-header-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--tg-color); color: white;
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 700;
+      transition: all .2s; border: none; cursor: pointer;
+      text-decoration: none;
+    }
+    .tg-header-btn:hover { background: #1a8dc5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,158,217,.4); }
+    .tg-icon { font-size: 16px; }
+
+    /* ── AD LEADERBOARD ─────────────────────────────────────────── */
+    .ad-leaderboard {
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px; min-height: 60px; position: relative;
+    }
+    .ad-leaderboard::before {
+      content: 'Реклама';
+      position: absolute; top: 4px; left: 8px;
+      font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px;
+    }
+    .ad-placeholder {
+      width: 728px; max-width: 100%; height: 90px;
+      background: var(--bg3); border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted2); font-size: 12px;
+    }
+
+    /* ── MAIN LAYOUT ────────────────────────────────────────────── */
+    .main-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr 300px;
+      grid-template-rows: auto;
+      gap: 0;
+      min-height: calc(100vh - 60px - 60px);
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 16px;
+      gap: 16px;
+    }
+
+    /* ── LEFT SIDEBAR — CHANNEL LIST ─────────────────────────────── */
+    .channel-sidebar {
+      display: flex; flex-direction: column; gap: 2px;
+      flex: 1; height: 100%;
+      overflow-y: scroll;
+    }
+
+    .sidebar-search {
+      position: relative; margin-bottom: 10px; flex-shrink: 0;
+    }
+    .sidebar-search input {
+      width: 100%;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); border-radius: var(--radius-sm);
+      padding: 9px 12px 9px 36px; font-size: 13px; font-family: inherit;
+      outline: none; transition: border-color .2s;
+    }
+    .sidebar-search input:focus { border-color: var(--accent); }
+    .sidebar-search input::placeholder { color: var(--muted); }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+
+    .cat-label {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 12px 8px 4px; flex-shrink: 0;
+    }
+    .cat-label:first-child { padding-top: 0; }
+
+    .ch-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 10px;
+      cursor: pointer; transition: all .15s; position: relative;
+      border: 1px solid transparent; flex-shrink: 0;
+    }
+    .ch-item:hover { background: var(--bg3); border-color: var(--border); }
+    .ch-item.active {
+      background: linear-gradient(135deg, rgba(0,91,187,.15), rgba(0,119,255,.08));
+      border-color: rgba(0,119,255,.3);
+    }
+    .ch-item.active .ch-name-s { color: var(--accent2); }
+
+    .ch-icon-s {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; flex-shrink: 0;
+    }
+    .ch-name-s { font-size: 13px; font-weight: 600; flex: 1; }
+    .ch-desc-s { font-size: 11px; color: var(--muted); }
+    .live-indicator {
+      width: 6px; height: 6px; background: var(--red);
+      border-radius: 50%; animation: pulse 1.2s infinite; flex-shrink: 0;
+    }
+
+    /* ── CENTER — PLAYER ─────────────────────────────────────────── */
+    .player-col {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .player-wrap {
+      position: relative; background: #000;
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      aspect-ratio: 16/9;
+    }
+
+    video {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: contain;
+    }
+
+    /* No channel state */
+    .player-empty {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; background: var(--bg2);
+    }
+    .player-empty .big-icon { font-size: 56px; opacity: .3; }
+    .player-empty p { color: var(--muted); font-size: 14px; }
+    .player-empty.hidden { display: none; }
+
+    /* Live badge */
+    .player-live-badge {
+      position: absolute; top: 14px; left: 14px; z-index: 20;
+      background: var(--red); color: white;
+      font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      padding: 4px 10px; border-radius: 20px;
+      display: none; align-items: center; gap: 5px;
+    }
+    .player-live-badge .dot { width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1s infinite; }
+
+    /* Current channel info bar */
+    .now-playing-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 15;
+      background: linear-gradient(transparent, rgba(0,0,0,.85));
+      padding: 32px 16px 14px;
+      display: none;
+    }
+    .now-playing-bar.visible { display: block; }
+    .np-name { font-size: 18px; font-weight: 800; }
+    .np-desc { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 2px; }
+
+    /* Controls overlay */
+    .player-controls {
+      position: absolute; inset: 0; z-index: 25;
+      display: flex; align-items: flex-end; justify-content: flex-end;
+      padding: 12px;
+      opacity: 0; transition: opacity .35s ease;
+      pointer-events: none;
+    }
+    .player-wrap.controls-visible .player-controls { opacity: 1; pointer-events: all; }
+    .ctrl-btns { display: flex; gap: 6px; }
+    .ctrl-btn {
+      background: rgba(0,0,0,.7); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.15);
+      color: white; border-radius: 8px;
+      padding: 7px 12px; font-size: 12px; cursor: pointer;
+      transition: all .2s;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,.15); }
+
+    /* Unmute banner */
+    .unmute-banner {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      z-index: 30; display: block;
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    .player-wrap.controls-visible .unmute-banner { opacity: 1; pointer-events: all; }
+    .unmute-banner button {
+      background: var(--accent); color: white;
+      border: none; border-radius: 24px; padding: 10px 20px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,91,187,.5);
+      transition: all .2s; font-family: inherit;
+      white-space: nowrap;
+    }
+    .unmute-banner button:hover { background: var(--accent2); transform: scale(1.03); }
+
+    /* Status */
+    .player-status {
+      font-size: 13px; color: var(--muted); text-align: center;
+      padding: 6px 0; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .status-dot { width: 7px; height: 7px; background: var(--accent2); border-radius: 50%; animation: pulse 1.2s infinite; }
+
+    /* ── TELEGRAM OVERLAY (appears after 12s) ───────────────────── */
+    .tg-overlay {
+      position: absolute; inset: 0; z-index: 40;
+      background: rgba(8,8,20,.88); backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      animation: fadeIn .4s ease;
+    }
+    .tg-overlay.show { display: flex; }
+    .tg-overlay-card {
+      text-align: center; padding: 32px 28px; max-width: 320px;
+    }
+    .tg-overlay-icon { font-size: 52px; margin-bottom: 14px; }
+    .tg-overlay-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .tg-overlay-desc { font-size: 13px; color: rgba(255,255,255,.6); margin-bottom: 20px; line-height: 1.6; }
+    .tg-overlay-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--tg-color); color: white;
+      padding: 12px 24px; border-radius: 24px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      transition: all .2s; margin-bottom: 10px;
+    }
+    .tg-overlay-btn:hover { background: #1a8dc5; transform: translateY(-1px); }
+    .tg-overlay-skip {
+      display: block; font-size: 12px; color: rgba(255,255,255,.35);
+      cursor: pointer; margin-top: 10px; transition: color .2s;
+    }
+    .tg-overlay-skip:hover { color: rgba(255,255,255,.7); }
+
+    /* ── AD BELOW PLAYER ─────────────────────────────────────────── */
+    .ad-below {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 8px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100px; position: relative;
+    }
+    .ad-below::before {
+      content: 'Реклама';
+      position: absolute; top: 6px; left: 10px;
+      font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px;
+    }
+    .ad-placeholder-h {
+      width: 100%; max-width: 728px; height: 90px;
+      background: var(--bg3); border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted2); font-size: 12px;
+    }
+
+    /* Channel info section */
+    .channel-info-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px;
+    }
+    .ci-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .ci-desc  { font-size: 13px; color: var(--muted); }
+    .ci-tags  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .ci-tag {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--muted);
+    }
+
+    /* ── RIGHT SIDEBAR ───────────────────────────────────────────── */
+    .right-sidebar {
+      display: flex; flex-direction: column; gap: 14px;
+      position: sticky; top: 76px;
+      height: fit-content;
+    }
+
+    /* Telegram CTA card */
+    .tg-cta-card {
+      background: linear-gradient(135deg, #0d1f3c 0%, #0a2a3f 100%);
+      border: 1px solid rgba(34,158,217,.25);
+      border-radius: var(--radius); padding: 20px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .tg-cta-card::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 120px; height: 120px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,158,217,.2), transparent 70%);
+    }
+    .tg-cta-icon { font-size: 40px; margin-bottom: 10px; }
+    .tg-cta-title { font-size: 15px; font-weight: 800; margin-bottom: 6px; line-height: 1.3; }
+    .tg-cta-desc { font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 16px; line-height: 1.5; }
+    .tg-cta-features { text-align: left; margin-bottom: 16px; display: flex; flex-direction: column; gap: 5px; }
+    .tg-cta-feat { font-size: 12px; color: rgba(255,255,255,.7); display: flex; align-items: center; gap: 6px; }
+    .feat-check { color: #4ade80; font-size: 13px; }
+    .tg-cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--tg-color); color: white;
+      padding: 11px 16px; border-radius: 12px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: all .2s; width: 100%;
+    }
+    .tg-cta-btn:hover { background: #1a8dc5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,158,217,.3); }
+    .tg-sub-count { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 8px; }
+
+    /* AdStera 300x250 */
+    .ad-rect-wrap {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 8px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 266px; position: relative;
+    }
+    .ad-rect-wrap::before {
+      content: 'Реклама';
+      position: absolute; top: 6px; left: 10px;
+      font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px;
+    }
+    .ad-placeholder-rect {
+      width: 300px; max-width: 100%; height: 250px;
+      background: var(--bg3); border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted2); font-size: 12px;
+    }
+
+    /* AdStera second 300x250 */
+    .ad-rect-wrap-2 {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 8px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 266px; position: relative;
+    }
+    .ad-rect-wrap-2::before {
+      content: 'Реклама';
+      position: absolute; top: 6px; left: 10px;
+      font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ── ABOUT SECTION ───────────────────────────────────────────── */
+    .about-section {
+      max-width: 1400px; margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+    .about-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .about-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      text-align: center;
+    }
+    .about-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .about-card .num { font-size: 24px; font-weight: 900; color: var(--accent2); }
+    .about-card .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .seo-text {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+    }
+    .seo-text h2 { font-size: 18px; font-weight: 800; margin-bottom: 10px; }
+    .seo-text p  { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+
+    /* ── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg2); border-top: 1px solid var(--border);
+      padding: 28px 24px;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-size: 16px; font-weight: 900; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 13px; color: var(--muted); transition: color .2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { font-size: 12px; color: var(--muted2); }
+    .footer-tg a {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--tg-color); color: white;
+      padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+      transition: all .2s;
+    }
+    .footer-tg a:hover { background: #1a8dc5; }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────────── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+    @keyframes fadeIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
+
+    /* ── MOBILE ──────────────────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .main-wrap { grid-template-columns: 240px 1fr 260px; }
+    }
+
+    @media (max-width: 900px) {
+      .main-wrap {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        padding: 12px;
+      }
+      .sidebar-wrapper {
+        position: static; height: auto; order: 2;
+      }
+      .custom-scroll-track { display: none; }
+      .channel-sidebar {
+        height: auto;
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        overflow: visible;
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 12px; gap: 6px;
+      }
+      .cat-label { display: none; }
+      .right-sidebar { position: static; order: 3; }
+      .player-col { order: 1; }
+      nav { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 0 14px; gap: 10px; }
+      .live-count { display: none; }
+      .tg-header-btn span { display: none; }
+      .main-wrap { padding: 8px; gap: 10px; }
+      .channel-sidebar { grid-template-columns: 1fr 1fr; }
+      .ad-placeholder { height: 50px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header>
+  <div class="logo">
+    <span class="logo-flag">🇺🇦</span>
+    <span class="blue">Україна</span><span class="yellow">ТВ</span>
+  </div>
+
+  <nav>
+    <a href="#" class="active">Канали</a>
+    <a href="#about">Про сайт</a>
+  </nav>
+
+  <div class="header-right">
+    <div class="live-count">
+      <div class="live-dot-sm"></div>
+      36 каналів
+    </div>
+    <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-header-btn">
+      <span class="tg-icon">✈️</span>
+      <span>Дивитись в Telegram</span>
+    </a>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LEADERBOARD AD — 728x90
+     ═══════════════════════════════════════════════════════════ -->
+<div class="ad-leaderboard">
+  <!-- ADSTERA: вставьте сюда код баннера 728x90 -->
+  <div class="ad-placeholder">728 × 90 — AdStera Leaderboard</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════ -->
+<div class="main-wrap">
+
+  <!-- ─── LEFT: CHANNEL LIST ──────────────────────────────── -->
+  <div class="sidebar-wrapper">
+    <aside class="channel-sidebar" id="channel-sidebar">
+      <div class="sidebar-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Пошук каналу..." />
+      </div>
+      <!-- Populated by JS -->
+    </aside>
+    <div class="custom-scroll-track" id="scroll-track">
+      <div class="custom-scroll-thumb" id="scroll-thumb"></div>
+    </div>
+  </div>
+
+  <!-- ─── CENTER: PLAYER ───────────────────────────────────── -->
+  <div class="player-col">
+
+    <!-- Player -->
+    <div class="player-wrap" id="player-wrap">
+      <video id="video" autoplay playsinline webkit-playsinline muted></video>
+
+      <!-- Empty state -->
+      <div class="player-empty" id="player-empty">
+        <div class="big-icon">📺</div>
+        <p>Оберіть канал зі списку</p>
+      </div>
+
+      <!-- Live badge -->
+      <div class="player-live-badge" id="live-badge">
+        <div class="dot"></div> НАЖИВО
+      </div>
+
+      <!-- Now playing -->
+      <div class="now-playing-bar" id="now-playing-bar">
+        <div class="np-name" id="np-name"></div>
+        <div class="np-desc" id="np-desc"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="player-controls">
+        <div class="ctrl-btns">
+          <button class="ctrl-btn" id="reload-btn" style="display:none">🔄 Перепідключитись</button>
+          <button class="ctrl-btn" id="fullscreen-btn">⛶ Повний екран</button>
+        </div>
+      </div>
+
+      <!-- Unmute -->
+      <div class="unmute-banner" id="unmute-banner">
+        <button id="unmute-btn">🔊 Увімкнути звук</button>
+      </div>
+
+      <!-- Telegram overlay (appears after 12s) -->
+      <div class="tg-overlay" id="tg-overlay">
+        <div class="tg-overlay-card">
+          <div class="tg-overlay-icon">✈️</div>
+          <div class="tg-overlay-title">Дивіться в Telegram</div>
+          <div class="tg-overlay-desc">
+            Усі 36 каналів в одному застосунку — безкоштовно. На iOS, Android і Desktop.
+          </div>
+          <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-overlay-btn">
+            ✈️ Відкрити в Telegram
+          </a>
+          <span class="tg-overlay-skip" id="overlay-skip">✕ Продовжити перегляд</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="player-status" id="player-status">
+      Оберіть канал для перегляду
+    </div>
+
+    <!-- Below player ad — 728x90 -->
+    <div class="ad-below">
+      <!-- ADSTERA: вставьте сюда код баннера 728x90 #2 -->
+      <div class="ad-placeholder-h">728 × 90 — AdStera Banner</div>
+    </div>
+
+    <!-- Channel info -->
+    <div class="channel-info-card" id="channel-info-card" style="display:none">
+      <div class="ci-title" id="ci-title"></div>
+      <div class="ci-desc" id="ci-desc"></div>
+      <div class="ci-tags" id="ci-tags"></div>
+    </div>
+
+  </div><!-- .player-col -->
+
+  <!-- ─── RIGHT SIDEBAR ─────────────────────────────────────── -->
+  <aside class="right-sidebar">
+
+    <!-- Telegram CTA Card -->
+    <div class="tg-cta-card">
+      <div class="tg-cta-icon">✈️</div>
+      <div class="tg-cta-title">Дивіться без реклами в Telegram</div>
+      <div class="tg-cta-desc">36 українських каналів наживо прямо в месенджері</div>
+      <div class="tg-cta-features">
+        <div class="tg-cta-feat"><span class="feat-check">✓</span> Без реєстрації</div>
+        <div class="tg-cta-feat"><span class="feat-check">✓</span> iOS · Android · Desktop</div>
+        <div class="tg-cta-feat"><span class="feat-check">✓</span> 8 мов інтерфейсу</div>
+        <div class="tg-cta-feat"><span class="feat-check">✓</span> HD якість 24/7</div>
+      </div>
+      <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-cta-btn">
+        ✈️ Відкрити Україна ТВ
+      </a>
+      <div class="tg-sub-count">@UkraineTVHub</div>
+    </div>
+
+    <!-- AdStera 300x250 -->
+    <div class="ad-rect-wrap">
+      <!-- ADSTERA: вставьте сюда код баннера 300x250 -->
+      <div class="ad-placeholder-rect">300 × 250 — AdStera Rectangle</div>
+    </div>
+
+    <!-- AdStera 300x250 second -->
+    <div class="ad-rect-wrap-2">
+      <!-- ADSTERA: вставьте сюда код баннера 300x250 #2 -->
+      <div class="ad-placeholder-rect">300 × 250 — AdStera Rectangle #2</div>
+    </div>
+
+  </aside>
+
+</div><!-- .main-wrap -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     ABOUT / SEO SECTION
+     ═══════════════════════════════════════════════════════════ -->
+<div class="about-section" id="about">
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="icon">📡</div>
+      <div class="num">36</div>
+      <div class="lbl">Каналів наживо</div>
+    </div>
+    <div class="about-card">
+      <div class="icon">🆓</div>
+      <div class="num">0₴</div>
+      <div class="lbl">Повністю безкоштовно</div>
+    </div>
+    <div class="about-card">
+      <div class="icon">🌍</div>
+      <div class="num">8</div>
+      <div class="lbl">Мов інтерфейсу</div>
+    </div>
+    <div class="about-card">
+      <div class="icon">📱</div>
+      <div class="num">HD</div>
+      <div class="lbl">Якість трансляцій</div>
+    </div>
+    <div class="about-card">
+      <div class="icon">🕐</div>
+      <div class="num">24/7</div>
+      <div class="lbl">Без перерв</div>
+    </div>
+  </div>
+
+  <div class="seo-text">
+    <h1 style="font-size:20px;font-weight:800;margin-bottom:10px;">Українське телебачення онлайн безкоштовно — 36 каналів наживо</h1>
+    <p>
+      <strong>Україна ТВ</strong> — безкоштовний сервіс для перегляду українських телеканалів онлайн в режимі реального часу. Зібрано 36 каналів у семи категоріях: новини, розваги та кіно, суспільне мовлення, регіональні канали, музика, дитячі та тематичні.
+    </p>
+    <p>
+      <strong>Новинні канали:</strong> Перший канал, 5 Канал, Еспресо ТВ, Україна 24, Київ 24, 24 Канал, Рада ТВ. <strong>Розваги та кіно:</strong> НТН, 1+1 Міжнародний, Квартал ТВ, Інтер+, Мега, К2, 4ever Cinema, 4ever Drama. <strong>Суспільне мовлення:</strong> Суспільне Київ, IRT, Армія ТВ. Всі канали доступні без реєстрації та без будь-яких платежів — прямо у браузері.
+    </p>
+    <p>
+      <strong>Регіональні канали:</strong> RAI, TVA, NTK TV, Дніпро TV, 7 Канал (Одеса), Рівне 1, ITV. <strong>Музика:</strong> Мюзвар, NASHE Music, М1, 4ever Music, UA Music. <strong>Дитячі:</strong> Niki Kids, Niki Junior.
+    </p>
+    <p>
+      Також доступно в Telegram — підпишіться на <a href="https://t.me/UkraineTVHub" target="_blank" rel="noopener" style="color:var(--accent2)">@UkraineTVHub</a> і дивіться на будь-якому пристрої.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">🇺🇦 <span style="color:#0077ff">Україна</span><span style="color:#FFD500">ТВ</span></div>
+      <div class="footer-copy" style="margin-top:4px">© 2025 · Безкоштовне українське ТВ онлайн</div>
+    </div>
+    <div class="footer-links">
+      <a href="#about">Про сайт</a>
+      <a href="#" id="dmca-link">DMCA</a>
+      <a href="#">Конфіденційність</a>
+    </div>
+    <div class="footer-tg">
+      <a href="https://t.me/UkraineTVHub" target="_blank">
+        ✈️ Telegram без реклами
+      </a>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted2)">
+    Сайт не зберігає відеоконтент. Всі трансляції надаються третіми сторонами і доступні у відкритому доступі в мережі Інтернет.
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+const PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
+const TG_URL = 'https://t.me/UkraineTVHub';
+
+const CHANNEL_GROUPS = [
+  {
+    label: '📡 Новини та загальні',
+    channels: [
+      { id:'pershyi',    name:'Перший канал',   desc:'Головний канал України',    icon:'1',    color:'#005BBB', iconBg:'#08101a', tags:['новини','загальний'] },
+      { id:'channel5',   name:'5 Канал',        desc:'Новини та аналітика',       icon:'5',    color:'#1565c0', iconBg:'#0a0f1a', tags:['новини','аналітика'] },
+      { id:'espreso',    name:'Еспресо ТВ',     desc:'Новини 24/7',               icon:'ЕСП',  color:'#005BBB', iconBg:'#08101a', tags:['новини'] },
+      { id:'ukraine24',  name:'Україна 24',     desc:'Новини 24/7',               icon:'У24',  color:'#1565c0', iconBg:'#0a0f1a', tags:['новини'] },
+      { id:'kyiv24',     name:'Київ 24',        desc:'Новини столиці',            icon:'К24',  color:'#0277bd', iconBg:'#081218', tags:['новини','Київ'] },
+      { id:'news24',     name:'24 Канал',       desc:'Новини та репортажі',       icon:'24',   color:'#c62828', iconBg:'#180808', tags:['новини'] },
+      { id:'rada',       name:'Рада ТВ',        desc:'Парламентський канал',      icon:'РД',   color:'#2e7d32', iconBg:'#081208', tags:['парламент','суспільний'] },
+    ]
+  },
+  {
+    label: '🎬 Розваги та кіно',
+    channels: [
+      { id:'ntn',        name:'НТН',            desc:'Кіно та серіали',           icon:'НТН',  color:'#e53935', iconBg:'#1a0808', tags:['кіно','серіали'] },
+      { id:'oneplusone', name:'1+1 Міжнар.',    desc:'Розваги та шоу',            icon:'1+1',  color:'#FFD500', iconBg:'#1a1400', tags:['розваги','шоу'] },
+      { id:'kvartal',    name:'Квартал ТВ',     desc:'Гумор та розваги',          icon:'КВ',   color:'#ff6d00', iconBg:'#1a1000', tags:['гумор','розваги'] },
+      { id:'interplus',  name:'Інтер+',         desc:'Серіали та кіно',           icon:'INT+', color:'#7b1fa2', iconBg:'#140a18', tags:['серіали','кіно'] },
+      { id:'mega',       name:'Мега',           desc:'Кіно та серіали',           icon:'МГ',   color:'#d81b60', iconBg:'#180810', tags:['кіно','серіали'] },
+      { id:'k2',         name:'К2',             desc:'Кіно та розваги',           icon:'К2',   color:'#6a1b9a', iconBg:'#130a18', tags:['кіно','розваги'] },
+      { id:'cinema4ever',name:'4ever Cinema',   desc:'Кіно 24/7',                 icon:'4CIN', color:'#e65100', iconBg:'#1a0e00', tags:['кіно'] },
+      { id:'drama4ever', name:'4ever Drama',    desc:'Серіали та драми',          icon:'4DRM', color:'#4a148c', iconBg:'#0e0a18', tags:['серіали','драми'] },
+    ]
+  },
+  {
+    label: '📺 Суспільне та громадські',
+    channels: [
+      { id:'suspilne',  name:'Суспільне Київ', desc:'Суспільне мовлення',        icon:'СУС',  color:'#2e7d32', iconBg:'#081208', tags:['суспільний'] },
+      { id:'irt',       name:'IRT',            desc:'Громадський канал',          icon:'IRT',  color:'#00838f', iconBg:'#081214', tags:['громадський'] },
+      { id:'armytv',    name:'Армія ТВ',       desc:'Телеканал Збройних Сил',    icon:'АРМ',  color:'#33691e', iconBg:'#0a1408', tags:['армія','збройні сили'] },
+    ]
+  },
+  {
+    label: '🏙️ Регіональні',
+    channels: [
+      { id:'rai',       name:'RAI',            desc:'Розваги та музика',          icon:'RAI',  color:'#ad1457', iconBg:'#180810', tags:['регіональний'] },
+      { id:'tva',       name:'TVA',            desc:'Регіональне ТВ',             icon:'TVA',  color:'#37474f', iconBg:'#0a0f12', tags:['регіональний'] },
+      { id:'ntk',       name:'NTK TV',         desc:'Телеканал Кременчука',       icon:'NTK',  color:'#0277bd', iconBg:'#081218', tags:['регіональний','Кременчук'] },
+      { id:'dnipro',    name:'Дніпро TV',      desc:'Регіональний Дніпро',        icon:'ДНП',  color:'#1565c0', iconBg:'#0a0f1a', tags:['регіональний','Дніпро'] },
+      { id:'ch7',       name:'7 Канал',        desc:'Регіональний Одеса',         icon:'7К',   color:'#00838f', iconBg:'#081214', tags:['регіональний','Одеса'] },
+      { id:'rivne1',    name:'Рівне 1',        desc:'Регіональне Рівне',          icon:'РВ1',  color:'#558b2f', iconBg:'#0a1408', tags:['регіональний','Рівне'] },
+      { id:'itv',       name:'ITV',            desc:'Регіональне ТВ',             icon:'ITV',  color:'#f57f17', iconBg:'#181000', tags:['регіональний'] },
+    ]
+  },
+  {
+    label: '🎵 Музика',
+    channels: [
+      { id:'muzvar',    name:'Мюзвар',         desc:'Українська музика 24/7',     icon:'МЗВ',  color:'#FFD500', iconBg:'#1a1400', tags:['музика','українська'] },
+      { id:'nashemus',  name:'NASHE Music',    desc:'Українська музика',          icon:'НШМ',  color:'#005BBB', iconBg:'#08101a', tags:['музика','українська'] },
+      { id:'m1',        name:'М1',             desc:'Музика та кліпи',            icon:'М1',   color:'#c62828', iconBg:'#180808', tags:['музика','кліпи'] },
+      { id:'music4ever',name:'4ever Music',    desc:'Музика 24/7',                icon:'4MUS', color:'#1565c0', iconBg:'#0a0f1a', tags:['музика'] },
+      { id:'uamusic',   name:'UA Music',       desc:'Українська музика',          icon:'UAM',  color:'#2e7d32', iconBg:'#081208', tags:['музика','українська'] },
+    ]
+  },
+  {
+    label: '👶 Дитячі',
+    channels: [
+      { id:'nikikids',  name:'Niki Kids',      desc:'Мультфільми та шоу',         icon:'NIK',  color:'#f57f17', iconBg:'#181000', tags:['дитячий','мультфільми'] },
+      { id:'nikijunior',name:'Niki Junior',    desc:'Для найменших',              icon:'NIKJ', color:'#e91e63', iconBg:'#180810', tags:['дитячий'] },
+    ]
+  },
+  {
+    label: '🎯 Тематичні',
+    channels: [
+      { id:'rybalka',   name:'Rybalka TV',     desc:'Риболовля та природа',       icon:'РИБ',  color:'#0277bd', iconBg:'#081218', tags:['риболовля','природа'] },
+      { id:'uafashion', name:'UA Fashion TV',  desc:'Мода та стиль',              icon:'МОД',  color:'#e91e63', iconBg:'#180810', tags:['мода','стиль'] },
+      { id:'svarozhychy',name:'Svarozhychy',  desc:'Традиції та культура',       icon:'СВР',  color:'#5d4037', iconBg:'#120a08', tags:['культура','традиції'] },
+      { id:'equalympic',name:'Equalympic',     desc:'Спорт для всіх',             icon:'EQL',  color:'#2e7d32', iconBg:'#081208', tags:['спорт'] },
+    ]
+  },
+];
+
+// ── State ─────────────────────────────────────────────────────
+let currentCh = null, hls = null, overlayTimer = null, userUnmuted = false;
+
+// ── DOM ───────────────────────────────────────────────────────
+const video        = document.getElementById('video');
+const playerEmpty  = document.getElementById('player-empty');
+const liveBadge    = document.getElementById('live-badge');
+const npBar        = document.getElementById('now-playing-bar');
+const npName       = document.getElementById('np-name');
+const npDesc       = document.getElementById('np-desc');
+const reloadBtn    = document.getElementById('reload-btn');
+const fsBtn        = document.getElementById('fullscreen-btn');
+const unmuteBtn    = document.getElementById('unmute-btn');
+const unmuteBanner = document.getElementById('unmute-banner');
+const tgOverlay    = document.getElementById('tg-overlay');
+const overlaySkip  = document.getElementById('overlay-skip');
+const statusEl     = document.getElementById('player-status');
+const infoCard     = document.getElementById('channel-info-card');
+const ciTitle      = document.getElementById('ci-title');
+const ciDesc       = document.getElementById('ci-desc');
+const ciTags       = document.getElementById('ci-tags');
+const searchInput  = document.getElementById('search-input');
+const sidebar      = document.getElementById('channel-sidebar');
+
+// ── Build sidebar ─────────────────────────────────────────────
+function buildSidebar(filter = '') {
+  // keep search input
+  const existingSearch = sidebar.querySelector('.sidebar-search');
+
+  // clear everything except search
+  [...sidebar.children].forEach(el => {
+    if (!el.classList.contains('sidebar-search')) el.remove();
+  });
+
+  const q = filter.toLowerCase();
+  CHANNEL_GROUPS.forEach(group => {
+    const matchingChannels = group.channels.filter(ch =>
+      !q || ch.name.toLowerCase().includes(q) || ch.tags.some(t => t.includes(q))
+    );
+    if (!matchingChannels.length) return;
+
+    const label = document.createElement('div');
+    label.className = 'cat-label';
+    label.textContent = group.label;
+    sidebar.appendChild(label);
+
+    matchingChannels.forEach(ch => {
+      const item = document.createElement('div');
+      item.className = 'ch-item' + (currentCh?.id === ch.id ? ' active' : '');
+      item.dataset.id = ch.id;
+      item.innerHTML = `
+        <div class="ch-icon-s" style="background:${ch.iconBg};color:${ch.color}">${ch.icon}</div>
+        <div>
+          <div class="ch-name-s">${ch.name}</div>
+          <div class="ch-desc-s">${ch.desc}</div>
+        </div>
+        <div class="live-indicator"></div>`;
+      item.onclick = () => openChannel(ch);
+      sidebar.appendChild(item);
+    });
+  });
+}
+
+searchInput.addEventListener('input', e => buildSidebar(e.target.value));
+
+// ── Open channel ──────────────────────────────────────────────
+function openChannel(ch) {
+  currentCh = ch;
+  buildSidebar(searchInput.value);
+
+  // Update info card
+  playerEmpty.classList.add('hidden');
+  npName.textContent = ch.name;
+  npDesc.textContent = ch.desc;
+  npBar.classList.add('visible');
+  liveBadge.style.setProperty('background', ch.color);
+  infoCard.style.display = 'block';
+  ciTitle.textContent = ch.name;
+  ciDesc.textContent = ch.desc;
+  ciTags.innerHTML = ch.tags.map(t => `<span class="ci-tag">${t}</span>`).join('');
+
+  // Scroll sidebar item into view on mobile
+  const activeItem = sidebar.querySelector('.ch-item.active');
+  if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Reset overlay timer
+  clearTimeout(overlayTimer);
+  tgOverlay.classList.remove('show');
+  overlayTimer = setTimeout(() => tgOverlay.classList.add('show'), 12000);
+
+  loadStream(ch);
+}
+
+// ── Stream ────────────────────────────────────────────────────
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+
+function setStatus(msg, isError = false) {
+  statusEl.innerHTML = isError
+    ? `⚠️ ${msg}`
+    : `<span class="status-dot"></span>${msg}`;
+  reloadBtn.style.display = isError ? 'block' : 'none';
+}
+
+function stopStream() {
+  if (hls) { hls.destroy(); hls = null; }
+  video.src = '';
+  liveBadge.style.display = 'none';
+}
+
+async function loadStream(ch) {
+  stopStream();
+  setStatus('Отримуємо потік...');
+
+  const streamUrl = PROXY + '/stream?channel=' + ch.id;
+
+  async function tryPlay() {
+    video.muted = false;
+    video.volume = 1;
+    try {
+      await video.play();
+      // успешно — звук включён
+      userUnmuted = true;
+      unmuteBtn.textContent = '🔇 Вимкнути звук';
+    } catch(e) {
+      // браузер заблокував — fallback на muted
+      video.muted = true;
+      userUnmuted = false;
+      unmuteBtn.textContent = '🔊 Увімкнути звук';
+      try { await video.play(); } catch(e2) { setStatus('Натисніть ▶ для відтворення'); }
+    }
+  }
+
+  if (Hls.isSupported()) {
+    hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: true, enableWorker: true, backBufferLength: 30 });
+    hls.loadSource(streamUrl);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+      setStatus('Пряма трансляція — ' + ch.name);
+      liveBadge.style.display = 'flex';
+      await tryPlay();
+    });
+    hls.on(Hls.Events.ERROR, (e, data) => {
+      if (!data.fatal) return;
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { try { hls.startLoad(); } catch(e) {} return; }
+      if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
+      setStatus('Помилка підключення. Спробуйте ще раз.', true);
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = streamUrl;
+    video.addEventListener('loadedmetadata', async () => {
+      setStatus('Пряма трансляція — ' + ch.name);
+      liveBadge.style.display = 'flex';
+      await tryPlay();
+    }, { once: true });
+  } else {
+    setStatus('Ваш браузер не підтримує HLS потоки', true);
+  }
+}
+
+// ── Unmute ────────────────────────────────────────────────────
+unmuteBtn.addEventListener('click', () => {
+  if (video.muted) {
+    video.muted = false; video.volume = 1; userUnmuted = true;
+    unmuteBtn.textContent = '🔇 Вимкнути звук';
+  } else {
+    video.muted = true; userUnmuted = false;
+    unmuteBtn.textContent = '🔊 Увімкнути звук';
+  }
+});
+
+// ── Reload ────────────────────────────────────────────────────
+reloadBtn.addEventListener('click', () => { if (currentCh) loadStream(currentCh); });
+
+// ── Fullscreen ────────────────────────────────────────────────
+const playerWrap = document.getElementById('player-wrap');
+fsBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    playerWrap.requestFullscreen?.() || playerWrap.webkitRequestFullscreen?.();
+    fsBtn.textContent = '✕ Вийти';
+  } else {
+    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+    fsBtn.textContent = '⛶ Повний екран';
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) fsBtn.textContent = '⛶ Повний екран';
+});
+
+// ── Telegram overlay ──────────────────────────────────────────
+overlaySkip.addEventListener('click', () => {
+  tgOverlay.classList.remove('show');
+  // Show again after 5 minutes
+  overlayTimer = setTimeout(() => tgOverlay.classList.add('show'), 5 * 60 * 1000);
+});
+
+// ── Player controls fade on mousemove ────────────────────────
+(function initControlsFade() {
+  const wrap = document.getElementById('player-wrap');
+  let hideTimer = null;
+
+  function showControls() {
+    wrap.classList.add('controls-visible');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => wrap.classList.remove('controls-visible'), 3000);
+  }
+
+  wrap.addEventListener('mousemove', showControls);
+  wrap.addEventListener('mouseenter', showControls);
+  wrap.addEventListener('mouseleave', () => {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => wrap.classList.remove('controls-visible'), 600);
+  });
+
+  // Touch support
+  wrap.addEventListener('touchstart', () => { showControls(); }, { passive: true });
+})();
+
+// ── Custom scrollbar ──────────────────────────────────────────
+(function initCustomScrollbar() {
+  const sidebar = document.getElementById('channel-sidebar');
+  const track   = document.getElementById('scroll-track');
+  const thumb   = document.getElementById('scroll-thumb');
+  if (!sidebar || !track || !thumb) return;
+
+  function updateThumb() {
+    const trackH  = track.clientHeight;
+    const ratio   = sidebar.clientHeight / sidebar.scrollHeight;
+    const thumbH  = Math.max(28, ratio * trackH);
+    const maxTop  = trackH - thumbH;
+    const scrollR = sidebar.scrollHeight > sidebar.clientHeight
+      ? sidebar.scrollTop / (sidebar.scrollHeight - sidebar.clientHeight)
+      : 0;
+    thumb.style.height = thumbH + 'px';
+    thumb.style.top    = (scrollR * maxTop) + 'px';
+  }
+
+  sidebar.addEventListener('scroll', updateThumb, { passive: true });
+  window.addEventListener('resize', updateThumb);
+
+  // Observe content changes (after buildSidebar)
+  new MutationObserver(updateThumb).observe(sidebar, { childList: true, subtree: false });
+
+  // Drag thumb
+  let dragging = false, startY = 0, startTop = 0;
+  thumb.addEventListener('mousedown', e => {
+    dragging = true; startY = e.clientY; startTop = sidebar.scrollTop;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const trackH = track.clientHeight;
+    const thumbH = thumb.clientHeight;
+    const delta  = (e.clientY - startY) / (trackH - thumbH);
+    sidebar.scrollTop = startTop + delta * (sidebar.scrollHeight - sidebar.clientHeight);
+  });
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  // Click on track (jump)
+  track.addEventListener('click', e => {
+    if (e.target === thumb) return;
+    const rect   = track.getBoundingClientRect();
+    const clickY = e.clientY - rect.top;
+    const thumbH = thumb.clientHeight;
+    const trackH = track.clientHeight;
+    const ratio  = Math.max(0, Math.min(1, (clickY - thumbH / 2) / (trackH - thumbH)));
+    sidebar.scrollTop = ratio * (sidebar.scrollHeight - sidebar.clientHeight);
+  });
+
+  setTimeout(updateThumb, 150);
+})();
+
+// ── Init ──────────────────────────────────────────────────────
+buildSidebar();
+</script>
+
+</body>
+</html>
