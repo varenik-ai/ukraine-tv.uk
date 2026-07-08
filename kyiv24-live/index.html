@@ -208,6 +208,20 @@
     .all-link{display:block;text-align:center;margin-top:10px;font-size:13px;color:var(--muted);
       padding:8px;border-radius:8px;border:1px solid var(--border);transition:.15s}
     .all-link:hover{color:var(--accent2);border-color:var(--accent2)}
+    /* Telegram overlay */
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .tg-overlay{position:absolute;inset:0;z-index:40;background:rgba(8,8,20,.88);backdrop-filter:blur(4px);
+      display:none;align-items:center;justify-content:center;animation:fadeIn .4s ease}
+    .tg-overlay.show{display:flex}
+    .tg-overlay-card{text-align:center;padding:28px 24px;max-width:300px}
+    .tg-overlay-icon{font-size:48px;margin-bottom:12px}
+    .tg-overlay-title{font-size:19px;font-weight:800;margin-bottom:8px}
+    .tg-overlay-desc{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:18px;line-height:1.6}
+    .tg-overlay-btn{display:inline-flex;align-items:center;gap:8px;background:var(--tg-color);color:#fff;
+      padding:11px 22px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;transition:.2s;margin-bottom:8px}
+    .tg-overlay-btn:hover{background:#1a8dc5}
+    .tg-overlay-skip{display:block;font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;margin-top:8px;transition:.2s}
+    .tg-overlay-skip:hover{color:rgba(255,255,255,.65)}
     /* AdBlock overlay */
     #adblock-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(8,8,20,.93);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
     .adblock-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px 28px;max-width:380px}
@@ -333,6 +347,16 @@
         <div class="play-btn">▶</div>
         <div style="color:var(--muted);font-size:14px" aria-label="Київ 24 онлайн трансляція — натисніть для перегляду">Київ 24 — натисніть для перегляду</div>
       </div>
+      <!-- Telegram overlay -->
+      <div class="tg-overlay" id="tg-overlay">
+        <div class="tg-overlay-card">
+          <div class="tg-overlay-icon">✈️</div>
+          <div class="tg-overlay-title">Дивіться в Telegram</div>
+          <div class="tg-overlay-desc">Усі 36 каналів в одному застосунку — безкоштовно. На iOS, Android і Desktop.</div>
+          <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-overlay-btn">✈️ Відкрити в Telegram</a>
+          <span class="tg-overlay-skip" id="overlay-skip">✕ Продовжити перегляд</span>
+        </div>
+      </div>
     </div>
 
     <div class="player-status" id="status">Натисніть ▶ для запуску трансляції</div>
@@ -407,7 +431,9 @@ const ch_id = 'kyiv24';
 const video = document.getElementById('video');
 const overlay = document.getElementById('overlay');
 const status = document.getElementById('status');
-let hls = null;
+const tgOverlay = document.getElementById('tg-overlay');
+const overlaySkip = document.getElementById('overlay-skip');
+let hls = null, overlayTimer = null;
 
 let isAdBlocked = false;
 
@@ -439,6 +465,7 @@ function startStream() {
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(()=>{});
       setStatus('▶ Трансляція запущена');
+      scheduleOverlay();
     });
     hls.on(Hls.Events.ERROR, (e, d) => {
       if (d.fatal) setStatus('❌ Помилка трансляції — спробуйте пізніше');
@@ -447,10 +474,30 @@ function startStream() {
     video.src = url;
     video.play().catch(()=>{});
     setStatus('▶ Трансляція запущена');
+    scheduleOverlay();
   }
 }
 
 overlay.addEventListener('click', startStream);
+
+// Telegram overlay — max 2 times per session
+overlaySkip.addEventListener('click', () => {
+  tgOverlay.classList.remove('show');
+  clearTimeout(overlayTimer);
+});
+
+function scheduleOverlay() {
+  clearTimeout(overlayTimer);
+  tgOverlay.classList.remove('show');
+  const _key = 'utv_overlay_shown';
+  const _count = parseInt(sessionStorage.getItem(_key) || '0');
+  if (_count < 2) {
+    overlayTimer = setTimeout(() => {
+      tgOverlay.classList.add('show');
+      sessionStorage.setItem(_key, String(_count + 1));
+    }, 12000);
+  }
+}
 
 // Scroll active channel into view on load
 (function(){
