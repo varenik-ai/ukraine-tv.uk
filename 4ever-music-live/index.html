@@ -499,6 +499,9 @@ function scheduleOverlay() {
   }
 }
 
+// Запускаємо оверлей одразу при завантаженні сторінки (не чекаємо на старт відео)
+scheduleOverlay();
+
 // Scroll active channel into view on load
 (function(){
   const active = document.querySelector('.ch-item-s.active');
