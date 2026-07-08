@@ -582,25 +582,20 @@
       }
       .cat-label:first-child { border-top: none; }
 
-      /* Каналы горизонтальный скролл */
+      /* Каналы — вертикальный список */
       .cat-group {
-        display: flex; overflow-x: auto; gap: 8px;
-        padding: 6px 12px 12px; scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
+        display: flex; flex-direction: column; gap: 2px;
+        padding: 4px 8px 8px;
       }
-      .cat-group::-webkit-scrollbar { height: 3px; }
-      .cat-group::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
       .ch-item {
-        flex-shrink: 0; scroll-snap-align: start;
-        flex-direction: column; align-items: center;
-        width: 78px; padding: 10px 6px; text-align: center; gap: 5px;
+        flex-direction: row; align-items: center;
+        width: 100%; padding: 10px 12px; text-align: left; gap: 12px;
+        flex-shrink: unset; scroll-snap-align: none;
       }
-      .ch-icon-s { width: 44px; height: 44px; font-size: 11px; border-radius: 12px; }
-      .ch-name-s { font-size: 13px; line-height: 1.3; }
+      .ch-icon-s { width: 42px; height: 42px; font-size: 12px; border-radius: 10px; flex-shrink: 0; }
+      .ch-name-s { font-size: 16px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .ch-desc-s  { display: none; }
-      .live-indicator { position: absolute; top: 5px; right: 5px; }
+      .live-indicator { position: static; margin-left: auto; flex-shrink: 0; }
 
       /* Оверлей на весь экран на мобиле */
       .tg-overlay { position: fixed; z-index: 9999; }
@@ -638,13 +633,13 @@
       .tg-cta-card  { min-width: unset; }
       .ad-rect-wrap { min-width: unset; }
 
-      /* Каналы — grid 2 колонки */
+      /* Каналы — список (оверрайд grid) */
       .cat-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        overflow: visible; padding: 6px 10px 10px; gap: 6px;
+        display: flex; flex-direction: column;
+        overflow: visible; padding: 4px 8px 8px; gap: 2px;
       }
-      .ch-item { width: auto; scroll-snap-align: none; }
+      .ch-item { width: 100%; }
+      .ch-name-s { font-size: 15px; }
 
       .np-name { font-size: 14px; }
       .ctrl-btn { padding: 6px 10px; font-size: 11px; }
@@ -656,9 +651,9 @@
       .logo-flag { font-size: 19px; }
       .tg-header-btn { padding: 6px 10px; }
       .main-wrap { padding: 6px; gap: 6px; }
-      .cat-group { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); }
-      .ch-item { padding: 8px 4px; }
-      .ch-icon-s { width: 38px; height: 38px; }
+      .ch-item { padding: 8px 10px; }
+      .ch-icon-s { width: 36px; height: 36px; }
+      .ch-name-s { font-size: 14px; }
     }
     </style>
 </head>
