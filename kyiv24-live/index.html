@@ -172,6 +172,9 @@
     .cat-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent2)}
     .live-badge{display:flex;align-items:center;gap:5px;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--red)}
     .live-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
+    .tg-card-live{display:none;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--red);margin-bottom:12px}
+    .tg-card-live-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;flex-shrink:0}
+    .tg-card-mob{display:none}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
     .fs-btn{position:absolute;bottom:10px;right:10px;z-index:50;background:rgba(0,0,0,.65);
       color:#fff;border:none;border-radius:5px;width:34px;height:34px;font-size:17px;cursor:pointer;
@@ -256,6 +259,10 @@
       .page-wrap{grid-template-columns:1fr;padding:10px}
       h1{font-size:20px}
       .side-col{order:3}
+      .live-badge{display:none}
+      .tg-card-mob{display:block}
+      .tg-card-live{display:flex}
+      .tg-card-desk{display:none}
       .tg-overlay{position:fixed;z-index:9999}
       .tg-overlay-card{padding:24px 20px;max-width:300px}
       .tg-overlay-icon{font-size:40px;margin-bottom:10px}
@@ -383,6 +390,15 @@
 
     <div class="player-status" id="status">Натисніть ▶ для запуску трансляції</div>
 
+    <!-- Telegram card — mobile only (shown right below player) -->
+    <div class="tg-card tg-card-mob">
+      <div class="tg-card-live"><span class="tg-card-live-dot"></span>НАЖИВО · Пряма трансляція 24/7</div>
+      <div style="font-size:28px;margin-bottom:8px">✈️</div>
+      <h3>Дивіться в Telegram</h3>
+      <p>Всі 36 каналів в одному застосунку — безкоштовно. На iOS, Android і Desktop.</p>
+      <a href="https://t.me/UkraineTVHub" target="_blank">✈️ Відкрити @UkraineTVHub</a>
+      <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px">@UkraineTVHub</div>
+    </div>
 
     <div class="desc-box">
       <h2>Про канал Київ 24</h2>
@@ -417,7 +433,9 @@
   </div>
 
   <div class="side-col">
-    <div class="tg-card">
+    <!-- Telegram card — desktop only (shown in right sidebar) -->
+    <div class="tg-card tg-card-desk">
+      <div class="tg-card-live"><span class="tg-card-live-dot"></span>НАЖИВО · Пряма трансляція 24/7</div>
       <div style="font-size:32px;margin-bottom:10px">✈️</div>
       <h3>Дивіться в Telegram</h3>
       <p>Всі 36 каналів в одному застосунку — безкоштовно. На iOS, Android і Desktop.</p>

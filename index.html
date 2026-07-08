@@ -588,6 +588,8 @@
       width: 120px; height: 120px; border-radius: 50%;
       background: radial-gradient(circle, rgba(34,158,217,.2), transparent 70%);
     }
+    .tg-cta-live { display: none; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--red); margin-bottom: 10px; }
+    .tg-cta-live-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse 1s infinite; flex-shrink: 0; }
     .tg-cta-icon { font-size: 40px; margin-bottom: 10px; }
     .tg-cta-title { font-size: 15px; font-weight: 800; margin-bottom: 6px; line-height: 1.3; }
     .tg-cta-desc { font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 16px; line-height: 1.5; }
@@ -742,6 +744,7 @@
       .tg-overlay-skip { font-size: 14px; color: rgba(255,255,255,.6); margin-top: 14px; }
 
       .tg-cta-card { flex: 1; min-width: 220px; }
+      .tg-cta-live { display: flex; }
       .ad-rect-wrap { flex: 1; min-width: 260px; min-height: 80px; }
       .ad-placeholder-rect { width: 100%; height: auto; min-height: 60px; }
       .ad-rect-wrap-2 { display: none; }
@@ -933,6 +936,7 @@
 
     <!-- Telegram CTA Card -->
     <div class="tg-cta-card">
+      <div class="tg-cta-live"><span class="tg-cta-live-dot"></span>НАЖИВО · Пряма трансляція 24/7</div>
       <div class="tg-cta-icon">✈️</div>
       <div class="tg-cta-title">Дивіться без реклами в Telegram</div>
       <div class="tg-cta-desc">36 українських каналів наживо прямо в месенджері</div>
