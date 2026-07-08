@@ -784,10 +784,10 @@
 <div id="adblock-overlay">
   <div class="adblock-card">
     <div class="adblock-icon">🚫</div>
-    <div class="adblock-title">Ми помітили AdBlock</div>
-    <div class="adblock-desc">Цей сайт безкоштовний завдяки рекламі. Будь ласка, вимкніть блокувальник реклами для підтримки проекту — це займе лише хвилину.</div>
-    <button class="adblock-btn" onclick="document.getElementById('adblock-overlay').style.display='none'">✅ Я вимкнув AdBlock</button>
-    <div class="adblock-skip" onclick="document.getElementById('adblock-overlay').style.display='none'">Продовжити без вимкнення</div>
+    <div class="adblock-title">AdBlock виявлено</div>
+    <div class="adblock-desc">Для перегляду каналів необхідно вимкнути блокувальник реклами. Сайт безкоштовний — реклама є єдиним джерелом доходу.</div>
+    <button class="adblock-btn" id="adblock-check-btn">✅ Я вимкнув AdBlock — перевірити</button>
+    <div style="font-size:12px;color:var(--muted2);margin-top:10px">Як вимкнути: натисніть іконку розширення у браузері → Pause / Disable для цього сайту</div>
   </div>
 </div>
 
@@ -1450,26 +1450,65 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Anti-AdBlock detection ────────────────────────────────────
-(function() {
-  setTimeout(function() {
-    var sentinel = document.getElementById('ad-sentinel');
-    var blocked = !sentinel ||
-                  sentinel.offsetParent === null ||
-                  getComputedStyle(sentinel).display === 'none' ||
-                  sentinel.offsetHeight === 0 ||
-                  sentinel.offsetWidth === 0;
-    if (!blocked) {
-      // Дополнительно: проверяем загрузились ли рекламные iframe
-      var frames = document.querySelectorAll('iframe[src*="highperformanceformat"]');
-      if (frames.length === 0) blocked = true;
+// ── Anti-AdBlock — блокирует плеер пока AdBlock активен ──────
+let isAdBlocked = false;
+let pendingChannel = null;
+
+function checkAdBlock() {
+  var sentinel = document.getElementById('ad-sentinel');
+  var blocked = !sentinel ||
+                sentinel.offsetParent === null ||
+                getComputedStyle(sentinel).display === 'none' ||
+                sentinel.offsetHeight === 0 ||
+                sentinel.offsetWidth === 0;
+  if (!blocked) {
+    var frames = document.querySelectorAll('iframe[src*="highperformanceformat"]');
+    if (frames.length === 0) blocked = true;
+  }
+  return blocked;
+}
+
+function showAdBlockOverlay() {
+  var overlay = document.getElementById('adblock-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function hideAdBlockOverlay() {
+  var overlay = document.getElementById('adblock-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// Кнопка "Я вимкнув AdBlock" — перепроверяет и запускает канал
+document.getElementById('adblock-check-btn').addEventListener('click', function() {
+  isAdBlocked = checkAdBlock();
+  if (!isAdBlocked) {
+    hideAdBlockOverlay();
+    if (pendingChannel) {
+      openChannel(pendingChannel);
+      pendingChannel = null;
     }
-    if (blocked) {
-      var overlay = document.getElementById('adblock-overlay');
-      if (overlay) overlay.style.display = 'flex';
-    }
-  }, 2500);
-})();
+  } else {
+    this.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
+    setTimeout(() => { this.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+  }
+});
+
+// Патчим openChannel: проверяем AdBlock перед запуском
+const _origOpenChannel = openChannel;
+openChannel = function(ch) {
+  isAdBlocked = checkAdBlock();
+  if (isAdBlocked) {
+    pendingChannel = ch;
+    showAdBlockOverlay();
+    return;
+  }
+  _origOpenChannel(ch);
+};
+
+// Первичная проверка через 2.5 сек после загрузки
+setTimeout(function() {
+  isAdBlocked = checkAdBlock();
+}, 2500);
 </script>
 
 </body>
