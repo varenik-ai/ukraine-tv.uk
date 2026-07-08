@@ -202,6 +202,7 @@
   </style>
 </head>
 <body>
+<div id="ad-bait" class="adsbox ad-placement adsbygoogle ads-zone" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none" aria-hidden="true"></div>
 <div id="adblock-overlay">
   <div class="adblock-card">
     <div class="adblock-icon">🚫</div>
@@ -379,7 +380,13 @@ let hls = null;
 let isAdBlocked = false;
 
 function checkAdBlock() {
-  return window.adsLoaded !== true;
+  if (window.adsLoaded !== true) return true;
+  var bait = document.getElementById('ad-bait');
+  if (bait) {
+    var cs = window.getComputedStyle(bait);
+    if (bait.offsetHeight === 0 || cs.display === 'none' || cs.visibility === 'hidden') return true;
+  }
+  return false;
 }
 
 function setStatus(msg) { status.textContent = msg; }
