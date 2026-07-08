@@ -214,6 +214,10 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .tg-overlay{position:absolute;inset:0;z-index:40;background:rgba(8,8,20,.88);backdrop-filter:blur(4px);
       display:none;align-items:center;justify-content:center;animation:fadeIn .4s ease}
+    video:-webkit-full-screen ~ .tg-overlay,
+    video:fullscreen ~ .tg-overlay,
+    :fullscreen .tg-overlay,
+    :-webkit-full-screen .tg-overlay{position:fixed;inset:0;z-index:2147483647}
     .tg-overlay.show{display:flex}
     .tg-overlay-card{text-align:center;padding:28px 24px;max-width:300px}
     .tg-overlay-icon{font-size:48px;margin-bottom:12px}
@@ -490,7 +494,7 @@ function startStream() {
 
 overlay.addEventListener('click', startStream);
 
-// Telegram overlay — 1 раз за відвідування сторінки
+// Telegram overlay — макс. 2 рази за відвідування сторінки
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
@@ -500,13 +504,27 @@ function scheduleOverlay() {
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
   const _key = 'utv_tg_niki-junior-live';
-  if (!sessionStorage.getItem(_key)) {
+  const _count = parseInt(sessionStorage.getItem(_key) || '0');
+  if (_count < 2) {
     overlayTimer = setTimeout(() => {
       tgOverlay.classList.add('show');
-      sessionStorage.setItem(_key, '1');
+      sessionStorage.setItem(_key, String(_count + 1));
     }, 12000);
   }
 }
+
+// Fullscreen: переносимо overlay всередину fullscreen-елемента
+const _playerWrap = document.getElementById('player-wrap');
+function _onFsChange() {
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl) {
+    fsEl.appendChild(tgOverlay);
+  } else {
+    _playerWrap.appendChild(tgOverlay);
+  }
+}
+document.addEventListener('fullscreenchange', _onFsChange);
+document.addEventListener('webkitfullscreenchange', _onFsChange);
 
 // Запускаємо оверлей одразу при завантаженні сторінки
 scheduleOverlay();
