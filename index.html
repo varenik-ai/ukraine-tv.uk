@@ -170,10 +170,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
   <script src="/ads.js" onerror="window.adsLoaded=false"></script>
-  <!-- Monetag Multitag: Popunder + Vignette + In-Page Push + Push Notifications -->
-  <script src="https://quge5.com/88/tag.min.js" data-zone="257576" async data-cfasync="false"></script>
-  <script src="https://quge5.com/88/tag.min.js" data-zone="257596" async data-cfasync="false"></script>
-  <script async data-cfasync="false">(function(s){s.dataset.zone='11257687',s.src='https://nap5k.com/tag.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
   <!-- ═══════════════════════════════════════════════════════════
        ADSTERA: замените комментарии на реальные коды из кабинета
@@ -1460,34 +1456,6 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Monetag In-Page Push: зміщуємо вниз щоб не перекривав наш Telegram-блок ──
-(function() {
-  var OUR_IDS = new Set(['adblock-overlay', 'ad-bait', 'tg-overlay',
-                          'player-wrap', 'header', 'sidebar', 'main-layout',
-                          'banner-above', 'banner-below']);
-
-  function nudgeMonetagAds() {
-    // Перевіряємо ВСІ елементи сторінки (не тільки прямих нащадків body)
-    var all = document.querySelectorAll('body *');
-    for (var i = 0; i < all.length; i++) {
-      var el = all[i];
-      if (OUR_IDS.has(el.id)) continue;
-      var cs = window.getComputedStyle(el);
-      if (cs.position !== 'fixed') continue;
-      var rect = el.getBoundingClientRect();
-      // Елемент у правій половині екрану і у верхній третині
-      if (rect.right > window.innerWidth * 0.55 && rect.top < 320 && rect.width > 50) {
-        el.style.setProperty('top', '480px', 'important');
-        el.style.setProperty('right', '16px', 'important');
-      }
-    }
-  }
-
-  // MutationObserver + кілька затриманих перевірок
-  var mo = new MutationObserver(nudgeMonetagAds);
-  mo.observe(document.body, { childList: true, subtree: true });
-  [800, 2000, 4000].forEach(function(t) { setTimeout(nudgeMonetagAds, t); });
-})();
 
 // ── Anti-AdBlock — перевірка через власний ads.js ─────────────
 // AdBlock блокує /ads.js за списками фільтрів → window.adsLoaded не стає true
