@@ -172,6 +172,8 @@
   <script src="/ads.js" onerror="window.adsLoaded=false"></script>
   <!-- Monetag Multitag: Popunder + Vignette + In-Page Push + Push Notifications -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="257576" async data-cfasync="false"></script>
+  <script src="https://quge5.com/88/tag.min.js" data-zone="257596" async data-cfasync="false"></script>
+  <script async data-cfasync="false">(function(s){s.dataset.zone='11257687',s.src='https://nap5k.com/tag.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
   <!-- ═══════════════════════════════════════════════════════════
        ADSTERA: замените комментарии на реальные коды из кабинета
@@ -471,6 +473,7 @@
       display: flex; align-items: center; justify-content: center;
       margin: 6px 0;
     }
+    .player-banner:empty { display: none; min-height: 0; margin: 0; }
     .player-banner ins, .player-banner iframe, .player-banner > * {
       display: block; width: 100%;
     }
@@ -858,9 +861,7 @@
   <div class="player-col">
 
     <!-- Банер над плеером -->
-    <div class="player-banner" id="banner-above">
-      <script src="https://quge5.com/88/tag.min.js" data-zone="257596" async data-cfasync="false"></script>
-    </div>
+    <div class="player-banner" id="banner-above"></div>
 
     <!-- Player -->
     <div class="player-wrap" id="player-wrap">
@@ -918,9 +919,7 @@
     </div>
 
     <!-- Банер під плеером -->
-    <div class="player-banner" id="banner-below">
-      <script>(function(s){s.dataset.zone='11257687',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    </div>
+    <div class="player-banner" id="banner-below"></div>
 
 
     <!-- Channel info -->
@@ -1463,27 +1462,31 @@ buildSidebar();
 
 // ── Monetag In-Page Push: зміщуємо вниз щоб не перекривав наш Telegram-блок ──
 (function() {
-  const OUR_IDS = new Set(['adblock-overlay', 'ad-bait', 'tg-overlay',
-                            'player-wrap', 'header', 'sidebar', 'main-layout']);
+  var OUR_IDS = new Set(['adblock-overlay', 'ad-bait', 'tg-overlay',
+                          'player-wrap', 'header', 'sidebar', 'main-layout',
+                          'banner-above', 'banner-below']);
 
   function nudgeMonetagAds() {
-    document.querySelectorAll('body > div, body > aside, body > section').forEach(function(el) {
-      if (OUR_IDS.has(el.id)) return;
+    // Перевіряємо ВСІ елементи сторінки (не тільки прямих нащадків body)
+    var all = document.querySelectorAll('body *');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (OUR_IDS.has(el.id)) continue;
       var cs = window.getComputedStyle(el);
-      if (cs.position !== 'fixed') return;
-      var right = parseFloat(cs.right);
-      var top   = parseFloat(cs.top);
-      // Якщо елемент прикріплений до правого краю і знаходиться у верхній третині — зміщуємо
-      if (!isNaN(right) && right < 120 && !isNaN(top) && top < 300) {
-        el.style.setProperty('top', '320px', 'important');
+      if (cs.position !== 'fixed') continue;
+      var rect = el.getBoundingClientRect();
+      // Елемент у правій половині екрану і у верхній третині
+      if (rect.right > window.innerWidth * 0.55 && rect.top < 320 && rect.width > 50) {
+        el.style.setProperty('top', '480px', 'important');
+        el.style.setProperty('right', '16px', 'important');
       }
-    });
+    }
   }
 
-  // Спостерігаємо за появою нових елементів від Monetag
-  new MutationObserver(nudgeMonetagAds).observe(document.body, { childList: true });
-  setTimeout(nudgeMonetagAds, 800);
-  setTimeout(nudgeMonetagAds, 2500);
+  // MutationObserver + кілька затриманих перевірок
+  var mo = new MutationObserver(nudgeMonetagAds);
+  mo.observe(document.body, { childList: true, subtree: true });
+  [800, 2000, 4000].forEach(function(t) { setTimeout(nudgeMonetagAds, t); });
 })();
 
 // ── Anti-AdBlock — перевірка через власний ads.js ─────────────
