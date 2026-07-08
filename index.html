@@ -1359,17 +1359,26 @@ reloadBtn.addEventListener('click', () => { if (currentCh) loadStream(currentCh)
 // ── Fullscreen ────────────────────────────────────────────────
 const playerWrap = document.getElementById('player-wrap');
 fsBtn.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    playerWrap.requestFullscreen?.() || playerWrap.webkitRequestFullscreen?.();
-    fsBtn.textContent = '✕ Вийти';
-  } else {
-    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl) {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
     fsBtn.textContent = '⛶ Повний екран';
+  } else {
+    if (playerWrap.requestFullscreen) playerWrap.requestFullscreen().catch(()=>{});
+    else if (playerWrap.webkitRequestFullscreen) playerWrap.webkitRequestFullscreen();
+    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iOS Safari
+    fsBtn.textContent = '✕ Вийти';
   }
 });
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement) fsBtn.textContent = '⛶ Повний екран';
 });
+document.addEventListener('webkitfullscreenchange', () => {
+  if (!document.webkitFullscreenElement) fsBtn.textContent = '⛶ Повний екран';
+});
+video.addEventListener('webkitbeginfullscreen', () => { fsBtn.textContent = '✕ Вийти'; });
+video.addEventListener('webkitendfullscreen', () => { fsBtn.textContent = '⛶ Повний екран'; });
 
 // ── Telegram overlay ──────────────────────────────────────────
 overlaySkip.addEventListener('click', () => {
