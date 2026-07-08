@@ -168,7 +168,8 @@
   <meta name="theme-color" content="#0a0a14" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+  <script src="/ads.js" onerror="window.adsLoaded=false"></script>
 
   <!-- ═══════════════════════════════════════════════════════════
        ADSTERA: замените комментарии на реальные коды из кабинета
@@ -776,9 +777,6 @@
     </style>
 </head>
 <body>
-
-<!-- AdBlock bait (скрыт, AdBlock его удалит — это сигнал) -->
-<div id="ad-sentinel" class="ad ads adsense advertisement banner" style="position:absolute;left:-99999px;width:1px;height:1px;pointer-events:none;" aria-hidden="true"></div>
 
 <!-- Anti-AdBlock overlay -->
 <div id="adblock-overlay">
@@ -1450,50 +1448,47 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Anti-AdBlock — блокирует плеер пока AdBlock активен ──────
+// ── Anti-AdBlock — перевірка через власний ads.js ─────────────
+// AdBlock блокує /ads.js за списками фільтрів → window.adsLoaded не стає true
 let isAdBlocked = false;
 let pendingChannel = null;
 
 function checkAdBlock() {
-  var sentinel = document.getElementById('ad-sentinel');
-  var blocked = !sentinel ||
-                sentinel.offsetParent === null ||
-                getComputedStyle(sentinel).display === 'none' ||
-                sentinel.offsetHeight === 0 ||
-                sentinel.offsetWidth === 0;
-  if (!blocked) {
-    var frames = document.querySelectorAll('iframe[src*="highperformanceformat"]');
-    if (frames.length === 0) blocked = true;
-  }
-  return blocked;
+  return window.adsLoaded !== true;
 }
 
 function showAdBlockOverlay() {
-  var overlay = document.getElementById('adblock-overlay');
-  if (overlay) overlay.style.display = 'flex';
+  document.getElementById('adblock-overlay').style.display = 'flex';
 }
-
 function hideAdBlockOverlay() {
-  var overlay = document.getElementById('adblock-overlay');
-  if (overlay) overlay.style.display = 'none';
+  document.getElementById('adblock-overlay').style.display = 'none';
 }
 
-// Кнопка "Я вимкнув AdBlock" — перепроверяет и запускает канал
+// Кнопка перевірки: перезавантажуємо ads.js і дивимось результат
 document.getElementById('adblock-check-btn').addEventListener('click', function() {
-  isAdBlocked = checkAdBlock();
-  if (!isAdBlocked) {
-    hideAdBlockOverlay();
-    if (pendingChannel) {
-      openChannel(pendingChannel);
-      pendingChannel = null;
+  const btn = this;
+  btn.textContent = '⏳ Перевірка...';
+  window.adsLoaded = undefined;
+  const s = document.createElement('script');
+  s.src = '/ads.js?t=' + Date.now();
+  s.onload = () => {
+    if (window.adsLoaded === true) {
+      hideAdBlockOverlay();
+      isAdBlocked = false;
+      if (pendingChannel) { openChannel(pendingChannel); pendingChannel = null; }
+    } else {
+      btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
+      setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
     }
-  } else {
-    this.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-    setTimeout(() => { this.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
-  }
+  };
+  s.onerror = () => {
+    btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
+    setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+  };
+  document.head.appendChild(s);
 });
 
-// Патчим openChannel: проверяем AdBlock перед запуском
+// Патчим openChannel: перевіряємо перед запуском
 const _origOpenChannel = openChannel;
 openChannel = function(ch) {
   isAdBlocked = checkAdBlock();
@@ -1504,11 +1499,6 @@ openChannel = function(ch) {
   }
   _origOpenChannel(ch);
 };
-
-// Первичная проверка через 2.5 сек после загрузки
-setTimeout(function() {
-  isAdBlocked = checkAdBlock();
-}, 2500);
 </script>
 
 </body>

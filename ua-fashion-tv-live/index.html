@@ -103,7 +103,8 @@
 }</script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+  <script src="/ads.js" onerror="window.adsLoaded=false"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--bg:#0a0a14;--bg2:#0f0f1e;--bg3:#14142a;--card:#131325;--border:#1e1e3a;--border2:#2a2a50;
@@ -201,7 +202,6 @@
   </style>
 </head>
 <body>
-<div id="ad-sentinel" class="ad ads adsense advertisement banner" style="position:absolute;left:-99999px;width:1px;height:1px;pointer-events:none;" aria-hidden="true"></div>
 <div id="adblock-overlay">
   <div class="adblock-card">
     <div class="adblock-icon">🚫</div>
@@ -379,15 +379,7 @@ let hls = null;
 let isAdBlocked = false;
 
 function checkAdBlock() {
-  var s = document.getElementById('ad-sentinel');
-  var blocked = !s || s.offsetParent === null ||
-                getComputedStyle(s).display === 'none' ||
-                s.offsetHeight === 0 || s.offsetWidth === 0;
-  if (!blocked) {
-    var fr = document.querySelectorAll('iframe[src*="highperformanceformat"]');
-    if (fr.length === 0) blocked = true;
-  }
-  return blocked;
+  return window.adsLoaded !== true;
 }
 
 function setStatus(msg) { status.textContent = msg; }
@@ -423,18 +415,27 @@ overlay.addEventListener('click', startStream);
 
 // Кнопка перевірки після вимкнення AdBlock
 document.getElementById('adblock-check-btn').addEventListener('click', function() {
-  isAdBlocked = checkAdBlock();
-  if (!isAdBlocked) {
-    document.getElementById('adblock-overlay').style.display = 'none';
-    startStream();
-  } else {
-    this.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-    setTimeout(() => { this.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
-  }
+  const btn = this;
+  btn.textContent = '⏳ Перевірка...';
+  window.adsLoaded = undefined;
+  const s = document.createElement('script');
+  s.src = '/ads.js?t=' + Date.now();
+  s.onload = () => {
+    if (window.adsLoaded === true) {
+      document.getElementById('adblock-overlay').style.display = 'none';
+      isAdBlocked = false;
+      startStream();
+    } else {
+      btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
+      setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+    }
+  };
+  s.onerror = () => {
+    btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
+    setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+  };
+  document.head.appendChild(s);
 });
-
-// Первинна перевірка
-setTimeout(function() { isAdBlocked = checkAdBlock(); }, 2500);
 
 </script>
 </body>
