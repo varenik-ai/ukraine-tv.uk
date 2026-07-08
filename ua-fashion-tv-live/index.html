@@ -501,7 +501,9 @@ function startStream() {
 
 overlay.addEventListener('click', startStream);
 
-// Telegram overlay — макс. 2 рази за відвідування сторінки
+// Telegram overlay — макс. 2 рази за завантаження сторінки
+let _overlayCount = 0;
+
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
@@ -510,12 +512,10 @@ overlaySkip.addEventListener('click', () => {
 function scheduleOverlay() {
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-  const _key = 'utv_tg_ua-fashion-tv-live';
-  const _count = parseInt(sessionStorage.getItem(_key) || '0');
-  if (_count < 2) {
+  if (_overlayCount < 2) {
     overlayTimer = setTimeout(() => {
       tgOverlay.classList.add('show');
-      sessionStorage.setItem(_key, String(_count + 1));
+      _overlayCount++;
     }, 12000);
   }
 }
