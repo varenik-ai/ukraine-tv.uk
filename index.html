@@ -1437,16 +1437,28 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Popunder у фоновій вкладці ────────────────────────────────
-// Перехоплюємо window.open: відкриваємо нову вкладку і повертаємо фокус назад
+// ── Popunder: відкриваємо рекламу у новому ВІКНІ, повертаємо фокус на наш сайт ──
+// window.open із розмірами → браузер відкриває вікно (не вкладку)
+// → popup.blur() + window.focus() → наш сайт залишається активним
 (function() {
-  const _origOpen = window.open;
+  const _orig = window.open;
   window.open = function(url, name, specs) {
-    const w = _origOpen.call(window, url || 'about:blank', '_blank', specs);
-    if (w) {
-      try { window.focus(); } catch(e) {}
+    // Якщо немає розмірів (тобто Monetag відкриває вкладку) — перехоплюємо
+    if (!specs || !specs.includes('width')) {
+      const sw = screen.availWidth  || 1280;
+      const sh = screen.availHeight || 800;
+      const popup = _orig.call(window,
+        url || 'about:blank',
+        '_blank',
+        'width=' + sw + ',height=' + sh + ',left=0,top=0,scrollbars=yes,resizable=yes'
+      );
+      if (popup) {
+        try { popup.blur(); } catch(e) {}
+        try { window.focus(); } catch(e) {}
+      }
+      return popup;
     }
-    return w;
+    return _orig.call(window, url, name, specs);
   };
 })();
 
