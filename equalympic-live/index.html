@@ -125,14 +125,46 @@
     .tg-btn{display:flex;align-items:center;gap:7px;background:var(--tg-color);color:#fff;
       padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;transition:.2s}
     .tg-btn:hover{background:#1a8dc5}
-    .breadcrumb{padding:12px 20px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border);
+    .breadcrumb{padding:10px 20px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border);
       display:flex;gap:6px;align-items:center}
     .breadcrumb a{color:var(--muted);transition:.15s}.breadcrumb a:hover{color:var(--accent2)}
     .breadcrumb span{color:var(--muted2)}
-    .page-wrap{max-width:1100px;margin:0 auto;padding:20px 16px;display:grid;
-      grid-template-columns:1fr 300px;gap:20px}
+    /* ── 3-column layout ── */
+    .page-wrap{max-width:1400px;margin:0 auto;padding:16px;display:grid;
+      grid-template-columns:268px 1fr 288px;gap:16px;align-items:start}
     .main-col{display:flex;flex-direction:column;gap:16px}
     .side-col{display:flex;flex-direction:column;gap:16px}
+    /* ── Left sidebar ── */
+    .left-sidebar{position:sticky;top:76px;height:calc(100vh - 96px);
+      display:flex;flex-direction:column;gap:0;overflow:hidden;
+      background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
+    .sidebar-search-wrap{padding:12px 12px 8px;flex-shrink:0;position:relative}
+    .sidebar-search-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border);
+      color:var(--text);border-radius:8px;padding:8px 12px 8px 34px;font-size:13px;
+      font-family:inherit;outline:none;transition:border-color .2s}
+    .sidebar-search-wrap input:focus{border-color:var(--accent2)}
+    .sidebar-search-wrap input::placeholder{color:var(--muted)}
+    .s-icon{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+    .ch-list-scroll{flex:1;overflow-y:auto;padding:4px 8px 12px;
+      scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+    .ch-list-scroll::-webkit-scrollbar{width:4px}
+    .ch-list-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+    .cat-label-s{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;
+      letter-spacing:1.5px;padding:12px 4px 4px}
+    .cat-label-s:first-child{padding-top:4px}
+    .ch-item-s{display:flex;align-items:center;gap:9px;padding:8px 8px;border-radius:10px;
+      cursor:pointer;transition:all .15s;border:1px solid transparent;
+      text-decoration:none;color:var(--text)}
+    .ch-item-s:hover{background:var(--bg3);border-color:var(--border)}
+    .ch-item-s.active{background:linear-gradient(135deg,rgba(0,91,187,.18),rgba(0,119,255,.09));
+      border-color:rgba(0,119,255,.35)}
+    .ch-item-s.active .ch-name-s{color:var(--accent2)}
+    .ch-icon-s{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;
+      justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
+    .ch-name-s{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ch-desc-s{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .live-dot-s{width:6px;height:6px;background:var(--red);border-radius:50%;
+      animation:pulse 1.2s infinite;flex-shrink:0}
     h1{font-size:26px;font-weight:900;line-height:1.25;margin-bottom:6px}
     .channel-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:12px}
     .cat-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent2)}
@@ -196,8 +228,12 @@
     footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px;margin-top:40px;
       text-align:center;font-size:12px;color:var(--muted)}
     footer a{color:var(--accent2);margin:0 8px}
-    @media(max-width:760px){
-      .page-wrap{grid-template-columns:1fr;padding:12px}
+    @media(max-width:1024px){
+      .page-wrap{grid-template-columns:1fr 260px}
+      .left-sidebar{display:none}
+    }
+    @media(max-width:640px){
+      .page-wrap{grid-template-columns:1fr;padding:10px}
       h1{font-size:20px}
       .side-col{order:3}
     }
@@ -233,6 +269,61 @@
 </div>
 
 <div class="page-wrap">
+
+  <!-- ── LEFT: Channel sidebar ── -->
+  <aside class="left-sidebar">
+    <div class="sidebar-search-wrap">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="ch-search" placeholder="Пошук каналу...">
+    </div>
+    <div class="ch-list-scroll" id="ch-list">
+      <div class="cat-label-s">📡 Новини та загальні</div>
+<a href="/pershyi-live/" class="ch-item-s" data-name="Перший канал" aria-label="Перший канал дивитися онлайн"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">1</div><div style="flex:1;min-width:0"><div class="ch-name-s">Перший канал</div><div class="ch-desc-s">Головний державний телеканал Укр</div></div><div class="live-dot-s"></div></a>
+<a href="/channel5-live/" class="ch-item-s" data-name="5 Канал" aria-label="5 Канал дивитися онлайн"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">5</div><div style="flex:1;min-width:0"><div class="ch-name-s">5 Канал</div><div class="ch-desc-s">Новини та аналітика 24/7</div></div><div class="live-dot-s"></div></a>
+<a href="/espreso-live/" class="ch-item-s" data-name="Еспресо ТВ" aria-label="Еспресо ТВ дивитися онлайн"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">ЕСП</div><div style="flex:1;min-width:0"><div class="ch-name-s">Еспресо ТВ</div><div class="ch-desc-s">Суспільно-політичне мовлення 24/</div></div><div class="live-dot-s"></div></a>
+<a href="/ukraina24-live/" class="ch-item-s" data-name="Україна 24" aria-label="Україна 24 дивитися онлайн"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">У24</div><div style="flex:1;min-width:0"><div class="ch-name-s">Україна 24</div><div class="ch-desc-s">Новини 24/7 від медіагрупи Украї</div></div><div class="live-dot-s"></div></a>
+<a href="/kyiv24-live/" class="ch-item-s" data-name="Київ 24" aria-label="Київ 24 дивитися онлайн"><div class="ch-icon-s" style="background:#081218;color:#0277bd">К24</div><div style="flex:1;min-width:0"><div class="ch-name-s">Київ 24</div><div class="ch-desc-s">Новини столиці та України</div></div><div class="live-dot-s"></div></a>
+<a href="/24kanal-live/" class="ch-item-s" data-name="24 Канал" aria-label="24 Канал дивитися онлайн"><div class="ch-icon-s" style="background:#180808;color:#c62828">24</div><div style="flex:1;min-width:0"><div class="ch-name-s">24 Канал</div><div class="ch-desc-s">Новини та репортажі 24/7</div></div><div class="live-dot-s"></div></a>
+<a href="/rada-tv-live/" class="ch-item-s" data-name="Рада ТВ" aria-label="Рада ТВ дивитися онлайн"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">РД</div><div style="flex:1;min-width:0"><div class="ch-name-s">Рада ТВ</div><div class="ch-desc-s">Парламентський канал України</div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">🎬 Розваги та кіно</div>
+<a href="/ntn-live/" class="ch-item-s" data-name="НТН" aria-label="НТН дивитися онлайн"><div class="ch-icon-s" style="background:#1a0808;color:#e53935">НТН</div><div style="flex:1;min-width:0"><div class="ch-name-s">НТН</div><div class="ch-desc-s">Кіно, серіали та розваги</div></div><div class="live-dot-s"></div></a>
+<a href="/1plus1-live/" class="ch-item-s" data-name="1+1 Міжнар." aria-label="1+1 Міжнар. дивитися онлайн"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">1+1</div><div style="flex:1;min-width:0"><div class="ch-name-s">1+1 Міжнар.</div><div class="ch-desc-s">Розваги, шоу та серіали</div></div><div class="live-dot-s"></div></a>
+<a href="/kvartal-tv-live/" class="ch-item-s" data-name="Квартал ТВ" aria-label="Квартал ТВ дивитися онлайн"><div class="ch-icon-s" style="background:#1a1000;color:#ff6d00">КВ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Квартал ТВ</div><div class="ch-desc-s">Гумор та розважальний контент</div></div><div class="live-dot-s"></div></a>
+<a href="/inter-plus-live/" class="ch-item-s" data-name="Інтер+" aria-label="Інтер+ дивитися онлайн"><div class="ch-icon-s" style="background:#140a18;color:#7b1fa2">INT+</div><div style="flex:1;min-width:0"><div class="ch-name-s">Інтер+</div><div class="ch-desc-s">Серіали та кіно від Інтер</div></div><div class="live-dot-s"></div></a>
+<a href="/mega-live/" class="ch-item-s" data-name="Мега" aria-label="Мега дивитися онлайн"><div class="ch-icon-s" style="background:#180810;color:#d81b60">МГ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Мега</div><div class="ch-desc-s">Кіно та розважальні програми</div></div><div class="live-dot-s"></div></a>
+<a href="/k2-live/" class="ch-item-s" data-name="К2" aria-label="К2 дивитися онлайн"><div class="ch-icon-s" style="background:#130a18;color:#6a1b9a">К2</div><div style="flex:1;min-width:0"><div class="ch-name-s">К2</div><div class="ch-desc-s">Кіно та розважальний контент</div></div><div class="live-dot-s"></div></a>
+<a href="/4ever-cinema-live/" class="ch-item-s" data-name="4ever Cinema" aria-label="4ever Cinema дивитися онлайн"><div class="ch-icon-s" style="background:#1a0e00;color:#e65100">4CIN</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Cinema</div><div class="ch-desc-s">Кіно 24/7 — фільми без перерв</div></div><div class="live-dot-s"></div></a>
+<a href="/4ever-drama-live/" class="ch-item-s" data-name="4ever Drama" aria-label="4ever Drama дивитися онлайн"><div class="ch-icon-s" style="background:#0e0a18;color:#4a148c">4DRM</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Drama</div><div class="ch-desc-s">Серіали та драми цілодобово</div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">📺 Суспільне</div>
+<a href="/suspilne-live/" class="ch-item-s" data-name="Суспільне Київ" aria-label="Суспільне Київ дивитися онлайн"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">СУС</div><div style="flex:1;min-width:0"><div class="ch-name-s">Суспільне Київ</div><div class="ch-desc-s">Суспільне мовлення — Київ та Укр</div></div><div class="live-dot-s"></div></a>
+<a href="/irt-live/" class="ch-item-s" data-name="IRT" aria-label="IRT дивитися онлайн"><div class="ch-icon-s" style="background:#081214;color:#00838f">IRT</div><div style="flex:1;min-width:0"><div class="ch-name-s">IRT</div><div class="ch-desc-s">Громадський інформаційний канал</div></div><div class="live-dot-s"></div></a>
+<a href="/armiya-tv-live/" class="ch-item-s" data-name="Армія ТВ" aria-label="Армія ТВ дивитися онлайн"><div class="ch-icon-s" style="background:#0a1408;color:#33691e">АРМ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Армія ТВ</div><div class="ch-desc-s">Телеканал Збройних Сил України</div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">🏙️ Регіональні</div>
+<a href="/rai-live/" class="ch-item-s" data-name="RAI" aria-label="RAI дивитися онлайн"><div class="ch-icon-s" style="background:#180810;color:#ad1457">RAI</div><div style="flex:1;min-width:0"><div class="ch-name-s">RAI</div><div class="ch-desc-s">Регіональний канал — розваги та </div></div><div class="live-dot-s"></div></a>
+<a href="/tva-live/" class="ch-item-s" data-name="TVA" aria-label="TVA дивитися онлайн"><div class="ch-icon-s" style="background:#0a0f12;color:#37474f">TVA</div><div style="flex:1;min-width:0"><div class="ch-name-s">TVA</div><div class="ch-desc-s">Регіональне мовлення для місцево</div></div><div class="live-dot-s"></div></a>
+<a href="/ntk-tv-live/" class="ch-item-s" data-name="NTK TV" aria-label="NTK TV дивитися онлайн"><div class="ch-icon-s" style="background:#081218;color:#0277bd">NTK</div><div style="flex:1;min-width:0"><div class="ch-name-s">NTK TV</div><div class="ch-desc-s">Телеканал Кременчука та регіону</div></div><div class="live-dot-s"></div></a>
+<a href="/dnipro-tv-live/" class="ch-item-s" data-name="Дніпро TV" aria-label="Дніпро TV дивитися онлайн"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">ДНП</div><div style="flex:1;min-width:0"><div class="ch-name-s">Дніпро TV</div><div class="ch-desc-s">Регіональний канал Дніпра</div></div><div class="live-dot-s"></div></a>
+<a href="/7kanal-live/" class="ch-item-s" data-name="7 Канал" aria-label="7 Канал дивитися онлайн"><div class="ch-icon-s" style="background:#081214;color:#00838f">7К</div><div style="flex:1;min-width:0"><div class="ch-name-s">7 Канал</div><div class="ch-desc-s">Регіональний канал Одеси</div></div><div class="live-dot-s"></div></a>
+<a href="/rivne1-live/" class="ch-item-s" data-name="Рівне 1" aria-label="Рівне 1 дивитися онлайн"><div class="ch-icon-s" style="background:#0a1408;color:#558b2f">РВ1</div><div style="flex:1;min-width:0"><div class="ch-name-s">Рівне 1</div><div class="ch-desc-s">Регіональне мовлення Рівненщини</div></div><div class="live-dot-s"></div></a>
+<a href="/itv-live/" class="ch-item-s" data-name="ITV" aria-label="ITV дивитися онлайн"><div class="ch-icon-s" style="background:#181000;color:#f57f17">ITV</div><div style="flex:1;min-width:0"><div class="ch-name-s">ITV</div><div class="ch-desc-s">Регіональне телебачення</div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">🎵 Музика</div>
+<a href="/muzvar-live/" class="ch-item-s" data-name="Мюзвар" aria-label="Мюзвар дивитися онлайн"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">МЗВ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Мюзвар</div><div class="ch-desc-s">Українська музика та кліпи 24/7</div></div><div class="live-dot-s"></div></a>
+<a href="/nashe-music-live/" class="ch-item-s" data-name="NASHE Music" aria-label="NASHE Music дивитися онлайн"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">НШМ</div><div style="flex:1;min-width:0"><div class="ch-name-s">NASHE Music</div><div class="ch-desc-s">Українська рок та поп музика</div></div><div class="live-dot-s"></div></a>
+<a href="/m1-live/" class="ch-item-s" data-name="М1" aria-label="М1 дивитися онлайн"><div class="ch-icon-s" style="background:#180808;color:#c62828">М1</div><div style="flex:1;min-width:0"><div class="ch-name-s">М1</div><div class="ch-desc-s">Музика та кліпи — провідний музи</div></div><div class="live-dot-s"></div></a>
+<a href="/4ever-music-live/" class="ch-item-s" data-name="4ever Music" aria-label="4ever Music дивитися онлайн"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">4MUS</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Music</div><div class="ch-desc-s">Музика без зупинок 24/7</div></div><div class="live-dot-s"></div></a>
+<a href="/ua-music-live/" class="ch-item-s" data-name="UA Music" aria-label="UA Music дивитися онлайн"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">UAM</div><div style="flex:1;min-width:0"><div class="ch-name-s">UA Music</div><div class="ch-desc-s">Українська музика — підтримуємо </div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">👶 Дитячі</div>
+<a href="/niki-kids-live/" class="ch-item-s" data-name="Niki Kids" aria-label="Niki Kids дивитися онлайн"><div class="ch-icon-s" style="background:#181000;color:#f57f17">NIK</div><div style="flex:1;min-width:0"><div class="ch-name-s">Niki Kids</div><div class="ch-desc-s">Мультфільми та шоу для дітей</div></div><div class="live-dot-s"></div></a>
+<a href="/niki-junior-live/" class="ch-item-s" data-name="Niki Junior" aria-label="Niki Junior дивитися онлайн"><div class="ch-icon-s" style="background:#180810;color:#e91e63">NIKJ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Niki Junior</div><div class="ch-desc-s">Для найменших — розвивальний кон</div></div><div class="live-dot-s"></div></a>
+<div class="cat-label-s">🎯 Тематичні</div>
+<a href="/rybalka-tv-live/" class="ch-item-s" data-name="Rybalka TV" aria-label="Rybalka TV дивитися онлайн"><div class="ch-icon-s" style="background:#081218;color:#0277bd">РИБ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Rybalka TV</div><div class="ch-desc-s">Риболовля, природа та активний в</div></div><div class="live-dot-s"></div></a>
+<a href="/ua-fashion-tv-live/" class="ch-item-s" data-name="UA Fashion TV" aria-label="UA Fashion TV дивитися онлайн"><div class="ch-icon-s" style="background:#180810;color:#e91e63">МОД</div><div style="flex:1;min-width:0"><div class="ch-name-s">UA Fashion TV</div><div class="ch-desc-s">Мода, стиль та краса</div></div><div class="live-dot-s"></div></a>
+<a href="/svarozhychy-live/" class="ch-item-s" data-name="Svarozhychy" aria-label="Svarozhychy дивитися онлайн"><div class="ch-icon-s" style="background:#120a08;color:#5d4037">СВР</div><div style="flex:1;min-width:0"><div class="ch-name-s">Svarozhychy</div><div class="ch-desc-s">Традиції, культура та спадщина</div></div><div class="live-dot-s"></div></a>
+<a href="/equalympic-live/" class="ch-item-s active" data-name="Equalympic" aria-label="Equalympic дивитися онлайн"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">EQL</div><div style="flex:1;min-width:0"><div class="ch-name-s">Equalympic</div><div class="ch-desc-s">Спорт для всіх — адаптивний спор</div></div><div class="live-dot-s"></div></a>
+    </div>
+  </aside>
+
+  <!-- ── CENTER: Player + info ── -->
   <div class="main-col">
     <div>
       <h1>Equalympic дивитися онлайн безкоштовно</h1>
@@ -306,7 +397,7 @@
 
     <div class="all-ch-box">
       <h3 style="padding:14px 14px 6px;margin:0;font-size:13px;font-weight:800;color:var(--muted)">📺 Всі 36 каналів</h3>
-      <div class="all-cat-label">📡 Новини</div>
+      <div class="all-cat-label">📡 Новини та загальні</div>
 <a href="/pershyi-live/"{active} aria-label="Перший канал дивитися онлайн">Перший канал</a>
 <a href="/channel5-live/"{active} aria-label="5 Канал дивитися онлайн">5 Канал</a>
 <a href="/espreso-live/"{active} aria-label="Еспресо ТВ дивитися онлайн">Еспресо ТВ</a>
@@ -314,7 +405,7 @@
 <a href="/kyiv24-live/"{active} aria-label="Київ 24 дивитися онлайн">Київ 24</a>
 <a href="/24kanal-live/"{active} aria-label="24 Канал дивитися онлайн">24 Канал</a>
 <a href="/rada-tv-live/"{active} aria-label="Рада ТВ дивитися онлайн">Рада ТВ</a>
-<div class="all-cat-label">🎬 Розваги</div>
+<div class="all-cat-label">🎬 Розваги та кіно</div>
 <a href="/ntn-live/"{active} aria-label="НТН дивитися онлайн">НТН</a>
 <a href="/1plus1-live/"{active} aria-label="1+1 Міжнар. дивитися онлайн">1+1 Міжнар.</a>
 <a href="/kvartal-tv-live/"{active} aria-label="Квартал ТВ дивитися онлайн">Квартал ТВ</a>
@@ -413,6 +504,34 @@ function startStream() {
 }
 
 overlay.addEventListener('click', startStream);
+
+// Scroll active channel into view on load
+(function(){
+  const active = document.querySelector('.ch-item-s.active');
+  if (active) active.scrollIntoView({block:'center', behavior:'auto'});
+})();
+
+// Sidebar search
+const chSearch = document.getElementById('ch-search');
+if (chSearch) {
+  chSearch.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    const items = document.querySelectorAll('.ch-item-s');
+    const labels = document.querySelectorAll('.cat-label-s');
+    items.forEach(el => {
+      el.style.display = (!q || el.dataset.name.toLowerCase().includes(q)) ? '' : 'none';
+    });
+    labels.forEach(label => {
+      let sib = label.nextElementSibling;
+      let hasVisible = false;
+      while (sib && !sib.classList.contains('cat-label-s')) {
+        if (sib.style.display !== 'none') hasVisible = true;
+        sib = sib.nextElementSibling;
+      }
+      label.style.display = hasVisible ? '' : 'none';
+    });
+  });
+}
 
 // Кнопка перевірки після вимкнення AdBlock
 document.getElementById('adblock-check-btn').addEventListener('click', function() {
