@@ -129,8 +129,10 @@
       display:flex;gap:6px;align-items:center}
     .breadcrumb a{color:var(--muted);transition:.15s}.breadcrumb a:hover{color:var(--accent2)}
     .breadcrumb span{color:var(--muted2)}
+    /* ── Page title (above grid) ── */
+    .page-title-wrap{max-width:1400px;margin:0 auto;padding:0 16px 12px}
     /* ── 3-column layout ── */
-    .page-wrap{max-width:1400px;margin:0 auto;padding:16px;display:grid;
+    .page-wrap{max-width:1400px;margin:0 auto;padding:0 16px 16px;display:grid;
       grid-template-columns:268px 1fr 288px;gap:16px;align-items:start}
     .main-col{display:flex;flex-direction:column;gap:16px}
     .side-col{display:flex;flex-direction:column;gap:16px}
@@ -275,6 +277,15 @@
   <span>Rybalka TV онлайн</span>
 </div>
 
+<div class="page-title-wrap">
+  <h1>Rybalka TV дивитися онлайн безкоштовно</h1>
+  <div class="channel-meta">
+    <span class="cat-badge">Тематичний</span>
+    <span class="live-badge"><span class="live-dot"></span>НАЖИВО</span>
+    <span>Пряма трансляція 24/7</span>
+  </div>
+</div>
+
 <div class="page-wrap">
 
   <!-- ── LEFT: Channel sidebar ── -->
@@ -332,14 +343,6 @@
 
   <!-- ── CENTER: Player + info ── -->
   <div class="main-col">
-    <div>
-      <h1>Rybalka TV дивитися онлайн безкоштовно</h1>
-      <div class="channel-meta">
-        <span class="cat-badge">Тематичний</span>
-        <span class="live-badge"><span class="live-dot"></span>НАЖИВО</span>
-        <span>Пряма трансляція 24/7</span>
-      </div>
-    </div>
 
     <div class="player-wrap" id="player-wrap">
       <video id="video" playsinline></video>
