@@ -1171,7 +1171,7 @@ const CHANNEL_GROUPS = [
 ];
 
 // ── State ─────────────────────────────────────────────────────
-let currentCh = null, hls = null, overlayTimer = null, userUnmuted = false;
+let currentCh = null, hls = null, overlayTimer = null, userUnmuted = false, _overlayCount = 0;
 
 // ── DOM ───────────────────────────────────────────────────────
 const video        = document.getElementById('video');
@@ -1261,15 +1261,13 @@ function openChannel(ch) {
   const activeItem = sidebar.querySelector('.ch-item.active');
   if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Reset overlay timer — показуємо макс. 2 рази за сесію
+  // Reset overlay timer — макс. 2 рази за завантаження сторінки
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-  const _shownKey = 'utv_overlay_shown';
-  const _shownCount = parseInt(sessionStorage.getItem(_shownKey) || '0');
-  if (_shownCount < 2) {
+  if (_overlayCount < 2) {
     overlayTimer = setTimeout(() => {
       tgOverlay.classList.add('show');
-      sessionStorage.setItem(_shownKey, String(_shownCount + 1));
+      _overlayCount++;
     }, 12000);
   }
 
