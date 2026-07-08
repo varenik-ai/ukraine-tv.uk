@@ -173,6 +173,13 @@
     .live-badge{display:flex;align-items:center;gap:5px;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--red)}
     .live-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .fs-btn{position:absolute;bottom:10px;right:10px;z-index:50;background:rgba(0,0,0,.65);
+      color:#fff;border:none;border-radius:5px;width:34px;height:34px;font-size:17px;cursor:pointer;
+      display:none;align-items:center;justify-content:center;transition:background .2s;line-height:1}
+    .fs-btn:hover{background:rgba(0,0,0,.9)}
+    .player-wrap:hover .fs-btn{display:flex}
+    :fullscreen .fs-btn,:-webkit-full-screen .fs-btn{display:flex;bottom:16px;right:16px}
+    :fullscreen video,:-webkit-full-screen video{width:100%;height:100%;object-fit:contain}
     .player-wrap{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;
       border:1px solid var(--border);aspect-ratio:16/9}
     video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -369,6 +376,7 @@
           <span class="tg-overlay-skip" id="overlay-skip">✕ Продовжити перегляд</span>
         </div>
       </div>
+      <button class="fs-btn" id="fs-btn" title="Повний екран">⛶</button>
     </div>
 
     <div class="player-status" id="status">Натисніть ▶ для запуску трансляції</div>
@@ -511,25 +519,25 @@ function scheduleOverlay() {
   }
 }
 
-// Fullscreen: якщо браузер переводить <video> у fullscreen,
-// перехоплюємо і переводимо player-wrap — тоді overlay (дочірній елемент) теж видно
+// Fullscreen через кастомну кнопку — розгортаємо player-wrap, а не <video>
 const _playerWrap = document.getElementById('player-wrap');
+const fsBtn = document.getElementById('fs-btn');
 
-function _requestFsPlayerWrap() {
-  if (_playerWrap.requestFullscreen) _playerWrap.requestFullscreen().catch(()=>{});
-  else if (_playerWrap.webkitRequestFullscreen) _playerWrap.webkitRequestFullscreen();
-}
-
-video.addEventListener('fullscreenchange', function() {
-  if (document.fullscreenElement === video) {
-    document.exitFullscreen().then(_requestFsPlayerWrap).catch(()=>{});
+fsBtn.addEventListener('click', function() {
+  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+  if (fsEl) {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } else {
+    if (_playerWrap.requestFullscreen) _playerWrap.requestFullscreen();
+    else if (_playerWrap.webkitRequestFullscreen) _playerWrap.webkitRequestFullscreen();
   }
 });
-video.addEventListener('webkitfullscreenchange', function() {
-  if (document.webkitFullscreenElement === video) {
-    document.webkitExitFullscreen();
-    setTimeout(_requestFsPlayerWrap, 50);
-  }
+
+document.addEventListener('fullscreenchange', function() {
+  fsBtn.textContent = document.fullscreenElement ? '✕' : '⛶';
+});
+document.addEventListener('webkitfullscreenchange', function() {
+  fsBtn.textContent = document.webkitFullscreenElement ? '✕' : '⛶';
 });
 
 // Запускаємо оверлей одразу при завантаженні сторінки
