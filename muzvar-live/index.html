@@ -490,7 +490,7 @@ function startStream() {
 
 overlay.addEventListener('click', startStream);
 
-// Telegram overlay — max 2 times per session
+// Telegram overlay — 1 раз за відвідування сторінки
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
@@ -499,17 +499,16 @@ overlaySkip.addEventListener('click', () => {
 function scheduleOverlay() {
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-  const _key = 'utv_overlay_shown';
-  const _count = parseInt(sessionStorage.getItem(_key) || '0');
-  if (_count < 2) {
+  const _key = 'utv_tg_muzvar-live';
+  if (!sessionStorage.getItem(_key)) {
     overlayTimer = setTimeout(() => {
       tgOverlay.classList.add('show');
-      sessionStorage.setItem(_key, String(_count + 1));
+      sessionStorage.setItem(_key, '1');
     }, 12000);
   }
 }
 
-// Запускаємо оверлей одразу при завантаженні сторінки (не чекаємо на старт відео)
+// Запускаємо оверлей одразу при завантаженні сторінки
 scheduleOverlay();
 
 // Scroll active channel into view on load
