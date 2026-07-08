@@ -1241,10 +1241,17 @@ function openChannel(ch) {
   const activeItem = sidebar.querySelector('.ch-item.active');
   if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Reset overlay timer
+  // Reset overlay timer — показуємо макс. 2 рази за сесію
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-  overlayTimer = setTimeout(() => tgOverlay.classList.add('show'), 12000);
+  const _shownKey = 'utv_overlay_shown';
+  const _shownCount = parseInt(sessionStorage.getItem(_shownKey) || '0');
+  if (_shownCount < 2) {
+    overlayTimer = setTimeout(() => {
+      tgOverlay.classList.add('show');
+      sessionStorage.setItem(_shownKey, String(_shownCount + 1));
+    }, 12000);
+  }
 
   loadStream(ch);
 }
@@ -1347,8 +1354,8 @@ document.addEventListener('fullscreenchange', () => {
 // ── Telegram overlay ──────────────────────────────────────────
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
-  // Show again after 5 minutes
-  overlayTimer = setTimeout(() => tgOverlay.classList.add('show'), 5 * 60 * 1000);
+  clearTimeout(overlayTimer);
+  // Більше не показуємо після закриття (ліміт 2 рази за сесію вже враховано)
 });
 
 // ── Player controls fade on mousemove ────────────────────────
@@ -1429,6 +1436,19 @@ overlaySkip.addEventListener('click', () => {
 
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
+
+// ── Popunder у фоновій вкладці ────────────────────────────────
+// Перехоплюємо window.open: відкриваємо нову вкладку і повертаємо фокус назад
+(function() {
+  const _origOpen = window.open;
+  window.open = function(url, name, specs) {
+    const w = _origOpen.call(window, url || 'about:blank', '_blank', specs);
+    if (w) {
+      try { window.focus(); } catch(e) {}
+    }
+    return w;
+  };
+})();
 
 // ── Anti-AdBlock — перевірка через власний ads.js ─────────────
 // AdBlock блокує /ads.js за списками фільтрів → window.adsLoaded не стає true
