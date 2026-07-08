@@ -272,7 +272,7 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: 900; flex-shrink: 0;
     }
-    .ch-name-s { font-size: 13px; font-weight: 600; flex: 1; }
+    .ch-name-s { font-size: 20px; font-weight: 600; flex: 1; }
     .ch-desc-s { font-size: 11px; color: var(--muted); }
     .live-indicator {
       width: 6px; height: 6px; background: var(--red);
@@ -629,9 +629,9 @@
       .logo { font-size: 20px; letter-spacing: 0; }
       .logo-flag { font-size: 22px; }
       .live-count { display: none; }
-      .tg-header-btn { padding: 7px 12px; font-size: 12px; gap: 5px; }
-      .tg-header-btn span { display: none; }
-      .tg-icon { font-size: 18px; }
+      .tg-header-btn { padding: 8px; font-size: 12px; gap: 5px; border-radius: 50%; width: 36px; height: 36px; justify-content: center; }
+      .tg-header-btn span:not(.tg-icon) { display: none; }
+      .tg-icon { font-size: 0; display: flex; align-items: center; justify-content: center; }
 
       .main-wrap { padding: 8px; gap: 8px; }
       .right-sidebar { flex-direction: column; }
@@ -684,7 +684,7 @@
       36 каналів
     </div>
     <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-header-btn">
-      <span class="tg-icon">✈️</span>
+      <span class="tg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg></span>
       <span>Дивитись в Telegram</span>
     </a>
   </div>
