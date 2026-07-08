@@ -464,6 +464,20 @@
     }
     .unmute-banner button:hover { background: var(--accent2); transform: scale(1.03); }
 
+    /* Банери над/під плеером */
+    .player-banner {
+      width: 100%; min-height: 90px; background: var(--bg2);
+      border-radius: var(--radius); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin: 6px 0;
+    }
+    .player-banner ins, .player-banner iframe, .player-banner > * {
+      display: block; width: 100%;
+    }
+    @media (max-width: 900px) {
+      .player-banner { min-height: 60px; }
+    }
+
     /* Status */
     .player-status {
       font-size: 13px; color: var(--muted); text-align: center;
@@ -843,6 +857,9 @@
   <!-- ─── CENTER: PLAYER ───────────────────────────────────── -->
   <div class="player-col">
 
+    <!-- Банер над плеером -->
+    <div class="player-banner" id="banner-above"></div>
+
     <!-- Player -->
     <div class="player-wrap" id="player-wrap">
       <video id="video" autoplay playsinline webkit-playsinline muted></video>
@@ -897,6 +914,9 @@
     <div class="player-status" id="player-status">
       Оберіть канал для перегляду
     </div>
+
+    <!-- Банер під плеером -->
+    <div class="player-banner" id="banner-below"></div>
 
 
     <!-- Channel info -->
@@ -1437,40 +1457,29 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Popunder: рекламне вікно відкривається ЗА нашим сайтом ──────
+// ── Monetag In-Page Push: зміщуємо вниз щоб не перекривав наш Telegram-блок ──
 (function() {
-  const _orig = window.open;
-  let _refocusPending = false;
+  const OUR_IDS = new Set(['adblock-overlay', 'ad-bait', 'tg-overlay',
+                            'player-wrap', 'header', 'sidebar', 'main-layout']);
 
-  // Якщо вікно втратило фокус через popup — повертаємо його назад
-  window.addEventListener('blur', function() {
-    if (_refocusPending) {
-      _refocusPending = false;
-      // requestAnimationFrame дає браузеру завершити відкриття вікна
-      // перед тим як ми повертаємо фокус
-      requestAnimationFrame(function() {
-        try { window.focus(); } catch(e) {}
-        setTimeout(function() { try { window.focus(); } catch(e) {} }, 50);
-      });
-    }
-  });
+  function nudgeMonetagAds() {
+    document.querySelectorAll('body > div, body > aside, body > section').forEach(function(el) {
+      if (OUR_IDS.has(el.id)) return;
+      var cs = window.getComputedStyle(el);
+      if (cs.position !== 'fixed') return;
+      var right = parseFloat(cs.right);
+      var top   = parseFloat(cs.top);
+      // Якщо елемент прикріплений до правого краю і знаходиться у верхній третині — зміщуємо
+      if (!isNaN(right) && right < 120 && !isNaN(top) && top < 300) {
+        el.style.setProperty('top', '320px', 'important');
+      }
+    });
+  }
 
-  window.open = function(url, name, specs) {
-    const sw = screen.availWidth  || screen.width  || 1280;
-    const sh = screen.availHeight || screen.height || 800;
-    // Завжди відкриваємо як вікно з розмірами (не вкладку)
-    const popup = _orig.call(window,
-      url || 'about:blank',
-      '_blank',
-      'width=' + sw + ',height=' + sh + ',left=0,top=0,' +
-      'scrollbars=yes,resizable=yes,menubar=no,toolbar=no,location=no'
-    );
-    if (popup) {
-      _refocusPending = true;
-      try { popup.blur(); } catch(e) {}
-    }
-    return popup;
-  };
+  // Спостерігаємо за появою нових елементів від Monetag
+  new MutationObserver(nudgeMonetagAds).observe(document.body, { childList: true });
+  setTimeout(nudgeMonetagAds, 800);
+  setTimeout(nudgeMonetagAds, 2500);
 })();
 
 // ── Anti-AdBlock — перевірка через власний ads.js ─────────────
