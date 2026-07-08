@@ -214,10 +214,8 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .tg-overlay{position:absolute;inset:0;z-index:40;background:rgba(8,8,20,.88);backdrop-filter:blur(4px);
       display:none;align-items:center;justify-content:center;animation:fadeIn .4s ease}
-    video:-webkit-full-screen ~ .tg-overlay,
-    video:fullscreen ~ .tg-overlay,
     :fullscreen .tg-overlay,
-    :-webkit-full-screen .tg-overlay{position:fixed;inset:0;z-index:2147483647}
+    :-webkit-full-screen .tg-overlay{position:absolute;inset:0;z-index:2147483647}
     .tg-overlay.show{display:flex}
     .tg-overlay-card{text-align:center;padding:28px 24px;max-width:300px}
     .tg-overlay-icon{font-size:48px;margin-bottom:12px}
@@ -513,18 +511,26 @@ function scheduleOverlay() {
   }
 }
 
-// Fullscreen: переносимо overlay всередину fullscreen-елемента
+// Fullscreen: якщо браузер переводить <video> у fullscreen,
+// перехоплюємо і переводимо player-wrap — тоді overlay (дочірній елемент) теж видно
 const _playerWrap = document.getElementById('player-wrap');
-function _onFsChange() {
-  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-  if (fsEl) {
-    fsEl.appendChild(tgOverlay);
-  } else {
-    _playerWrap.appendChild(tgOverlay);
-  }
+
+function _requestFsPlayerWrap() {
+  if (_playerWrap.requestFullscreen) _playerWrap.requestFullscreen().catch(()=>{});
+  else if (_playerWrap.webkitRequestFullscreen) _playerWrap.webkitRequestFullscreen();
 }
-document.addEventListener('fullscreenchange', _onFsChange);
-document.addEventListener('webkitfullscreenchange', _onFsChange);
+
+video.addEventListener('fullscreenchange', function() {
+  if (document.fullscreenElement === video) {
+    document.exitFullscreen().then(_requestFsPlayerWrap).catch(()=>{});
+  }
+});
+video.addEventListener('webkitfullscreenchange', function() {
+  if (document.webkitFullscreenElement === video) {
+    document.webkitExitFullscreen();
+    setTimeout(_requestFsPlayerWrap, 50);
+  }
+});
 
 // Запускаємо оверлей одразу при завантаженні сторінки
 scheduleOverlay();
