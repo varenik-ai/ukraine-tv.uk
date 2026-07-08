@@ -1437,28 +1437,39 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildSidebar();
 
-// ── Popunder: відкриваємо рекламу у новому ВІКНІ, повертаємо фокус на наш сайт ──
-// window.open із розмірами → браузер відкриває вікно (не вкладку)
-// → popup.blur() + window.focus() → наш сайт залишається активним
+// ── Popunder: рекламне вікно відкривається ЗА нашим сайтом ──────
 (function() {
   const _orig = window.open;
-  window.open = function(url, name, specs) {
-    // Якщо немає розмірів (тобто Monetag відкриває вкладку) — перехоплюємо
-    if (!specs || !specs.includes('width')) {
-      const sw = screen.availWidth  || 1280;
-      const sh = screen.availHeight || 800;
-      const popup = _orig.call(window,
-        url || 'about:blank',
-        '_blank',
-        'width=' + sw + ',height=' + sh + ',left=0,top=0,scrollbars=yes,resizable=yes'
-      );
-      if (popup) {
-        try { popup.blur(); } catch(e) {}
+  let _refocusPending = false;
+
+  // Якщо вікно втратило фокус через popup — повертаємо його назад
+  window.addEventListener('blur', function() {
+    if (_refocusPending) {
+      _refocusPending = false;
+      // requestAnimationFrame дає браузеру завершити відкриття вікна
+      // перед тим як ми повертаємо фокус
+      requestAnimationFrame(function() {
         try { window.focus(); } catch(e) {}
-      }
-      return popup;
+        setTimeout(function() { try { window.focus(); } catch(e) {} }, 50);
+      });
     }
-    return _orig.call(window, url, name, specs);
+  });
+
+  window.open = function(url, name, specs) {
+    const sw = screen.availWidth  || screen.width  || 1280;
+    const sh = screen.availHeight || screen.height || 800;
+    // Завжди відкриваємо як вікно з розмірами (не вкладку)
+    const popup = _orig.call(window,
+      url || 'about:blank',
+      '_blank',
+      'width=' + sw + ',height=' + sh + ',left=0,top=0,' +
+      'scrollbars=yes,resizable=yes,menubar=no,toolbar=no,location=no'
+    );
+    if (popup) {
+      _refocusPending = true;
+      try { popup.blur(); } catch(e) {}
+    }
+    return popup;
   };
 })();
 
