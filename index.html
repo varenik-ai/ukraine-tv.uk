@@ -1271,6 +1271,8 @@ function _stopPlayTimer() {
   if (_playTimer) { clearInterval(_playTimer); _playTimer = null; }
 }
 function _lockPlayer() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
   video.pause();
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
@@ -1279,6 +1281,10 @@ function _lockPlayer() {
 video.addEventListener('play', _startPlayTimer);
 video.addEventListener('pause', _stopPlayTimer);
 video.addEventListener('ended', _stopPlayTimer);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) _stopPlayTimer();
+  else if (!video.paused) _startPlayTimer();
+});
 const statusEl     = document.getElementById('player-status');
 const infoCard     = document.getElementById('channel-info-card');
 const ciTitle      = document.getElementById('ci-title');

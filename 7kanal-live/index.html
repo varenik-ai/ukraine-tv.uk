@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>7 Канал дивитися онлайн безкоштовно — пряма трансляція | Україна ТВ</title>
-  <meta name="description" content="7 Канал онлайн — Регіональний канал Одеси. Дивіться 7 Канал безкоштовно у прямому ефірі без реєстрації. Пряма трансляція 24/7 на ukraine-tv.uk."/>
+  <meta name="description" content="7 Канал онлайн — Регіональний канал Одеси. Дивіться 7 Канал безкоштовно у прямому ефірі без реєстрації — для українців у Великобританії та Лондоні. Пряма трансляція 24/7 на ukraine-tv.uk."/>
   <meta name="keywords" content="7 Канал онлайн, 7 Канал дивитися, 7 Канал пряма трансляція, 7 Канал безкоштовно, 7 канал live, українське тв онлайн"/>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
   <link rel="canonical" href="https://ukraine-tv.uk/7kanal-live/"/>
@@ -561,6 +561,8 @@ function _stopPlayTimer() {
   if (_playTimer) { clearInterval(_playTimer); _playTimer = null; }
 }
 function _lockPlayer() {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
   video.pause();
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
@@ -569,6 +571,10 @@ function _lockPlayer() {
 video.addEventListener('play', _startPlayTimer);
 video.addEventListener('pause', _stopPlayTimer);
 video.addEventListener('ended', _stopPlayTimer);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) _stopPlayTimer();
+  else if (!video.paused) _startPlayTimer();
+});
 
 let isAdBlocked = false;
 
