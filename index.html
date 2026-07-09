@@ -524,6 +524,23 @@
     }
     .tg-overlay-skip:hover { color: rgba(255,255,255,.7); }
 
+    /* ── LOCK OVERLAY (5 min paywall) ───────────────────────────── */
+    .lock-overlay { position: absolute; inset: 0; z-index: 55; background: rgba(6,6,16,.97); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; animation: fadeIn .4s ease; }
+    .lock-overlay.show { display: flex; }
+    :fullscreen .lock-overlay, :-webkit-full-screen .lock-overlay { position: absolute; inset: 0; z-index: 2147483648; }
+    .lock-overlay-card { text-align: center; padding: 28px 24px; max-width: 320px; }
+    .lock-overlay-icon { font-size: 52px; margin-bottom: 12px; }
+    .lock-overlay-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; line-height: 1.3; }
+    .lock-overlay-desc { font-size: 13px; color: rgba(255,255,255,.55); margin-bottom: 22px; line-height: 1.6; }
+    .lock-overlay-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--tg-color); color: #fff;
+      padding: 14px 28px; border-radius: 28px; font-size: 15px; font-weight: 800; text-decoration: none;
+      transition: .2s; margin-bottom: 12px; }
+    .lock-overlay-btn:hover { background: #1a8dc5; transform: translateY(-1px); }
+    .lock-overlay-refresh { display: block; font-size: 12px; color: rgba(255,255,255,.25); cursor: pointer;
+      background: none; border: none; padding: 6px 0; font-family: inherit; transition: .2s; }
+    .lock-overlay-refresh:hover { color: rgba(255,255,255,.55); }
+
     /* ── ANTI-ADBLOCK ───────────────────────────────────────────── */
     #adblock-overlay {
       display: none; position: fixed; inset: 0; z-index: 99999;
@@ -747,6 +764,7 @@
 
       /* Оверлей на весь экран на мобиле */
       .tg-overlay { position: fixed; z-index: 9999; }
+      .lock-overlay { position: fixed; z-index: 10000; }
       .tg-overlay-card { padding: 24px 20px; max-width: 300px; }
       .tg-overlay-icon { font-size: 40px; margin-bottom: 10px; }
       .tg-overlay-title { font-size: 18px; margin-bottom: 6px; }
@@ -932,6 +950,16 @@
             ✈️ Відкрити в Telegram
           </a>
           <span class="tg-overlay-skip" id="overlay-skip">✕ Продовжити перегляд</span>
+        </div>
+      </div>
+      <!-- Lock overlay: shown after 5 minutes of playback -->
+      <div class="lock-overlay" id="lock-overlay">
+        <div class="lock-overlay-card">
+          <div class="lock-overlay-icon">🔒</div>
+          <div class="lock-overlay-title">Безкоштовний перегляд завершено</div>
+          <div class="lock-overlay-desc">Підпишіться на Telegram-канал, щоб продовжити перегляд усіх 36 каналів безкоштовно та без обмежень.</div>
+          <a href="https://t.me/UkraineTVHub" target="_blank" class="lock-overlay-btn">✈️ Підписатися та дивитися</a>
+          <button onclick="window.location.reload()" class="lock-overlay-refresh">Я підписався — оновити сторінку</button>
         </div>
       </div>
     </div>
@@ -1213,6 +1241,35 @@ const unmuteBtn    = document.getElementById('unmute-btn');
 const unmuteBanner = document.getElementById('unmute-banner');
 const tgOverlay    = document.getElementById('tg-overlay');
 const overlaySkip  = document.getElementById('overlay-skip');
+const lockOverlay  = document.getElementById('lock-overlay');
+
+// ── 5-minute free playback limit ──────────────────────────────
+const MAX_FREE_SECONDS = 300;
+let _playSeconds = 0;
+let _playTimer = null;
+
+function _startPlayTimer() {
+  if (_playTimer) return;
+  _playTimer = setInterval(() => {
+    _playSeconds++;
+    if (_playSeconds >= MAX_FREE_SECONDS) {
+      clearInterval(_playTimer); _playTimer = null;
+      _lockPlayer();
+    }
+  }, 1000);
+}
+function _stopPlayTimer() {
+  if (_playTimer) { clearInterval(_playTimer); _playTimer = null; }
+}
+function _lockPlayer() {
+  video.pause();
+  tgOverlay.classList.remove('show');
+  clearTimeout(overlayTimer);
+  lockOverlay.classList.add('show');
+}
+video.addEventListener('play', _startPlayTimer);
+video.addEventListener('pause', _stopPlayTimer);
+video.addEventListener('ended', _stopPlayTimer);
 const statusEl     = document.getElementById('player-status');
 const infoCard     = document.getElementById('channel-info-card');
 const ciTitle      = document.getElementById('ci-title');
