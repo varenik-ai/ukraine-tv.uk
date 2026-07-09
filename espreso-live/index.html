@@ -104,7 +104,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
-  <script src="/ads.js" onerror="window.adsLoaded=false"></script>
+  <script src="/player-config.js" onerror="window._playerReady=false"></script>
   <script>(function(s){s.dataset.zone='11258077',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <script>(function(s){s.dataset.zone='11258093',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <style>
@@ -222,6 +222,21 @@
     .all-link{display:block;text-align:center;margin-top:10px;font-size:13px;color:var(--muted);
       padding:8px;border-radius:8px;border:1px solid var(--border);transition:.15s}
     .all-link:hover{color:var(--accent2);border-color:var(--accent2)}
+    /* Pre-roll overlay */
+    .preroll-overlay{position:absolute;inset:0;z-index:45;background:rgba(8,8,20,.93);backdrop-filter:blur(6px);
+      display:none;align-items:center;justify-content:center;animation:fadeIn .3s ease}
+    .preroll-overlay.show{display:flex}
+    .preroll-card{text-align:center;padding:24px 20px;max-width:320px}
+    .preroll-logo{font-size:44px;margin-bottom:10px}
+    .preroll-title{font-size:17px;font-weight:800;margin-bottom:6px;line-height:1.3}
+    .preroll-desc{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:16px}
+    .preroll-btn{display:inline-flex;align-items:center;gap:7px;background:var(--tg-color);color:#fff;
+      padding:11px 22px;border-radius:24px;font-size:14px;font-weight:700;text-decoration:none;
+      transition:.2s;margin-bottom:14px}
+    .preroll-btn:hover{background:#1a8dc5}
+    .preroll-skip-wrap{min-height:22px}
+    .preroll-skip{font-size:12px;color:rgba(255,255,255,.35);cursor:default;transition:.3s}
+    .preroll-skip.ready{color:rgba(255,255,255,.65);cursor:pointer;text-decoration:underline}
     /* Telegram overlay */
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .tg-overlay{position:absolute;inset:0;z-index:40;background:rgba(8,8,20,.88);backdrop-filter:blur(4px);
@@ -375,6 +390,18 @@
         <div class="play-btn">▶</div>
         <div style="color:var(--muted);font-size:14px" aria-label="Еспресо ТВ онлайн трансляція — натисніть для перегляду">Еспресо ТВ — натисніть для перегляду</div>
       </div>
+      <!-- Pre-roll overlay -->
+      <div class="preroll-overlay" id="preroll-overlay">
+        <div class="preroll-card">
+          <div class="preroll-logo">✈️</div>
+          <div class="preroll-title">Усі 36 каналів у Telegram — безкоштовно</div>
+          <div class="preroll-desc">На iOS, Android і Desktop. Без реклами.</div>
+          <a href="https://t.me/UkraineTVHub" target="_blank" class="preroll-btn">✈️ Відкрити @UkraineTVHub</a>
+          <div class="preroll-skip-wrap">
+            <span class="preroll-skip" id="preroll-skip">Пропустити через <span id="preroll-count">8</span> сек</span>
+          </div>
+        </div>
+      </div>
       <!-- Telegram overlay -->
       <div class="tg-overlay" id="tg-overlay">
         <div class="tg-overlay-card">
@@ -478,7 +505,7 @@ let hls = null, overlayTimer = null;
 let isAdBlocked = false;
 
 function checkAdBlock() {
-  if (window.adsLoaded !== true) return true;
+  if (window._playerReady !== true) return true;
   var bait = document.getElementById('ad-bait');
   if (bait) {
     var cs = window.getComputedStyle(bait);
@@ -518,14 +545,58 @@ function startStream() {
   }
 }
 
-overlay.addEventListener('click', startStream);
+// Pre-roll: показується перед першим запуском потоку
+const prerollOverlay = document.getElementById('preroll-overlay');
+const prerollSkip = document.getElementById('preroll-skip');
+const prerollCount = document.getElementById('preroll-count');
+let _prerollShown = false;
 
-// Telegram overlay — макс. 2 рази за завантаження сторінки
+function showPreroll(callback) {
+  if (_prerollShown) { callback(); return; }
+  _prerollShown = true;
+  prerollOverlay.classList.add('show');
+  let sec = 8;
+  const tick = setInterval(() => {
+    sec--;
+    if (prerollCount) prerollCount.textContent = sec;
+    if (sec <= 0) {
+      clearInterval(tick);
+      if (prerollSkip) {
+        prerollSkip.textContent = '▶ Дивитися зараз';
+        prerollSkip.classList.add('ready');
+      }
+    }
+  }, 1000);
+  // Після 5 сек кнопка стає активною (клікабельною)
+  setTimeout(() => {
+    if (prerollSkip) prerollSkip.classList.add('ready');
+  }, 5000);
+  // Автозапуск після 8 сек
+  const autoTimer = setTimeout(() => {
+    prerollOverlay.classList.remove('show');
+    callback();
+  }, 8000);
+  if (prerollSkip) {
+    prerollSkip.addEventListener('click', function handler() {
+      if (!prerollSkip.classList.contains('ready')) return;
+      clearInterval(tick);
+      clearTimeout(autoTimer);
+      prerollOverlay.classList.remove('show');
+      prerollSkip.removeEventListener('click', handler);
+      callback();
+    });
+  }
+}
+
+overlay.addEventListener('click', () => showPreroll(startStream));
+
+// Telegram overlay — макс. 2 рази за завантаження сторінки, пауза відео
 let _overlayCount = 0;
 
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
+  video.play().catch(()=>{});
 });
 
 function scheduleOverlay() {
@@ -535,6 +606,7 @@ function scheduleOverlay() {
     overlayTimer = setTimeout(() => {
       tgOverlay.classList.add('show');
       _overlayCount++;
+      video.pause();
     }, 12000);
   }
 }
@@ -608,11 +680,11 @@ if (chSearch) {
 document.getElementById('adblock-check-btn').addEventListener('click', function() {
   const btn = this;
   btn.textContent = '⏳ Перевірка...';
-  window.adsLoaded = undefined;
+  window._playerReady = undefined;
   const s = document.createElement('script');
-  s.src = '/ads.js?t=' + Date.now();
+  s.src = '/player-config.js?t=' + Date.now();
   s.onload = () => {
-    if (window.adsLoaded === true) {
+    if (window._playerReady === true) {
       document.getElementById('adblock-overlay').style.display = 'none';
       isAdBlocked = false;
       startStream();
