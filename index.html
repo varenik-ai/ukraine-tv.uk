@@ -1243,16 +1243,25 @@ const tgOverlay    = document.getElementById('tg-overlay');
 const overlaySkip  = document.getElementById('overlay-skip');
 const lockOverlay  = document.getElementById('lock-overlay');
 
-// ── 5-minute free playback limit ──────────────────────────────
+// ── 5-minute free playback limit (persists across reloads via localStorage) ──
 const MAX_FREE_SECONDS = 300;
-let _playSeconds = 0;
+const LS_KEY = 'wtotal';
 let _playTimer = null;
+
+function _getWatched() { return parseInt(localStorage.getItem(LS_KEY) || '0', 10); }
+
+(function _checkOnLoad() {
+  if (_getWatched() >= MAX_FREE_SECONDS) {
+    video.addEventListener('play', () => { setTimeout(_lockPlayer, 50); }, {once:true});
+  }
+})();
 
 function _startPlayTimer() {
   if (_playTimer) return;
   _playTimer = setInterval(() => {
-    _playSeconds++;
-    if (_playSeconds >= MAX_FREE_SECONDS) {
+    const t = _getWatched() + 1;
+    localStorage.setItem(LS_KEY, t);
+    if (t >= MAX_FREE_SECONDS) {
       clearInterval(_playTimer); _playTimer = null;
       _lockPlayer();
     }

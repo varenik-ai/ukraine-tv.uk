@@ -175,6 +175,7 @@
     .tg-card-live{display:none;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--red);margin-bottom:12px}
     .tg-card-live-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;flex-shrink:0}
     .tg-card-mob{display:none}
+    @keyframes tgPulse{0%,100%{box-shadow:0 0 0 0 rgba(34,158,217,.5)}70%{box-shadow:0 0 0 10px rgba(34,158,217,0)}}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
     .fs-btn{position:absolute;bottom:10px;right:10px;z-index:50;background:rgba(0,0,0,.65);
       color:#fff;border:none;border-radius:5px;width:34px;height:34px;font-size:17px;cursor:pointer;
@@ -214,6 +215,7 @@
     .tg-card a{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--tg-color);
       color:#fff;padding:10px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;transition:.2s}
     .tg-card a:hover{background:#1a8dc5}
+    .tg-card-mob .tg-card a{animation:tgPulse 2s infinite;font-size:15px;padding:13px 10px}
     .sim-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
     .sim-box h3{font-size:14px;font-weight:800;margin-bottom:12px;color:var(--muted)}
     .sim-link{display:block;padding:9px 12px;border-radius:8px;font-size:14px;font-weight:600;
@@ -530,16 +532,26 @@ const overlaySkip = document.getElementById('overlay-skip');
 const lockOverlay = document.getElementById('lock-overlay');
 let hls = null, overlayTimer = null;
 
-// ── 5-minute free playback limit ──────────────────────────────
+// ── 5-minute free playback limit (persists across reloads via localStorage) ──
 const MAX_FREE_SECONDS = 300;
-let _playSeconds = 0;
+const LS_KEY = 'wtotal';
 let _playTimer = null;
+
+function _getWatched() { return parseInt(localStorage.getItem(LS_KEY) || '0', 10); }
+
+(function _checkOnLoad() {
+  if (_getWatched() >= MAX_FREE_SECONDS) {
+    // Already locked from previous session — show lock immediately on play
+    video.addEventListener('play', () => { setTimeout(_lockPlayer, 50); }, {once:true});
+  }
+})();
 
 function _startPlayTimer() {
   if (_playTimer) return;
   _playTimer = setInterval(() => {
-    _playSeconds++;
-    if (_playSeconds >= MAX_FREE_SECONDS) {
+    const t = _getWatched() + 1;
+    localStorage.setItem(LS_KEY, t);
+    if (t >= MAX_FREE_SECONDS) {
       clearInterval(_playTimer); _playTimer = null;
       _lockPlayer();
     }
