@@ -292,6 +292,16 @@
     .tg-header-btn:hover { background: #1a8dc5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,158,217,.4); }
     .tg-icon { font-size: 16px; }
 
+    .lang-switcher { display: flex; align-items: center; gap: 5px; }
+    .lang-link {
+      font-size: 12px; color: var(--muted);
+      padding: 4px 9px; border-radius: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      transition: .15s; font-weight: 600;
+    }
+    .lang-link:hover { color: var(--text); border-color: var(--border2); }
+    .lang-link.active { color: var(--accent2); border-color: var(--accent); }
+
     /* ── AD LEADERBOARD ─────────────────────────────────────────── */
     .ad-leaderboard {
       background: var(--bg2); border-bottom: 1px solid var(--border);
@@ -782,6 +792,7 @@
       .ad-below { display: none; }
 
       nav { display: none; }
+      .lang-switcher { display: none; }
     }
 
     /* ── MOBILE PORTRAIT ─────────────────────────────────────────── */
@@ -854,6 +865,11 @@
   </nav>
 
   <div class="header-right">
+    <div class="lang-switcher">
+      <a href="https://ukraine-tv.uk/" class="lang-link active">🇺🇦 UK</a>
+      <a href="https://ukraine-tv.uk/en/" class="lang-link">🇬🇧 EN</a>
+      <a href="https://ukraine-tv.uk/ru/" class="lang-link">🇷🇺 RU</a>
+    </div>
     <div class="live-count">
       <div class="live-dot-sm"></div>
       36 каналів
