@@ -535,13 +535,13 @@ function hideAdBlockOverlay() {
 }
 document.getElementById('adblock-check-btn').addEventListener('click', () => {
   const bait = document.getElementById('ad-bait');
-  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0 || bait.offsetParent === null) {
+  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0) {
     showAdBlockOverlay();
   } else { hideAdBlockOverlay(); }
 });
 setTimeout(() => {
   const bait = document.getElementById('ad-bait');
-  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0 || bait.offsetParent === null) {
+  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0) {
     showAdBlockOverlay();
   }
 }, 2000);
