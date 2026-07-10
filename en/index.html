@@ -25,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+  <script src="/player-config.js" onerror="window._playerReady=false"></script>
   <!-- ═ Monetag In-Page Push ═ -->
   <script>(function(s){s.dataset.zone='11258077',s.src='https://nap5k.com/tag.min.js'})([document.documentElement,document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <!-- ═ Monetag Vignette ═ -->
@@ -124,7 +125,7 @@
     .adblock-icon{font-size:52px;margin-bottom:14px}
     .adblock-title{font-size:20px;font-weight:800;margin-bottom:10px}
     .adblock-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px}
-    .adblock-btn{display:block;background:var(--accent2);color:#fff;padding:12px 24px;border-radius:24px;font-weight:700;font-size:15px;border:none;width:100%;cursor:pointer;margin-bottom:10px;transition:.2s}
+    .adblock-btn{display:block;background:var(--accent2);color:#fff;padding:12px 24px;border-radius:24px;font-weight:700;font-size:15px;border:none;width:100%;cursor:pointer;margin-bottom:10px;transition:.2s;font-family:inherit}
     .adblock-btn:hover{background:#0077ee}
     .right-sidebar{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px;height:fit-content}
     .tg-cta-card{background:linear-gradient(135deg,#0d1f3c,#0a2a3f);border:1px solid rgba(34,158,217,.25);border-radius:var(--radius);padding:20px;text-align:center;position:relative;overflow:hidden}
@@ -526,25 +527,54 @@ function initCustomScroll() {
   updateThumb();
 }
 
-// Anti-adblock
-function showAdBlockOverlay() {
-  document.getElementById('adblock-overlay').style.display = 'flex';
-}
-function hideAdBlockOverlay() {
-  document.getElementById('adblock-overlay').style.display = 'none';
-}
-document.getElementById('adblock-check-btn').addEventListener('click', () => {
+
+// ── Anti-AdBlock (same logic as Ukrainian main page) ──────────
+// Primary detection: AdBlock blocks /player-config.js → _playerReady stays undefined
+// Secondary: checks bait element via getComputedStyle
+let isAdBlocked = false;
+let pendingChannel = null;
+
+function checkAdBlock() {
+  if (window._playerReady !== true) return true;
   const bait = document.getElementById('ad-bait');
-  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0) {
-    showAdBlockOverlay();
-  } else { hideAdBlockOverlay(); }
-});
-setTimeout(() => {
-  const bait = document.getElementById('ad-bait');
-  if (!bait || bait.offsetWidth === 0 || bait.offsetHeight === 0) {
-    showAdBlockOverlay();
+  if (bait) {
+    const cs = window.getComputedStyle(bait);
+    if (bait.offsetHeight === 0 || cs.display === 'none' || cs.visibility === 'hidden') return true;
   }
-}, 2000);
+  return false;
+}
+function showAdBlockOverlay() { document.getElementById('adblock-overlay').style.display = 'flex'; }
+function hideAdBlockOverlay() { document.getElementById('adblock-overlay').style.display = 'none'; }
+
+document.getElementById('adblock-check-btn').addEventListener('click', function() {
+  const btn = this;
+  btn.textContent = '⏳ Checking...';
+  window._playerReady = undefined;
+  const s = document.createElement('script');
+  s.src = '/player-config.js?t=' + Date.now();
+  s.onload = () => {
+    if (window._playerReady === true) {
+      hideAdBlockOverlay(); isAdBlocked = false;
+      if (pendingChannel) { openChannel(pendingChannel); pendingChannel = null; }
+    } else {
+      btn.textContent = '❌ AdBlock still active — try again';
+      setTimeout(() => { btn.textContent = '✅ I disabled AdBlock — check'; }, 2500);
+    }
+  };
+  s.onerror = () => {
+    btn.textContent = '❌ AdBlock still active — try again';
+    setTimeout(() => { btn.textContent = '✅ I disabled AdBlock — check'; }, 2500);
+  };
+  document.head.appendChild(s);
+});
+
+// Patch openChannel: check adblock before playing
+const _origOpenChannel = openChannel;
+openChannel = function(ch) {
+  isAdBlocked = checkAdBlock();
+  if (isAdBlocked) { pendingChannel = ch; showAdBlockOverlay(); return; }
+  _origOpenChannel(ch);
+};
 
 buildSidebar();
 </script>
