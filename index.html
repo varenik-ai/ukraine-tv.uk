@@ -363,6 +363,23 @@
     }
     .cat-label:first-child { padding-top: 0; }
 
+    /* ── POPULAR & RECENT SECTIONS ──────────────────────────────── */
+    .sidebar-mini-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5px; padding: 0 0 4px; flex-shrink: 0;
+    }
+    .mini-ch-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 8px; cursor: pointer;
+      transition: all .15s; font-size: 12px; font-weight: 700;
+      color: var(--text); line-height: 1.3;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .mini-ch-card:hover { border-color: var(--border2); background: var(--bg2); }
+    .mini-ch-card.active { border-color: rgba(0,119,255,.4); background: rgba(0,91,187,.12); color: var(--accent2); }
+    .mini-ch-dot { width: 5px; height: 5px; background: var(--red); border-radius: 50%;
+                   animation: pulse 1.2s infinite; flex-shrink: 0; }
+
     .ch-item {
       display: flex; align-items: center; gap: 10px;
       padding: 9px 10px; border-radius: 10px;
@@ -523,23 +540,6 @@
       cursor: pointer; margin-top: 10px; transition: color .2s;
     }
     .tg-overlay-skip:hover { color: rgba(255,255,255,.7); }
-
-    /* ── LOCK OVERLAY (5 min paywall) ───────────────────────────── */
-    .lock-overlay { position: absolute; inset: 0; z-index: 55; background: rgba(6,6,16,.97); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; animation: fadeIn .4s ease; }
-    .lock-overlay.show { display: flex; }
-    :fullscreen .lock-overlay, :-webkit-full-screen .lock-overlay { position: absolute; inset: 0; z-index: 2147483648; }
-    .lock-overlay-card { text-align: center; padding: 28px 24px; max-width: 320px; }
-    .lock-overlay-icon { font-size: 52px; margin-bottom: 12px; }
-    .lock-overlay-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; line-height: 1.3; }
-    .lock-overlay-desc { font-size: 13px; color: rgba(255,255,255,.55); margin-bottom: 22px; line-height: 1.6; }
-    .lock-overlay-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--tg-color); color: #fff;
-      padding: 14px 28px; border-radius: 28px; font-size: 15px; font-weight: 800; text-decoration: none;
-      transition: .2s; margin-bottom: 12px; }
-    .lock-overlay-btn:hover { background: #1a8dc5; transform: translateY(-1px); }
-    .lock-overlay-refresh { display: block; font-size: 12px; color: rgba(255,255,255,.25); cursor: pointer;
-      background: none; border: none; padding: 6px 0; font-family: inherit; transition: .2s; }
-    .lock-overlay-refresh:hover { color: rgba(255,255,255,.55); }
 
     /* ── ANTI-ADBLOCK ───────────────────────────────────────────── */
     #adblock-overlay {
@@ -764,7 +764,6 @@
 
       /* Оверлей на весь экран на мобиле */
       .tg-overlay { position: fixed; z-index: 9999; }
-      .lock-overlay { position: fixed; z-index: 10000; }
       .tg-overlay-card { padding: 24px 20px; max-width: 300px; }
       .tg-overlay-icon { font-size: 40px; margin-bottom: 10px; }
       .tg-overlay-title { font-size: 18px; margin-bottom: 6px; }
@@ -950,16 +949,6 @@
             ✈️ Відкрити в Telegram
           </a>
           <span class="tg-overlay-skip" id="overlay-skip">✕ Продовжити перегляд</span>
-        </div>
-      </div>
-      <!-- Lock overlay: shown after 5 minutes of playback -->
-      <div class="lock-overlay" id="lock-overlay">
-        <div class="lock-overlay-card">
-          <div class="lock-overlay-icon">🔒</div>
-          <div class="lock-overlay-title">Безкоштовний перегляд завершено</div>
-          <div class="lock-overlay-desc">Підпишіться на Telegram-канал, щоб продовжити перегляд усіх 36 каналів безкоштовно та без обмежень.</div>
-          <a href="https://t.me/UkraineTVHub" target="_blank" class="lock-overlay-btn">✈️ Підписатися та дивитися</a>
-          <button onclick="window.location.reload()" class="lock-overlay-refresh">Я підписався — оновити сторінку</button>
         </div>
       </div>
     </div>
@@ -1241,50 +1230,6 @@ const unmuteBtn    = document.getElementById('unmute-btn');
 const unmuteBanner = document.getElementById('unmute-banner');
 const tgOverlay    = document.getElementById('tg-overlay');
 const overlaySkip  = document.getElementById('overlay-skip');
-const lockOverlay  = document.getElementById('lock-overlay');
-
-// ── 5-minute free playback limit (persists across reloads via localStorage) ──
-const MAX_FREE_SECONDS = 300;
-const LS_KEY = 'wtotal';
-let _playTimer = null;
-
-function _getWatched() { return parseInt(localStorage.getItem(LS_KEY) || '0', 10); }
-
-(function _checkOnLoad() {
-  if (_getWatched() >= MAX_FREE_SECONDS) {
-    video.addEventListener('play', () => { setTimeout(_lockPlayer, 50); }, {once:true});
-  }
-})();
-
-function _startPlayTimer() {
-  if (_playTimer) return;
-  _playTimer = setInterval(() => {
-    const t = _getWatched() + 1;
-    localStorage.setItem(LS_KEY, t);
-    if (t >= MAX_FREE_SECONDS) {
-      clearInterval(_playTimer); _playTimer = null;
-      _lockPlayer();
-    }
-  }, 1000);
-}
-function _stopPlayTimer() {
-  if (_playTimer) { clearInterval(_playTimer); _playTimer = null; }
-}
-function _lockPlayer() {
-  if (document.fullscreenElement) document.exitFullscreen();
-  else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-  video.pause();
-  tgOverlay.classList.remove('show');
-  clearTimeout(overlayTimer);
-  lockOverlay.classList.add('show');
-}
-video.addEventListener('play', _startPlayTimer);
-video.addEventListener('pause', _stopPlayTimer);
-video.addEventListener('ended', _stopPlayTimer);
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) _stopPlayTimer();
-  else if (!video.paused) _startPlayTimer();
-});
 const statusEl     = document.getElementById('player-status');
 const infoCard     = document.getElementById('channel-info-card');
 const ciTitle      = document.getElementById('ci-title');
@@ -1292,6 +1237,50 @@ const ciDesc       = document.getElementById('ci-desc');
 const ciTags       = document.getElementById('ci-tags');
 const searchInput  = document.getElementById('search-input');
 const sidebar      = document.getElementById('channel-sidebar');
+
+// ── Popular channels (hardcoded) ──────────────────────────────
+const POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
+
+// ── Recently viewed (localStorage, top 5) ─────────────────────
+const LS_RECENT = 'utv_recent_v1';
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); } catch { return []; }
+}
+function saveRecent(id) {
+  let arr = getRecent().filter(x => x !== id);
+  arr.unshift(id);
+  arr = arr.slice(0, 5);
+  try { localStorage.setItem(LS_RECENT, JSON.stringify(arr)); } catch {}
+}
+
+// ── Find channel object by id ──────────────────────────────────
+function findChannel(id) {
+  for (const g of CHANNEL_GROUPS) {
+    const ch = g.channels.find(c => c.id === id);
+    if (ch) return ch;
+  }
+  return null;
+}
+
+// ── Render mini grid (Popular / Recent) ───────────────────────
+function renderMiniSection(labelText, ids) {
+  const channels = ids.map(findChannel).filter(Boolean);
+  if (!channels.length) return;
+  const label = document.createElement('div');
+  label.className = 'cat-label';
+  label.textContent = labelText;
+  sidebar.appendChild(label);
+  const grid = document.createElement('div');
+  grid.className = 'sidebar-mini-grid';
+  channels.forEach(ch => {
+    const card = document.createElement('div');
+    card.className = 'mini-ch-card' + (currentCh?.id === ch.id ? ' active' : '');
+    card.innerHTML = `<span class="mini-ch-dot"></span>${ch.name}`;
+    card.onclick = () => openChannel(ch);
+    grid.appendChild(card);
+  });
+  sidebar.appendChild(grid);
+}
 
 // ── Build sidebar ─────────────────────────────────────────────
 function buildSidebar(filter = '') {
@@ -1304,6 +1293,14 @@ function buildSidebar(filter = '') {
   });
 
   const q = filter.toLowerCase();
+
+  // Show Popular & Recent only when not filtering
+  if (!q) {
+    const recentIds = getRecent();
+    if (recentIds.length) renderMiniSection('🕐 Нещодавно переглянуті', recentIds);
+    renderMiniSection('⭐ Популярні', POPULAR_IDS);
+  }
+
   CHANNEL_GROUPS.forEach(group => {
     const matchingChannels = group.channels.filter(ch =>
       !q || ch.name.toLowerCase().includes(q) || ch.tags.some(t => t.includes(q))
@@ -1343,6 +1340,7 @@ searchInput.addEventListener('input', e => buildSidebar(e.target.value));
 // ── Open channel ──────────────────────────────────────────────
 function openChannel(ch) {
   currentCh = ch;
+  saveRecent(ch.id);
   buildSidebar(searchInput.value);
 
   // Update info card
