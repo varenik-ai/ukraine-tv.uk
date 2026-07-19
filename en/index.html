@@ -460,9 +460,6 @@ function openChannel(ch) {
   npBar.classList.add('visible');
   liveBadge.style.setProperty('background', ch.color);
   clearTimeout(overlayTimer); tgOverlay.classList.remove('show');
-  if (_overlayCount < 2) {
-    overlayTimer = setTimeout(() => { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 12000);
-  }
   loadStream(ch);
 }
 
@@ -486,7 +483,7 @@ async function loadStream(ch) {
   if (Hls.isSupported()) {
     hls = new Hls({ liveSyncDurationCount:3, lowLatencyMode:true, enableWorker:true, backBufferLength:30 });
     hls.loadSource(streamUrl); hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, async () => { setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; await tryPlay(); });
+    hls.on(Hls.Events.MANIFEST_PARSED, async () => { setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; await tryPlay(); clearTimeout(overlayTimer); if (_overlayCount < 2) { overlayTimer = setTimeout(() => { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 120000); } });
     hls.on(Hls.Events.ERROR, (_, d) => { if (d.fatal) { setStatus('Stream error. Click Reconnect.', true); liveBadge.style.display = 'none'; } });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = streamUrl; setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; await tryPlay();
@@ -512,7 +509,7 @@ fsBtn.addEventListener('click', () => {
     (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
     clearTimeout(overlayTimer); tgOverlay.classList.remove('show');
     if (_overlayCount < 2) {
-      overlayTimer = setTimeout(() => { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 12000);
+      overlayTimer = setTimeout(() => { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 120000);
     }
   } else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
 });

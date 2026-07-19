@@ -1394,16 +1394,9 @@ function openChannel(ch) {
   const activeItem = sidebar.querySelector('.ch-item.active');
   if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Reset overlay timer — макс. 2 рази за завантаження сторінки
+  // Скидаємо таймер при зміні каналу — новий запуститься після старту стріму
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-  if (_overlayCount < 2) {
-    overlayTimer = setTimeout(() => {
-      tgOverlay.classList.add('show');
-      _overlayCount++;
-      video.pause();
-    }, 12000);
-  }
 
   loadStream(ch);
 }
@@ -1455,6 +1448,15 @@ async function loadStream(ch) {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
       await tryPlay();
+      // Telegram overlay через 2 хвилини після старту трансляції
+      clearTimeout(overlayTimer);
+      if (_overlayCount < 2) {
+        overlayTimer = setTimeout(() => {
+          tgOverlay.classList.add('show');
+          _overlayCount++;
+          video.pause();
+        }, 120000);
+      }
     });
     hls.on(Hls.Events.ERROR, (e, data) => {
       if (!data.fatal) return;
