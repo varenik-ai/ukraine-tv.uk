@@ -580,7 +580,7 @@ function startStream() {
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch(()=>{});
       setStatus('▶ Трансляція запущена');
-      scheduleOverlay();
+      setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
     });
     hls.on(Hls.Events.ERROR, (e, d) => {
       if (d.fatal) setStatus('❌ Помилка трансляції — спробуйте пізніше');
@@ -589,7 +589,7 @@ function startStream() {
     video.src = url;
     video.play().catch(()=>{});
     setStatus('▶ Трансляція запущена');
-    scheduleOverlay();
+    setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
   }
 }
 
@@ -602,6 +602,7 @@ let _prerollShown = false;
 function showPreroll(callback) {
   if (_prerollShown) { callback(); return; }
   _prerollShown = true;
+  video.pause();
   prerollOverlay.classList.add('show');
   let sec = 8;
   const tick = setInterval(() => {
@@ -619,9 +620,10 @@ function showPreroll(callback) {
   setTimeout(() => {
     if (prerollSkip) prerollSkip.classList.add('ready');
   }, 5000);
-  // Автозапуск після 8 сек
+  // Автозакриття після 8 сек
   const autoTimer = setTimeout(() => {
     prerollOverlay.classList.remove('show');
+    video.play().catch(()=>{});
     callback();
   }, 8000);
   if (prerollSkip) {
@@ -631,12 +633,13 @@ function showPreroll(callback) {
       clearTimeout(autoTimer);
       prerollOverlay.classList.remove('show');
       prerollSkip.removeEventListener('click', handler);
+      video.play().catch(()=>{});
       callback();
     });
   }
 }
 
-overlay.addEventListener('click', () => showPreroll(startStream));
+overlay.addEventListener('click', () => startStream());
 
 // Telegram overlay — макс. 2 рази за завантаження сторінки, пауза відео
 let _overlayCount = 0;
@@ -655,7 +658,7 @@ function scheduleOverlay() {
       tgOverlay.classList.add('show');
       _overlayCount++;
       video.pause();
-    }, 12000);
+    }, 120000);
   }
 }
 
@@ -693,8 +696,7 @@ document.addEventListener('webkitfullscreenchange', _onFsUpdate);
 video.addEventListener('webkitbeginfullscreen', function() { fsBtn.textContent = '✕'; });
 video.addEventListener('webkitendfullscreen', function() { fsBtn.textContent = '⛶'; });
 
-// Запускаємо оверлей одразу при завантаженні сторінки
-scheduleOverlay();
+// Оверлеї запускаються після 2 хв перегляду — через showPreroll → scheduleOverlay
 
 // Scroll active channel into view on load
 (function(){
