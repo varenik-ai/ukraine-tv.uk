@@ -1393,6 +1393,12 @@ function openChannel(ch) {
   buildGrid(searchInput.value);
   renderSidebarBlocks();
 
+  // Scroll to player
+  const playerWrap = document.getElementById('player-wrap');
+  if (playerWrap) {
+    playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   // Update info card
   playerEmpty.classList.add('hidden');
   npName.textContent = ch.name;

@@ -471,6 +471,9 @@ searchInput.addEventListener('input', e => buildSidebar(e.target.value));
 
 function openChannel(ch) {
   currentCh = ch; buildSidebar(searchInput.value);
+  // Scroll to player
+  const pw = document.getElementById('player-wrap');
+  if (pw) pw.scrollIntoView({ behavior: 'smooth', block: 'start' });
   playerEmpty.classList.add('hidden');
   npName.textContent = ch.name; npDesc.textContent = ch.desc;
   npBar.classList.add('visible');
