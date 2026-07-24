@@ -35,6 +35,10 @@
   <link rel="alternate icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='16' fill='%230057B7'/%3E%3Crect y='16' width='32' height='16' fill='%23FFD700'/%3E%3C/svg%3E" />
   <meta name="theme-color" content="#0057B7" />
 
+  <!-- ═══ Typography ═══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
   <!-- ═══ Open Graph (Facebook, Telegram preview) ═══ -->
   <meta property="og:type"        content="website" />
   <meta property="og:site_name"   content="Україна ТВ" />
@@ -207,7 +211,7 @@
       --text:      #e2e2f0;
       --muted:     #555570;
       --muted2:    #383855;
-      --red:       #e53935;
+      --red:       #FFD700;
       --green:     #2e7d32;
       --radius:    14px;
       --radius-sm: 8px;
@@ -236,29 +240,10 @@
     ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-    /* Скрыть нативный скроллбар — заменён кастомным */
-    .channel-sidebar::-webkit-scrollbar { display: none; }
-    .channel-sidebar { scrollbar-width: none; }
-
-    /* Кастомный всегда-видимый скроллбар */
-    .sidebar-wrapper {
-      position: sticky; top: 76px;
-      height: calc(100vh - 120px);
-      display: flex; gap: 6px;
+    /* ── CHANNELS SECTION wrapper ───────────────────────────────── */
+    .channels-section {
+      min-width: 0;
     }
-    .custom-scroll-track {
-      width: 6px; flex-shrink: 0;
-      background: var(--bg3); border-radius: 4px;
-      position: relative; cursor: pointer;
-    }
-    .custom-scroll-thumb {
-      width: 100%; min-height: 28px;
-      background: var(--yellow); border-radius: 4px;
-      position: absolute; top: 0; left: 0;
-      cursor: grab; transition: background .15s;
-    }
-    .custom-scroll-thumb:hover  { background: #ffe033; }
-    .custom-scroll-thumb:active { cursor: grabbing; background: #ffec5c; }
 
     /* ── HEADER ───────────────────────────────────────────────── */
     header {
@@ -346,31 +331,25 @@
     h1{font-size:26px;font-weight:900;line-height:1.25;margin-bottom:6px}
     .page-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:0}
     .cnt-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent2)}
-    .live-badge-main{display:flex;align-items:center;gap:5px;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--red)}
+    .live-badge-main{display:flex;align-items:center;gap:5px;background:rgba(255,213,0,.1);border:1px solid rgba(255,213,0,.3);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--red)}
     .live-dot-main{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
 
     /* ── MAIN LAYOUT ────────────────────────────────────────────── */
     .main-wrap {
       display: grid;
-      grid-template-columns: 280px 1fr 300px;
-      grid-template-rows: auto;
-      gap: 0;
-      min-height: calc(100vh - 60px - 60px);
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
       max-width: 1400px;
       margin: 0 auto;
       padding: 0 16px 16px;
-      gap: 16px;
     }
+    .player-col    { grid-column: 1; grid-row: 1; }
+    .right-sidebar { grid-column: 2; grid-row: 1 / 3; align-self: start; }
+    .channels-section { grid-column: 1; grid-row: 2; }
 
-    /* ── LEFT SIDEBAR — CHANNEL LIST ─────────────────────────────── */
-    .channel-sidebar {
-      display: flex; flex-direction: column; gap: 2px;
-      flex: 1; height: 100%;
-      overflow-y: scroll;
-    }
-
+    /* ── CHANNEL SEARCH ─────────────────────────────────────────── */
     .sidebar-search {
-      position: relative; margin-bottom: 10px; flex-shrink: 0;
+      position: relative; margin-bottom: 10px;
     }
     .sidebar-search input {
       width: 100%;
@@ -379,58 +358,101 @@
       padding: 9px 12px 9px 36px; font-size: 13px; font-family: inherit;
       outline: none; transition: border-color .2s;
     }
-    .sidebar-search input:focus { border-color: var(--accent); }
+    .sidebar-search input:focus { border-color: var(--accent2); }
     .sidebar-search input::placeholder { color: var(--muted); }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; }
 
+    /* ── FILTER TABS ─────────────────────────────────────────────── */
+    .filter-tabs {
+      display: flex; gap: 6px; margin-bottom: 12px;
+      overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      cursor: pointer; white-space: nowrap; font-family: inherit;
+      transition: all .15s;
+    }
+    .filter-tab:hover { color: var(--text); border-color: var(--border2); }
+    .filter-tab.active {
+      background: var(--accent2); border-color: var(--accent2); color: #fff;
+    }
+
+    /* ── CAT LABEL ───────────────────────────────────────────────── */
     .cat-label {
       font-size: 10px; font-weight: 700; color: var(--muted);
       text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 12px 8px 4px; flex-shrink: 0;
+      padding: 14px 0 6px;
     }
-    .cat-label:first-child { padding-top: 0; }
+    .cat-label:first-child { padding-top: 4px; }
 
-    /* ── POPULAR & RECENT SECTIONS ──────────────────────────────── */
+    /* ── CHANNEL GRID (5-col cards) ─────────────────────────────── */
+    .cat-group {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      padding: 0 0 4px;
+    }
+
+    .ch-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 8px 6px 7px; gap: 5px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; cursor: pointer; transition: all .15s;
+      text-align: center;
+    }
+    .ch-item:hover {
+      border-color: var(--accent2);
+      background: rgba(0,119,255,.06);
+    }
+    .ch-item.active {
+      background: linear-gradient(135deg, rgba(0,91,187,.18), rgba(0,119,255,.09));
+      border-color: rgba(0,119,255,.35);
+    }
+    .ch-item.active .ch-name-s { color: var(--accent2); }
+
+    .ch-icon-s {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; flex-shrink: 0;
+    }
+    .ch-name-s {
+      font-size: 17px; font-weight: 700;
+      line-height: 1.25; letter-spacing: -0.01em;
+      width: 100%;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; white-space: normal;
+    }
+    .ch-desc-s { display: none; }
+    .live-indicator {
+      width: 6px; height: 6px; background: var(--red);
+      border-radius: 50%; animation: pulse 1.2s infinite; flex-shrink: 0;
+    }
+
+    /* ── RIGHT SIDEBAR MINI CARDS (Popular / Recent) ─────────────── */
+    .sidebar-block { margin-top: 4px; }
+    .sidebar-block-title {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 0 0 8px;
+    }
     .sidebar-mini-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 5px; padding: 0 0 4px; flex-shrink: 0;
+      gap: 5px;
     }
     .mini-ch-card {
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: 8px; padding: 7px 8px; cursor: pointer;
-      transition: all .15s; font-size: 12px; font-weight: 700;
+      transition: all .15s; font-size: 11px; font-weight: 700;
       color: var(--text); line-height: 1.3;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 5px;
     }
     .mini-ch-card:hover { border-color: var(--border2); background: var(--bg2); }
     .mini-ch-card.active { border-color: rgba(0,119,255,.4); background: rgba(0,91,187,.12); color: var(--accent2); }
     .mini-ch-dot { width: 5px; height: 5px; background: var(--red); border-radius: 50%;
                    animation: pulse 1.2s infinite; flex-shrink: 0; }
-
-    .ch-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 10px; border-radius: 10px;
-      cursor: pointer; transition: all .15s; position: relative;
-      border: 1px solid transparent; flex-shrink: 0;
-    }
-    .ch-item:hover { background: var(--bg3); border-color: var(--border); }
-    .ch-item.active {
-      background: linear-gradient(135deg, rgba(0,91,187,.15), rgba(0,119,255,.08));
-      border-color: rgba(0,119,255,.3);
-    }
-    .ch-item.active .ch-name-s { color: var(--accent2); }
-
-    .ch-icon-s {
-      width: 36px; height: 36px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 900; flex-shrink: 0;
-    }
-    .ch-name-s { font-size: 20px; font-weight: 600; flex: 1; }
-    .ch-desc-s { font-size: 11px; color: var(--muted); }
-    .live-indicator {
-      width: 6px; height: 6px; background: var(--red);
-      border-radius: 50%; animation: pulse 1.2s infinite; flex-shrink: 0;
-    }
 
     /* ── CENTER — PLAYER ─────────────────────────────────────────── */
     .player-col {
@@ -627,8 +649,10 @@
     .right-sidebar {
       display: flex; flex-direction: column; gap: 14px;
       position: sticky; top: 76px;
-      height: fit-content;
+      height: fit-content; max-height: calc(100vh - 90px);
+      overflow-y: auto; scrollbar-width: none;
     }
+    .right-sidebar::-webkit-scrollbar { display: none; }
 
     /* Telegram CTA card */
     .tg-cta-card {
@@ -746,48 +770,25 @@
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
     @keyframes fadeIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
 
-    /* ── TABLET ──────────────────────────────────────────────────── */
-    @media (max-width: 1100px) {
-      .main-wrap { grid-template-columns: 220px 1fr 260px; gap: 12px; }
+    /* ── TABLET 1024px ───────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .main-wrap { grid-template-columns: 1fr 260px; gap: 12px; }
+      .cat-group { grid-template-columns: repeat(4, 1fr); }
     }
 
-    /* ── MOBILE LANDSCAPE / SMALL TABLET ────────────────────────── */
+    /* ── MOBILE 900px ────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .main-wrap {
         grid-template-columns: 1fr;
         padding: 10px; gap: 12px;
       }
-      .player-col    { order: 1; }
-      .right-sidebar { order: 2; position: static; display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; }
-      .sidebar-wrapper { order: 3; position: static; height: auto; }
-      .custom-scroll-track { display: none; }
+      .player-col     { grid-column: 1; grid-row: 1; order: 1; }
+      .right-sidebar  { grid-column: 1; grid-row: 2; order: 2;
+                        position: static; max-height: none;
+                        flex-direction: row; flex-wrap: wrap; }
+      .channels-section { grid-column: 1; grid-row: 3; order: 3; }
 
-      .channel-sidebar {
-        height: auto; overflow: visible;
-        display: flex; flex-direction: column; gap: 0;
-        background: var(--bg2); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 0;
-      }
-      .cat-label {
-        display: block; padding: 10px 12px 4px; margin: 0;
-        border-top: 1px solid var(--border);
-      }
-      .cat-label:first-child { border-top: none; }
-
-      /* Каналы — вертикальный список */
-      .cat-group {
-        display: flex; flex-direction: column; gap: 2px;
-        padding: 4px 8px 8px;
-      }
-      .ch-item {
-        flex-direction: row; align-items: center;
-        width: 100%; padding: 10px 12px; text-align: left; gap: 12px;
-        flex-shrink: unset; scroll-snap-align: none;
-      }
-      .ch-icon-s { width: 42px; height: 42px; font-size: 12px; border-radius: 10px; flex-shrink: 0; }
-      .ch-name-s { font-size: 16px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .ch-desc-s  { display: none; }
-      .live-indicator { position: static; margin-left: auto; flex-shrink: 0; }
+      .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
 
       /* Оверлей на весь экран на мобиле */
       .tg-overlay { position: fixed; z-index: 9999; }
@@ -804,15 +805,18 @@
       .ad-placeholder-rect { width: 100%; height: auto; min-height: 60px; }
       .ad-rect-wrap-2 { display: none; }
 
-      /* 728x90 не вмещается на мобиле — скрыть */
       .ad-leaderboard { display: none; }
       .ad-below { display: none; }
-
       nav { display: none; }
       .lang-switcher { display: none; }
     }
 
-    /* ── MOBILE PORTRAIT ─────────────────────────────────────────── */
+    /* ── MOBILE 640px ────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    }
+
+    /* ── MOBILE PORTRAIT 600px ───────────────────────────────────── */
     @media (max-width: 600px) {
       header { padding: 0 12px; height: 52px; gap: 8px; }
       .logo { font-size: 20px; letter-spacing: 0; }
@@ -827,27 +831,16 @@
       .tg-cta-card  { min-width: unset; }
       .ad-rect-wrap { min-width: unset; }
 
-      /* Каналы — список (оверрайд grid) */
-      .cat-group {
-        display: flex; flex-direction: column;
-        overflow: visible; padding: 4px 8px 8px; gap: 2px;
-      }
-      .ch-item { width: 100%; }
-      .ch-name-s { font-size: 15px; }
-
       .np-name { font-size: 14px; }
       .ctrl-btn { padding: 6px 10px; font-size: 11px; }
     }
 
-    /* ── SMALL PHONES ────────────────────────────────────────────── */
+    /* ── SMALL PHONES 400px ──────────────────────────────────────── */
     @media (max-width: 400px) {
       .logo { font-size: 17px; }
       .logo-flag { font-size: 19px; }
-      .tg-header-btn { padding: 6px 10px; }
       .main-wrap { padding: 6px; gap: 6px; }
-      .ch-item { padding: 8px 10px; }
-      .ch-icon-s { width: 36px; height: 36px; }
-      .ch-name-s { font-size: 14px; }
+      .ch-item { padding: 7px 4px 6px; }
     }
     </style>
 </head>
@@ -919,21 +912,7 @@
      ═══════════════════════════════════════════════════════════ -->
 <div class="main-wrap">
 
-  <!-- ─── LEFT: CHANNEL LIST ──────────────────────────────── -->
-  <div class="sidebar-wrapper">
-    <aside class="channel-sidebar" id="channel-sidebar">
-      <div class="sidebar-search">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" placeholder="Пошук каналу..." />
-      </div>
-      <!-- Populated by JS -->
-    </aside>
-    <div class="custom-scroll-track" id="scroll-track">
-      <div class="custom-scroll-thumb" id="scroll-thumb"></div>
-    </div>
-  </div>
-
-  <!-- ─── CENTER: PLAYER ───────────────────────────────────── -->
+  <!-- ─── COL 1 ROW 1: PLAYER ─────────────────────────────── -->
   <div class="player-col">
 
     <!-- Банер над плеером -->
@@ -1007,7 +986,7 @@
 
   </div><!-- .player-col -->
 
-  <!-- ─── RIGHT SIDEBAR ─────────────────────────────────────── -->
+  <!-- ─── COL 2 ROW 1-2: RIGHT SIDEBAR ────────────────────── -->
   <aside class="right-sidebar">
 
     <!-- Telegram CTA Card -->
@@ -1028,8 +1007,40 @@
       <div class="tg-sub-count">@UkraineTVHub</div>
     </div>
 
+    <!-- Popular channels -->
+    <div class="sidebar-block" id="popular-block">
+      <div class="sidebar-block-title">⭐ Популярні</div>
+      <div class="sidebar-mini-grid" id="popular-grid"></div>
+    </div>
+
+    <!-- Recently viewed -->
+    <div class="sidebar-block" id="recent-block" style="display:none">
+      <div class="sidebar-block-title">🕐 Нещодавно переглянуті</div>
+      <div class="sidebar-mini-grid" id="recent-grid"></div>
+    </div>
 
   </aside>
+
+  <!-- ─── COL 1 ROW 2: CHANNEL GRID ───────────────────────── -->
+  <div class="channels-section">
+    <div class="sidebar-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Пошук каналу..." />
+    </div>
+    <div class="filter-tabs" id="filter-tabs">
+      <button class="filter-tab active" data-filter="">Всі</button>
+      <button class="filter-tab" data-filter="📡 Новини та загальні">Новини</button>
+      <button class="filter-tab" data-filter="🎬 Розваги та кіно">Розваги</button>
+      <button class="filter-tab" data-filter="📺 Суспільне та громадські">Суспільне</button>
+      <button class="filter-tab" data-filter="🏙️ Регіональні">Регіональні</button>
+      <button class="filter-tab" data-filter="🎵 Музика">Музика</button>
+      <button class="filter-tab" data-filter="👶 Дитячі">Дитячі</button>
+      <button class="filter-tab" data-filter="🎯 Тематичні">Тематичні</button>
+    </div>
+    <div id="channel-grid">
+      <!-- Populated by JS -->
+    </div>
+  </div>
 
 </div><!-- .main-wrap -->
 
@@ -1272,7 +1283,7 @@ const ciTitle      = document.getElementById('ci-title');
 const ciDesc       = document.getElementById('ci-desc');
 const ciTags       = document.getElementById('ci-tags');
 const searchInput  = document.getElementById('search-input');
-const sidebar      = document.getElementById('channel-sidebar');
+const channelGrid  = document.getElementById('channel-grid');
 
 // ── Popular channels (hardcoded) ──────────────────────────────
 const POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
@@ -1298,16 +1309,14 @@ function findChannel(id) {
   return null;
 }
 
-// ── Render mini grid (Popular / Recent) ───────────────────────
-function renderMiniSection(labelText, ids) {
+// ── Render Popular/Recent in right sidebar ────────────────────
+function renderSidebarMini(gridId, blockId, ids) {
+  const grid = document.getElementById(gridId);
+  const block = document.getElementById(blockId);
+  if (!grid || !block) return;
   const channels = ids.map(findChannel).filter(Boolean);
-  if (!channels.length) return;
-  const label = document.createElement('div');
-  label.className = 'cat-label';
-  label.textContent = labelText;
-  sidebar.appendChild(label);
-  const grid = document.createElement('div');
-  grid.className = 'sidebar-mini-grid';
+  block.style.display = channels.length ? '' : 'none';
+  grid.innerHTML = '';
   channels.forEach(ch => {
     const card = document.createElement('div');
     card.className = 'mini-ch-card' + (currentCh?.id === ch.id ? ' active' : '');
@@ -1315,69 +1324,74 @@ function renderMiniSection(labelText, ids) {
     card.onclick = () => openChannel(ch);
     grid.appendChild(card);
   });
-  sidebar.appendChild(grid);
 }
 
-// ── Build sidebar ─────────────────────────────────────────────
-function buildSidebar(filter = '') {
-  // keep search input
-  const existingSearch = sidebar.querySelector('.sidebar-search');
+function renderSidebarBlocks() {
+  renderSidebarMini('popular-grid', 'popular-block', POPULAR_IDS);
+  const recentIds = getRecent();
+  renderSidebarMini('recent-grid', 'recent-block', recentIds);
+}
 
-  // clear everything except search
-  [...sidebar.children].forEach(el => {
-    if (!el.classList.contains('sidebar-search')) el.remove();
-  });
+// ── Active filter state ───────────────────────────────────────
+let activeFilter = '';
 
-  const q = filter.toLowerCase();
-
-  // Show Popular & Recent only when not filtering
-  if (!q) {
-    const recentIds = getRecent();
-    if (recentIds.length) renderMiniSection('🕐 Нещодавно переглянуті', recentIds);
-    renderMiniSection('⭐ Популярні', POPULAR_IDS);
-  }
+// ── Build channel grid ────────────────────────────────────────
+function buildGrid(search = '') {
+  channelGrid.innerHTML = '';
+  const q = search.toLowerCase();
 
   CHANNEL_GROUPS.forEach(group => {
+    // Filter by search query
     const matchingChannels = group.channels.filter(ch =>
       !q || ch.name.toLowerCase().includes(q) || ch.tags.some(t => t.includes(q))
     );
-    if (!matchingChannels.length) return;
+    // Filter by active category tab
+    const filtered = activeFilter
+      ? matchingChannels.filter(() => group.label === activeFilter)
+      : matchingChannels;
+    if (!filtered.length) return;
 
     const label = document.createElement('div');
     label.className = 'cat-label';
     label.textContent = group.label;
-    sidebar.appendChild(label);
+    channelGrid.appendChild(label);
 
-    // Группа для горизонтального скролла на мобиле
     const catGroup = document.createElement('div');
     catGroup.className = 'cat-group';
-    sidebar.appendChild(catGroup);
+    channelGrid.appendChild(catGroup);
 
-    matchingChannels.forEach(ch => {
+    filtered.forEach(ch => {
       const item = document.createElement('div');
       item.className = 'ch-item' + (currentCh?.id === ch.id ? ' active' : '');
       item.dataset.id = ch.id;
       item.setAttribute('aria-label', `${ch.name} — дивитися онлайн`);
       item.innerHTML = `
-        <div class="ch-icon-s" style="background:${ch.iconBg};color:${ch.color}" role="img" aria-label="${ch.name} логотип">${ch.icon}</div>
-        <div>
-          <div class="ch-name-s">${ch.name}</div>
-          <div class="ch-desc-s">${ch.desc}</div>
-        </div>
-        <div class="live-indicator" aria-label="наживо"></div>`;
+        <div class="ch-icon-s" style="background:${ch.iconBg};color:${ch.color}" role="img" aria-label="${ch.name}">${ch.icon}</div>
+        <div class="ch-name-s">${ch.name}</div>`;
       item.onclick = () => openChannel(ch);
       catGroup.appendChild(item);
     });
   });
 }
 
-searchInput.addEventListener('input', e => buildSidebar(e.target.value));
+// ── Filter tabs logic ─────────────────────────────────────────
+document.getElementById('filter-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter;
+  buildGrid(searchInput.value);
+});
+
+searchInput.addEventListener('input', e => buildGrid(e.target.value));
 
 // ── Open channel ──────────────────────────────────────────────
 function openChannel(ch) {
   currentCh = ch;
   saveRecent(ch.id);
-  buildSidebar(searchInput.value);
+  buildGrid(searchInput.value);
+  renderSidebarBlocks();
 
   // Update info card
   playerEmpty.classList.add('hidden');
@@ -1390,11 +1404,11 @@ function openChannel(ch) {
   ciDesc.textContent = ch.desc;
   ciTags.innerHTML = ch.tags.map(t => `<span class="ci-tag">${t}</span>`).join('');
 
-  // Scroll sidebar item into view on mobile
-  const activeItem = sidebar.querySelector('.ch-item.active');
+  // Scroll active tile into view
+  const activeItem = channelGrid.querySelector('.ch-item.active');
   if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-  // Скидаємо таймер при зміні каналу — новий запуститься після старту стріму
+  // Скидаємо таймер при зміні каналу
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
 
@@ -1543,62 +1557,9 @@ overlaySkip.addEventListener('click', () => {
   wrap.addEventListener('touchstart', () => { showControls(); }, { passive: true });
 })();
 
-// ── Custom scrollbar ──────────────────────────────────────────
-(function initCustomScrollbar() {
-  const sidebar = document.getElementById('channel-sidebar');
-  const track   = document.getElementById('scroll-track');
-  const thumb   = document.getElementById('scroll-thumb');
-  if (!sidebar || !track || !thumb) return;
-
-  function updateThumb() {
-    const trackH  = track.clientHeight;
-    const ratio   = sidebar.clientHeight / sidebar.scrollHeight;
-    const thumbH  = Math.max(28, ratio * trackH);
-    const maxTop  = trackH - thumbH;
-    const scrollR = sidebar.scrollHeight > sidebar.clientHeight
-      ? sidebar.scrollTop / (sidebar.scrollHeight - sidebar.clientHeight)
-      : 0;
-    thumb.style.height = thumbH + 'px';
-    thumb.style.top    = (scrollR * maxTop) + 'px';
-  }
-
-  sidebar.addEventListener('scroll', updateThumb, { passive: true });
-  window.addEventListener('resize', updateThumb);
-
-  // Observe content changes (after buildSidebar)
-  new MutationObserver(updateThumb).observe(sidebar, { childList: true, subtree: false });
-
-  // Drag thumb
-  let dragging = false, startY = 0, startTop = 0;
-  thumb.addEventListener('mousedown', e => {
-    dragging = true; startY = e.clientY; startTop = sidebar.scrollTop;
-    e.preventDefault();
-  });
-  document.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    const trackH = track.clientHeight;
-    const thumbH = thumb.clientHeight;
-    const delta  = (e.clientY - startY) / (trackH - thumbH);
-    sidebar.scrollTop = startTop + delta * (sidebar.scrollHeight - sidebar.clientHeight);
-  });
-  document.addEventListener('mouseup', () => { dragging = false; });
-
-  // Click on track (jump)
-  track.addEventListener('click', e => {
-    if (e.target === thumb) return;
-    const rect   = track.getBoundingClientRect();
-    const clickY = e.clientY - rect.top;
-    const thumbH = thumb.clientHeight;
-    const trackH = track.clientHeight;
-    const ratio  = Math.max(0, Math.min(1, (clickY - thumbH / 2) / (trackH - thumbH)));
-    sidebar.scrollTop = ratio * (sidebar.scrollHeight - sidebar.clientHeight);
-  });
-
-  setTimeout(updateThumb, 150);
-})();
-
 // ── Init ──────────────────────────────────────────────────────
-buildSidebar();
+buildGrid();
+renderSidebarBlocks();
 
 
 // ── Anti-AdBlock — перевірка через власний player-config.js ─────────────

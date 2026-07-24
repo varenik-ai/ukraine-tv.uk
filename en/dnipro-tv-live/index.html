@@ -136,7 +136,7 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--bg:#0a0a14;--bg2:#0f0f1e;--bg3:#14142a;--card:#131325;--border:#1e1e3a;--border2:#2a2a50;
       --text:#e8e8f8;--muted:#7878a0;--muted2:#4a4a70;--accent:#0057B7;--accent2:#0095ff;
-      --yellow:#FFD700;--red:#e53935;--tg-color:#229ED9;--radius:12px;--shadow:0 4px 24px rgba(0,0,80,.4)}
+      --yellow:#FFD700;--red:#FFD700;--tg-color:#229ED9;--radius:12px;--shadow:0 4px 24px rgba(0,0,80,.4)}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
     a{color:inherit;text-decoration:none}
     header{background:rgba(10,10,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
@@ -158,40 +158,42 @@
     .breadcrumb a{color:var(--muted);transition:.15s}.breadcrumb a:hover{color:var(--accent2)}
     .breadcrumb span{color:var(--muted2)}
     .page-title-wrap{max-width:1400px;margin:0 auto;padding:0 16px 12px}
+    /* ── 2-column layout ── */
     .page-wrap{max-width:1400px;margin:0 auto;padding:0 16px 16px;display:grid;
-      grid-template-columns:268px 1fr 288px;gap:16px;align-items:start}
-    .main-col{display:flex;flex-direction:column;gap:16px}
-    .side-col{display:flex;flex-direction:column;gap:16px}
-    .left-sidebar{position:sticky;top:76px;height:calc(100vh - 96px);
-      display:flex;flex-direction:column;gap:0;overflow:hidden;
-      background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
-    .sidebar-search-wrap{padding:12px 12px 8px;flex-shrink:0;position:relative}
+      grid-template-columns:1fr 288px;gap:16px;align-items:start}
+    .main-col{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:16px}
+    .side-col{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:16px;
+      position:sticky;top:76px;align-self:start;max-height:calc(100vh - 90px);
+      overflow-y:auto;scrollbar-width:none}
+    .side-col::-webkit-scrollbar{display:none}
+    /* ── Channel grid below player ── */
+    .left-sidebar{grid-column:1;grid-row:2}
+    .sidebar-search-wrap{position:relative;margin-bottom:10px}
     .sidebar-search-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border);
-      color:var(--text);border-radius:8px;padding:8px 12px 8px 34px;font-size:13px;
+      color:var(--text);border-radius:8px;padding:9px 12px 9px 36px;font-size:13px;
       font-family:inherit;outline:none;transition:border-color .2s}
     .sidebar-search-wrap input:focus{border-color:var(--accent2)}
     .sidebar-search-wrap input::placeholder{color:var(--muted)}
-    .s-icon{position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
-    .ch-list-scroll{flex:1;overflow-y:auto;padding:4px 8px 12px;
-      scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
-    .ch-list-scroll::-webkit-scrollbar{width:4px}
-    .ch-list-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+    .s-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none}
     .cat-label-s{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;
-      letter-spacing:1.5px;padding:12px 4px 4px}
+      letter-spacing:1.5px;padding:14px 0 6px}
     .cat-label-s:first-child{padding-top:4px}
-    .ch-item-s{display:flex;align-items:center;gap:9px;padding:8px 8px;border-radius:10px;
-      cursor:pointer;transition:all .15s;border:1px solid transparent;
-      text-decoration:none;color:var(--text)}
-    .ch-item-s:hover{background:var(--bg3);border-color:var(--border)}
+    .cat-group-s{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:0 0 4px}
+    .ch-item-s{display:flex;flex-direction:column;align-items:center;
+      padding:8px 6px 7px;gap:5px;background:var(--bg3);border:1px solid var(--border);
+      border-radius:12px;cursor:pointer;transition:all .15s;
+      text-decoration:none;color:var(--text);text-align:center}
+    .ch-item-s:hover{border-color:var(--accent2);background:rgba(0,119,255,.06)}
     .ch-item-s.active{background:linear-gradient(135deg,rgba(0,91,187,.18),rgba(0,119,255,.09));
       border-color:rgba(0,119,255,.35)}
     .ch-item-s.active .ch-name-s{color:var(--accent2)}
-    .ch-icon-s{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;
-      justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
-    .ch-name-s{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .ch-desc-s{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .live-dot-s{width:6px;height:6px;background:var(--red);border-radius:50%;
-      animation:pulse 1.2s infinite;flex-shrink:0}
+    .ch-icon-s{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;
+      justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+    .ch-name-s{font-size:17px;font-weight:700;line-height:1.25;letter-spacing:-.01em;
+      width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+      overflow:hidden;white-space:normal}
+    .ch-desc-s{display:none}
+    .live-dot-s{display:none}
     h1{font-size:26px;font-weight:900;line-height:1.25;margin-bottom:6px}
     .channel-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:12px}
     .cat-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent2)}
@@ -288,17 +290,27 @@
     footer a{color:var(--accent2);margin:0 8px}
     @media(max-width:1024px){
       .page-wrap{grid-template-columns:1fr 260px}
-      .left-sidebar{display:none}
+      .cat-group-s{grid-template-columns:repeat(4,1fr)}
+    }
+    @media(max-width:768px){
+      .page-wrap{grid-template-columns:1fr}
+      .side-col{grid-column:1;grid-row:3;position:static;max-height:none}
+      .left-sidebar{grid-column:1;grid-row:2}
+      .cat-group-s{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:640px){
-      .page-wrap{grid-template-columns:1fr;padding:10px}
+      .page-wrap{padding:10px}
       h1{font-size:20px}
-      .side-col{order:3}
+      .cat-group-s{grid-template-columns:repeat(3,1fr)}
       .live-badge{display:none}
       .tg-card-mob{display:block}
       .tg-card-live{display:flex}
       .tg-card-desk{display:none}
       .tg-overlay{position:fixed;z-index:9999}
+    }
+    @media(max-width:400px){
+      .cat-group-s{grid-template-columns:repeat(2,1fr)}
+      .ch-name-s{font-size:14px}
     }
   </style>
 </head>
@@ -347,60 +359,7 @@
 
 <div class="page-wrap">
 
-  <!-- LEFT sidebar -->
-  <aside class="left-sidebar">
-    <div class="sidebar-search-wrap">
-      <span class="s-icon">🔍</span>
-      <input type="text" id="ch-search" placeholder="Search channels...">
-    </div>
-    <div class="ch-list-scroll" id="ch-list">
-      <div class="cat-label-s">📡 News & General</div>
-<a href="/en/pershyi-live/" class="ch-item-s" data-name="Pershyi Kanal" aria-label="Pershyi Kanal watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">1</div><div style="flex:1;min-width:0"><div class="ch-name-s">Перший канал</div><div class="ch-desc-s">Ukraine's main national TV chann</div></div><div class="live-dot-s"></div></a>
-<a href="/en/channel5-live/" class="ch-item-s" data-name="5 Kanal" aria-label="5 Kanal watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">5</div><div style="flex:1;min-width:0"><div class="ch-name-s">5 Канал</div><div class="ch-desc-s">News and analysis 24/7 — one of </div></div><div class="live-dot-s"></div></a>
-<a href="/en/espreso-live/" class="ch-item-s" data-name="Espreso TV" aria-label="Espreso TV watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">ЕСП</div><div style="flex:1;min-width:0"><div class="ch-name-s">Еспресо ТВ</div><div class="ch-desc-s">Independent socio-political broa</div></div><div class="live-dot-s"></div></a>
-<a href="/en/ukraina24-live/" class="ch-item-s" data-name="Ukraina 24" aria-label="Ukraina 24 watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">У24</div><div style="flex:1;min-width:0"><div class="ch-name-s">Україна 24</div><div class="ch-desc-s">24/7 news from Ukraine Media Gro</div></div><div class="live-dot-s"></div></a>
-<a href="/en/kyiv24-live/" class="ch-item-s" data-name="Kyiv 24" aria-label="Kyiv 24 watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">К24</div><div style="flex:1;min-width:0"><div class="ch-name-s">Київ 24</div><div class="ch-desc-s">Kyiv city news and Ukraine cover</div></div><div class="live-dot-s"></div></a>
-<a href="/en/24kanal-live/" class="ch-item-s" data-name="24 Kanal" aria-label="24 Kanal watch online"><div class="ch-icon-s" style="background:#180808;color:#c62828">24</div><div style="flex:1;min-width:0"><div class="ch-name-s">24 Канал</div><div class="ch-desc-s">News and reports 24/7 — dynamic </div></div><div class="live-dot-s"></div></a>
-<a href="/en/rada-tv-live/" class="ch-item-s" data-name="Rada TV" aria-label="Rada TV watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">РД</div><div style="flex:1;min-width:0"><div class="ch-name-s">Рада ТВ</div><div class="ch-desc-s">Official parliamentary channel o</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">🎬 Entertainment</div>
-<a href="/en/ntn-live/" class="ch-item-s" data-name="NTN" aria-label="NTN watch online"><div class="ch-icon-s" style="background:#1a0808;color:#e53935">НТН</div><div style="flex:1;min-width:0"><div class="ch-name-s">НТН</div><div class="ch-desc-s">Movies, TV series and entertainm</div></div><div class="live-dot-s"></div></a>
-<a href="/en/1plus1-live/" class="ch-item-s" data-name="1+1 International" aria-label="1+1 International watch online"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">1+1</div><div style="flex:1;min-width:0"><div class="ch-name-s">1+1 Міжнар.</div><div class="ch-desc-s">Entertainment, shows and series </div></div><div class="live-dot-s"></div></a>
-<a href="/en/kvartal-tv-live/" class="ch-item-s" data-name="Kvartal TV" aria-label="Kvartal TV watch online"><div class="ch-icon-s" style="background:#1a1000;color:#ff6d00">КВ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Квартал ТВ</div><div class="ch-desc-s">Humour and entertainment from Uk</div></div><div class="live-dot-s"></div></a>
-<a href="/en/inter-plus-live/" class="ch-item-s" data-name="Inter+" aria-label="Inter+ watch online"><div class="ch-icon-s" style="background:#140a18;color:#7b1fa2">INT+</div><div style="flex:1;min-width:0"><div class="ch-name-s">Інтер+</div><div class="ch-desc-s">Series and movies from Inter Med</div></div><div class="live-dot-s"></div></a>
-<a href="/en/mega-live/" class="ch-item-s" data-name="Mega" aria-label="Mega watch online"><div class="ch-icon-s" style="background:#180810;color:#d81b60">МГ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Мега</div><div class="ch-desc-s">Movies and entertainment program</div></div><div class="live-dot-s"></div></a>
-<a href="/en/k2-live/" class="ch-item-s" data-name="K2" aria-label="K2 watch online"><div class="ch-icon-s" style="background:#130a18;color:#6a1b9a">К2</div><div style="flex:1;min-width:0"><div class="ch-name-s">К2</div><div class="ch-desc-s">Movies and entertainment content</div></div><div class="live-dot-s"></div></a>
-<a href="/en/4ever-cinema-live/" class="ch-item-s" data-name="4ever Cinema" aria-label="4ever Cinema watch online"><div class="ch-icon-s" style="background:#1a0e00;color:#e65100">4CIN</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Cinema</div><div class="ch-desc-s">Cinema 24/7 — movies without int</div></div><div class="live-dot-s"></div></a>
-<a href="/en/4ever-drama-live/" class="ch-item-s" data-name="4ever Drama" aria-label="4ever Drama watch online"><div class="ch-icon-s" style="background:#0e0a18;color:#4a148c">4DRM</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Drama</div><div class="ch-desc-s">Series and dramas around the clo</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">📺 Public</div>
-<a href="/en/suspilne-live/" class="ch-item-s" data-name="Suspilne Kyiv" aria-label="Suspilne Kyiv watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">СУС</div><div style="flex:1;min-width:0"><div class="ch-name-s">Суспільне Київ</div><div class="ch-desc-s">Public broadcasting — Kyiv and U</div></div><div class="live-dot-s"></div></a>
-<a href="/en/irt-live/" class="ch-item-s" data-name="IRT" aria-label="IRT watch online"><div class="ch-icon-s" style="background:#081214;color:#00838f">IRT</div><div style="flex:1;min-width:0"><div class="ch-name-s">IRT</div><div class="ch-desc-s">Public information channel focus</div></div><div class="live-dot-s"></div></a>
-<a href="/en/armiya-tv-live/" class="ch-item-s" data-name="Armiya TV" aria-label="Armiya TV watch online"><div class="ch-icon-s" style="background:#0a1408;color:#33691e">АРМ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Армія ТВ</div><div class="ch-desc-s">Official channel of the Armed Fo</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">🏙️ Regional</div>
-<a href="/en/rai-live/" class="ch-item-s" data-name="RAI" aria-label="RAI watch online"><div class="ch-icon-s" style="background:#180810;color:#ad1457">RAI</div><div style="flex:1;min-width:0"><div class="ch-name-s">RAI</div><div class="ch-desc-s">Regional channel — entertainment</div></div><div class="live-dot-s"></div></a>
-<a href="/en/tva-live/" class="ch-item-s" data-name="TVA" aria-label="TVA watch online"><div class="ch-icon-s" style="background:#0a0f12;color:#37474f">TVA</div><div style="flex:1;min-width:0"><div class="ch-name-s">TVA</div><div class="ch-desc-s">Regional broadcasting for local </div></div><div class="live-dot-s"></div></a>
-<a href="/en/ntk-tv-live/" class="ch-item-s" data-name="NTK TV" aria-label="NTK TV watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">NTK</div><div style="flex:1;min-width:0"><div class="ch-name-s">NTK TV</div><div class="ch-desc-s">Television channel of Kremenchuk</div></div><div class="live-dot-s"></div></a>
-<a href="/en/dnipro-tv-live/" class="ch-item-s active" data-name="Dnipro TV" aria-label="Dnipro TV watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">ДНП</div><div style="flex:1;min-width:0"><div class="ch-name-s">Дніпро TV</div><div class="ch-desc-s">Regional channel of Dnipro city</div></div><div class="live-dot-s"></div></a>
-<a href="/en/7kanal-live/" class="ch-item-s" data-name="7 Kanal" aria-label="7 Kanal watch online"><div class="ch-icon-s" style="background:#081214;color:#00838f">7К</div><div style="flex:1;min-width:0"><div class="ch-name-s">7 Канал</div><div class="ch-desc-s">Regional channel of Odesa — Blac</div></div><div class="live-dot-s"></div></a>
-<a href="/en/rivne1-live/" class="ch-item-s" data-name="Rivne 1" aria-label="Rivne 1 watch online"><div class="ch-icon-s" style="background:#0a1408;color:#558b2f">РВ1</div><div style="flex:1;min-width:0"><div class="ch-name-s">Рівне 1</div><div class="ch-desc-s">Regional broadcasting of Rivne r</div></div><div class="live-dot-s"></div></a>
-<a href="/en/itv-live/" class="ch-item-s" data-name="ITV Ukraine" aria-label="ITV Ukraine watch online"><div class="ch-icon-s" style="background:#181000;color:#f57f17">ITV</div><div style="flex:1;min-width:0"><div class="ch-name-s">ITV</div><div class="ch-desc-s">Regional television for local co</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">🎵 Music</div>
-<a href="/en/muzvar-live/" class="ch-item-s" data-name="Muzvar" aria-label="Muzvar watch online"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">МЗВ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Мюзвар</div><div class="ch-desc-s">Ukrainian music and clips 24/7</div></div><div class="live-dot-s"></div></a>
-<a href="/en/nashe-music-live/" class="ch-item-s" data-name="NASHE Music" aria-label="NASHE Music watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">НШМ</div><div style="flex:1;min-width:0"><div class="ch-name-s">NASHE Music</div><div class="ch-desc-s">Ukrainian rock and pop music</div></div><div class="live-dot-s"></div></a>
-<a href="/en/m1-live/" class="ch-item-s" data-name="M1" aria-label="M1 watch online"><div class="ch-icon-s" style="background:#180808;color:#c62828">М1</div><div style="flex:1;min-width:0"><div class="ch-name-s">М1</div><div class="ch-desc-s">Music and clips — Ukraine's lead</div></div><div class="live-dot-s"></div></a>
-<a href="/en/4ever-music-live/" class="ch-item-s" data-name="4ever Music" aria-label="4ever Music watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">4MUS</div><div style="flex:1;min-width:0"><div class="ch-name-s">4ever Music</div><div class="ch-desc-s">Music without interruption 24/7</div></div><div class="live-dot-s"></div></a>
-<a href="/en/ua-music-live/" class="ch-item-s" data-name="UA Music" aria-label="UA Music watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">UAM</div><div style="flex:1;min-width:0"><div class="ch-name-s">UA Music</div><div class="ch-desc-s">Ukrainian music — supporting our</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">👶 Kids</div>
-<a href="/en/niki-kids-live/" class="ch-item-s" data-name="Niki Kids" aria-label="Niki Kids watch online"><div class="ch-icon-s" style="background:#181000;color:#f57f17">NIK</div><div style="flex:1;min-width:0"><div class="ch-name-s">Niki Kids</div><div class="ch-desc-s">Cartoons and shows for children </div></div><div class="live-dot-s"></div></a>
-<a href="/en/niki-junior-live/" class="ch-item-s" data-name="Niki Junior" aria-label="Niki Junior watch online"><div class="ch-icon-s" style="background:#180810;color:#e91e63">NIKJ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Niki Junior</div><div class="ch-desc-s">For the youngest — developmental</div></div><div class="live-dot-s"></div></a>
-<div class="cat-label-s">🎯 Thematic</div>
-<a href="/en/rybalka-tv-live/" class="ch-item-s" data-name="Rybalka TV" aria-label="Rybalka TV watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">РИБ</div><div style="flex:1;min-width:0"><div class="ch-name-s">Rybalka TV</div><div class="ch-desc-s">Fishing, nature and outdoor acti</div></div><div class="live-dot-s"></div></a>
-<a href="/en/ua-fashion-tv-live/" class="ch-item-s" data-name="UA Fashion TV" aria-label="UA Fashion TV watch online"><div class="ch-icon-s" style="background:#180810;color:#e91e63">МОД</div><div style="flex:1;min-width:0"><div class="ch-name-s">UA Fashion TV</div><div class="ch-desc-s">Fashion, style and beauty — Ukra</div></div><div class="live-dot-s"></div></a>
-<a href="/en/svarozhychy-live/" class="ch-item-s" data-name="Svarozhychy" aria-label="Svarozhychy watch online"><div class="ch-icon-s" style="background:#120a08;color:#5d4037">СВР</div><div style="flex:1;min-width:0"><div class="ch-name-s">Svarozhychy</div><div class="ch-desc-s">Ukrainian traditions, culture an</div></div><div class="live-dot-s"></div></a>
-<a href="/en/equalympic-live/" class="ch-item-s" data-name="Equalympic" aria-label="Equalympic watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">EQL</div><div style="flex:1;min-width:0"><div class="ch-name-s">Equalympic</div><div class="ch-desc-s">Sport for everyone — adaptive sp</div></div><div class="live-dot-s"></div></a>
-    </div>
-  </aside>
-
-  <!-- CENTER: Player + info -->
+  <!-- COL 1 ROW 1: Player -->
   <div class="main-col">
 
     <div class="player-wrap" id="player-wrap">
@@ -445,6 +404,86 @@
       <a href="https://t.me/UkraineTVHub" target="_blank">✈️ Open @UkraineTVHub</a>
       <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px">@UkraineTVHub</div>
     </div>
+  </div>
+
+  <!-- COL 1 ROW 2: Channel grid -->
+  <aside class="left-sidebar">
+    <div class="sidebar-search-wrap">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="ch-search" placeholder="Search channels...">
+    </div>
+    <div id="ch-list">
+      <div class="cat-label-s">📡 News & General</div>
+<div class="cat-group-s">
+<a href="/en/pershyi-live/" class="ch-item-s" data-name="Pershyi Kanal" aria-label="Pershyi Kanal watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">1</div><div class="ch-name-s">Перший канал</div></a>
+<a href="/en/channel5-live/" class="ch-item-s" data-name="5 Kanal" aria-label="5 Kanal watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">5</div><div class="ch-name-s">5 Канал</div></a>
+<a href="/en/espreso-live/" class="ch-item-s" data-name="Espreso TV" aria-label="Espreso TV watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">ЕСП</div><div class="ch-name-s">Еспресо ТВ</div></a>
+<a href="/en/ukraina24-live/" class="ch-item-s" data-name="Ukraina 24" aria-label="Ukraina 24 watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">У24</div><div class="ch-name-s">Україна 24</div></a>
+<a href="/en/kyiv24-live/" class="ch-item-s" data-name="Kyiv 24" aria-label="Kyiv 24 watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">К24</div><div class="ch-name-s">Київ 24</div></a>
+<a href="/en/24kanal-live/" class="ch-item-s" data-name="24 Kanal" aria-label="24 Kanal watch online"><div class="ch-icon-s" style="background:#180808;color:#c62828">24</div><div class="ch-name-s">24 Канал</div></a>
+<a href="/en/rada-tv-live/" class="ch-item-s" data-name="Rada TV" aria-label="Rada TV watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">РД</div><div class="ch-name-s">Рада ТВ</div></a>
+</div>
+<div class="cat-label-s">🎬 Entertainment</div>
+<div class="cat-group-s">
+<a href="/en/ntn-live/" class="ch-item-s" data-name="NTN" aria-label="NTN watch online"><div class="ch-icon-s" style="background:#1a0808;color:#e53935">НТН</div><div class="ch-name-s">НТН</div></a>
+<a href="/en/1plus1-live/" class="ch-item-s" data-name="1+1 International" aria-label="1+1 International watch online"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">1+1</div><div class="ch-name-s">1+1 Міжнар.</div></a>
+<a href="/en/kvartal-tv-live/" class="ch-item-s" data-name="Kvartal TV" aria-label="Kvartal TV watch online"><div class="ch-icon-s" style="background:#1a1000;color:#ff6d00">КВ</div><div class="ch-name-s">Квартал ТВ</div></a>
+<a href="/en/inter-plus-live/" class="ch-item-s" data-name="Inter+" aria-label="Inter+ watch online"><div class="ch-icon-s" style="background:#140a18;color:#7b1fa2">INT+</div><div class="ch-name-s">Інтер+</div></a>
+<a href="/en/mega-live/" class="ch-item-s" data-name="Mega" aria-label="Mega watch online"><div class="ch-icon-s" style="background:#180810;color:#d81b60">МГ</div><div class="ch-name-s">Мега</div></a>
+<a href="/en/k2-live/" class="ch-item-s" data-name="K2" aria-label="K2 watch online"><div class="ch-icon-s" style="background:#130a18;color:#6a1b9a">К2</div><div class="ch-name-s">К2</div></a>
+<a href="/en/4ever-cinema-live/" class="ch-item-s" data-name="4ever Cinema" aria-label="4ever Cinema watch online"><div class="ch-icon-s" style="background:#1a0e00;color:#e65100">4CIN</div><div class="ch-name-s">4ever Cinema</div></a>
+<a href="/en/4ever-drama-live/" class="ch-item-s" data-name="4ever Drama" aria-label="4ever Drama watch online"><div class="ch-icon-s" style="background:#0e0a18;color:#4a148c">4DRM</div><div class="ch-name-s">4ever Drama</div></a>
+</div>
+<div class="cat-label-s">📺 Public</div>
+<div class="cat-group-s">
+<a href="/en/suspilne-live/" class="ch-item-s" data-name="Suspilne Kyiv" aria-label="Suspilne Kyiv watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">СУС</div><div class="ch-name-s">Суспільне Київ</div></a>
+<a href="/en/irt-live/" class="ch-item-s" data-name="IRT" aria-label="IRT watch online"><div class="ch-icon-s" style="background:#081214;color:#00838f">IRT</div><div class="ch-name-s">IRT</div></a>
+<a href="/en/armiya-tv-live/" class="ch-item-s" data-name="Armiya TV" aria-label="Armiya TV watch online"><div class="ch-icon-s" style="background:#0a1408;color:#33691e">АРМ</div><div class="ch-name-s">Армія ТВ</div></a>
+</div>
+<div class="cat-label-s">🏙️ Regional</div>
+<div class="cat-group-s">
+<a href="/en/rai-live/" class="ch-item-s" data-name="RAI" aria-label="RAI watch online"><div class="ch-icon-s" style="background:#180810;color:#ad1457">RAI</div><div class="ch-name-s">RAI</div></a>
+<a href="/en/tva-live/" class="ch-item-s" data-name="TVA" aria-label="TVA watch online"><div class="ch-icon-s" style="background:#0a0f12;color:#37474f">TVA</div><div class="ch-name-s">TVA</div></a>
+<a href="/en/ntk-tv-live/" class="ch-item-s" data-name="NTK TV" aria-label="NTK TV watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">NTK</div><div class="ch-name-s">NTK TV</div></a>
+<a href="/en/dnipro-tv-live/" class="ch-item-s active" data-name="Dnipro TV" aria-label="Dnipro TV watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">ДНП</div><div class="ch-name-s">Дніпро TV</div></a>
+<a href="/en/7kanal-live/" class="ch-item-s" data-name="7 Kanal" aria-label="7 Kanal watch online"><div class="ch-icon-s" style="background:#081214;color:#00838f">7К</div><div class="ch-name-s">7 Канал</div></a>
+<a href="/en/rivne1-live/" class="ch-item-s" data-name="Rivne 1" aria-label="Rivne 1 watch online"><div class="ch-icon-s" style="background:#0a1408;color:#558b2f">РВ1</div><div class="ch-name-s">Рівне 1</div></a>
+<a href="/en/itv-live/" class="ch-item-s" data-name="ITV Ukraine" aria-label="ITV Ukraine watch online"><div class="ch-icon-s" style="background:#181000;color:#f57f17">ITV</div><div class="ch-name-s">ITV</div></a>
+</div>
+<div class="cat-label-s">🎵 Music</div>
+<div class="cat-group-s">
+<a href="/en/muzvar-live/" class="ch-item-s" data-name="Muzvar" aria-label="Muzvar watch online"><div class="ch-icon-s" style="background:#1a1400;color:#FFD500">МЗВ</div><div class="ch-name-s">Мюзвар</div></a>
+<a href="/en/nashe-music-live/" class="ch-item-s" data-name="NASHE Music" aria-label="NASHE Music watch online"><div class="ch-icon-s" style="background:#08101a;color:#005BBB">НШМ</div><div class="ch-name-s">NASHE Music</div></a>
+<a href="/en/m1-live/" class="ch-item-s" data-name="M1" aria-label="M1 watch online"><div class="ch-icon-s" style="background:#180808;color:#c62828">М1</div><div class="ch-name-s">М1</div></a>
+<a href="/en/4ever-music-live/" class="ch-item-s" data-name="4ever Music" aria-label="4ever Music watch online"><div class="ch-icon-s" style="background:#0a0f1a;color:#1565c0">4MUS</div><div class="ch-name-s">4ever Music</div></a>
+<a href="/en/ua-music-live/" class="ch-item-s" data-name="UA Music" aria-label="UA Music watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">UAM</div><div class="ch-name-s">UA Music</div></a>
+</div>
+<div class="cat-label-s">👶 Kids</div>
+<div class="cat-group-s">
+<a href="/en/niki-kids-live/" class="ch-item-s" data-name="Niki Kids" aria-label="Niki Kids watch online"><div class="ch-icon-s" style="background:#181000;color:#f57f17">NIK</div><div class="ch-name-s">Niki Kids</div></a>
+<a href="/en/niki-junior-live/" class="ch-item-s" data-name="Niki Junior" aria-label="Niki Junior watch online"><div class="ch-icon-s" style="background:#180810;color:#e91e63">NIKJ</div><div class="ch-name-s">Niki Junior</div></a>
+</div>
+<div class="cat-label-s">🎯 Thematic</div>
+<div class="cat-group-s">
+<a href="/en/rybalka-tv-live/" class="ch-item-s" data-name="Rybalka TV" aria-label="Rybalka TV watch online"><div class="ch-icon-s" style="background:#081218;color:#0277bd">РИБ</div><div class="ch-name-s">Rybalka TV</div></a>
+<a href="/en/ua-fashion-tv-live/" class="ch-item-s" data-name="UA Fashion TV" aria-label="UA Fashion TV watch online"><div class="ch-icon-s" style="background:#180810;color:#e91e63">МОД</div><div class="ch-name-s">UA Fashion TV</div></a>
+<a href="/en/svarozhychy-live/" class="ch-item-s" data-name="Svarozhychy" aria-label="Svarozhychy watch online"><div class="ch-icon-s" style="background:#120a08;color:#5d4037">СВР</div><div class="ch-name-s">Svarozhychy</div></a>
+<a href="/en/equalympic-live/" class="ch-item-s" data-name="Equalympic" aria-label="Equalympic watch online"><div class="ch-icon-s" style="background:#081208;color:#2e7d32">EQL</div><div class="ch-name-s">Equalympic</div></a>
+</div>
+    </div>
+  </aside>
+
+  <!-- COL 2 ROW 1/3: Right sidebar -->
+  <aside class="side-col">
+
+    <!-- TG card desktop -->
+    <div class="tg-card tg-card-desk">
+      <div style="font-size:32px;margin-bottom:8px">✈️</div>
+      <h3>Watch in Telegram</h3>
+      <p>All 36 Ukrainian channels in one app — free. No ads, no registration.</p>
+      <a href="https://t.me/UkraineTVHub" target="_blank">✈️ Open @UkraineTVHub</a>
+      <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px">@UkraineTVHub</div>
+    </div>
 
     <div class="desc-box">
       <h2>About Dnipro TV</h2>
@@ -477,20 +516,6 @@
         <summary>Is there a Ukrainian-language version of this page? <span>▾</span></summary>
         <p>Yes — the Ukrainian version is available at <a href="https://ukraine-tv.uk/dnipro-tv-live/" style="color:var(--accent2)">https://ukraine-tv.uk/dnipro-tv-live/</a>.</p>
       </details>
-    </div>
-
-  </div>
-
-  <!-- RIGHT sidebar -->
-  <aside class="side-col">
-
-    <!-- TG card desktop -->
-    <div class="tg-card tg-card-desk">
-      <div style="font-size:32px;margin-bottom:8px">✈️</div>
-      <h3>Watch in Telegram</h3>
-      <p>All 36 Ukrainian channels in one app — free. No ads, no registration.</p>
-      <a href="https://t.me/UkraineTVHub" target="_blank">✈️ Open @UkraineTVHub</a>
-      <div style="font-size:11px;color:rgba(255,255,255,.25);margin-top:8px">@UkraineTVHub</div>
     </div>
 
     <!-- Similar channels -->
@@ -603,20 +628,20 @@
 
   // Sidebar search
   var searchInput = document.getElementById('ch-search');
-  var chList = document.getElementById('ch-list');
   searchInput && searchInput.addEventListener('input', function() {
     var q = this.value.toLowerCase();
-    chList.querySelectorAll('.ch-item-s').forEach(function(el) {
-      el.style.display = (el.dataset.name||'').toLowerCase().includes(q) ? '' : 'none';
-    });
-    chList.querySelectorAll('.cat-label-s').forEach(function(el) {
-      var next = el.nextElementSibling;
-      var vis = false;
-      while (next && !next.classList.contains('cat-label-s')) {
-        if (next.style.display !== 'none') vis = true;
-        next = next.nextElementSibling;
+    document.querySelectorAll('.cat-group-s').forEach(function(group) {
+      var hasVisible = false;
+      group.querySelectorAll('.ch-item-s').forEach(function(el) {
+        var show = !q || (el.dataset.name||'').toLowerCase().includes(q);
+        el.style.display = show ? '' : 'none';
+        if (show) hasVisible = true;
+      });
+      var label = group.previousElementSibling;
+      if (label && label.classList.contains('cat-label-s')) {
+        label.style.display = hasVisible ? '' : 'none';
       }
-      el.style.display = vis ? '' : 'none';
+      group.style.display = hasVisible ? '' : 'none';
     });
   });
 
