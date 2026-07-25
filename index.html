@@ -913,8 +913,9 @@
     </style>
 </head>
 <body>
-<!-- TV DEBUG BANNER v4 — видно завжди, без JS -->
-<div style="position:fixed;top:0;left:0;right:0;background:#d00;color:#fff;font-size:18px;font-weight:bold;padding:10px;text-align:center;z-index:9999999;font-family:sans-serif">HTML ЗАВАНТАЖЕНО v4 — перевірка</div>
+<!-- TV DEBUG BANNER v5 -->
+<div id="tv-banner" style="position:fixed;top:0;left:0;right:0;background:#d00;color:#fff;font-size:18px;font-weight:bold;padding:10px;text-align:center;z-index:9999999;font-family:sans-serif">HTML OK v5 — JS: <span id="js-flag">ВИМКНЕНО</span></div>
+<script>document.getElementById('js-flag').textContent='УВІМКНЕНО';</script>
 <!-- TV Debug JS errors -->
 <div id="tv-dbg" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#900;color:#fff;font-size:13px;padding:8px;z-index:9999999;font-family:monospace;word-break:break-all;"></div>
 <script>window.onerror=function(m,s,l){var d=document.getElementById('tv-dbg');if(d){d.style.display='block';d.textContent='ERR: '+m+' ['+l+']';}return true;};</script>
