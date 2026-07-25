@@ -1537,7 +1537,7 @@ function loadStream(ch) {
   }
 
   if (Hls.isSupported()) {
-    hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: true, enableWorker: true, backBufferLength: 30 });
+    hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, function() {

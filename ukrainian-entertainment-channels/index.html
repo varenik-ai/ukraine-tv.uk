@@ -319,7 +319,7 @@ function selectChannel(el, id, name) {
   const url = PROXY + '/stream?channel=' + id;
 
   if (Hls.isSupported()) {
-    hls = new Hls({liveSyncDurationCount:3, lowLatencyMode:true, enableWorker:true});
+    hls = new Hls({liveSyncDurationCount:3, lowLatencyMode:false, enableWorker:false});
     hls.loadSource(url);
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
