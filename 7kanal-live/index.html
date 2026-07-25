@@ -605,7 +605,6 @@ function startStream() {
   }
   overlay.style.display = 'none';
   setStatus('⏳ Підключення...');
-  video.muted = true; video.volume = 1; video.play().catch(function() {});
   if (typeof Hls === 'undefined') { setTimeout(startStream, 300); return; }
   const url = PROXY + '/stream?channel=' + ch_id;
   if (Hls.isSupported()) {
@@ -613,7 +612,7 @@ function startStream() {
     hls.loadSource(url);
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.muted = true; video.play().catch(()=>{});
+      video.muted = true; video.volume = 1; video.play().catch(()=>{});
       setStatus('▶ Трансляція запущена');
       setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
     });

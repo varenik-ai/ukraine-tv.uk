@@ -506,10 +506,10 @@ function stopStream() {
 
 function loadStream(ch) {
   stopStream(); setStatus('Получаем поток...');
-  video.muted = true; video.volume = 1; video.play().catch(function() {});
   if (typeof Hls === 'undefined') { setTimeout(function() { loadStream(ch); }, 300); return; }
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
   function tryPlay() {
+    video.muted = true; video.volume = 1;
     userUnmuted = false; unmuteBtn.textContent = '🔊 Включить звук';
     var p = video.play();
     if (p && typeof p.then === 'function') {

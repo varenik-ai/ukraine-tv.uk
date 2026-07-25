@@ -318,9 +318,6 @@ function selectChannel(el, id, name) {
   if (hls) { hls.destroy(); hls = null; }
   video.src = '';
 
-  // Викликаємо play() в контексті user gesture (клік по картці каналу)
-  video.muted = true; video.volume = 1; video.play().catch(function() {});
-
   const url = PROXY + '/stream?channel=' + id;
   if (typeof Hls === 'undefined') { setTimeout(function() { selectChannel(el, id, name); }, 300); return; }
 
@@ -331,7 +328,7 @@ function selectChannel(el, id, name) {
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       statusEl.textContent = '🔴 Пряма трансляція — ' + name;
       liveBadge.classList.add('show');
-      video.muted = true; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
+      video.muted = true; video.volume = 1; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
       // Telegram overlay after 2 minutes of actual playback
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
