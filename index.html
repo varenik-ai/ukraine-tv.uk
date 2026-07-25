@@ -1513,27 +1513,28 @@ function loadStream(ch) {
   stopStream();
   setStatus('Отримуємо потік...');
 
+  // Викликаємо play() одразу в контексті user gesture (клік по каналу).
+  // На TV-браузерах Chrome 53 autoplay блокується якщо викликати play()
+  // асинхронно (після MANIFEST_PARSED). Muted autoplay дозволено завжди.
+  video.muted = true;
+  video.volume = 1;
+  video.play().catch(function() {});
+
+  // HLS.js може ще не завантажитись (defer) — чекаємо
+  if (typeof Hls === 'undefined') {
+    setTimeout(function() { loadStream(ch); }, 300);
+    return;
+  }
+
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
   function tryPlay() {
-    video.muted = false;
-    video.volume = 1;
+    // video вже в контексті muted autoplay — просто показуємо кнопку unmute
+    userUnmuted = false;
+    unmuteBtn.textContent = '🔊 Увімкнути звук';
     var p = video.play();
     if (p && typeof p.then === 'function') {
-      p.then(function() {
-        // успешно — звук включён
-        userUnmuted = true;
-        unmuteBtn.textContent = '🔇 Вимкнути звук';
-      }).catch(function() {
-        // браузер заблокував — fallback на muted
-        video.muted = true;
-        userUnmuted = false;
-        unmuteBtn.textContent = '🔊 Увімкнути звук';
-        var p2 = video.play();
-        if (p2 && typeof p2.then === 'function') {
-          p2.catch(function() { setStatus('Натисніть ▶ для відтворення'); });
-        }
-      });
+      p.catch(function() { setStatus('Натисніть ▶ для відтворення'); });
     }
   }
 

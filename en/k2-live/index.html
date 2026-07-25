@@ -596,12 +596,14 @@
 
   function loadStream() {
     status.textContent = 'Connecting...';
+    video.muted = true; video.volume = 1; video.play().catch(function() {});
+    if (typeof Hls === 'undefined') { setTimeout(loadStream, 300); return; }
     if (Hls.isSupported()) {
-      var hls = new Hls({maxBufferLength:20,maxMaxBufferLength:40,lowLatencyMode:true});
+      var hls = new Hls({maxBufferLength:20,maxMaxBufferLength:40,lowLatencyMode:false,enableWorker:false});
       hls.loadSource(STREAM);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        video.play();
+        video.muted = true; video.play().catch(function() {});
         status.textContent = '🔴 LIVE';
         _overlayTimer = setTimeout(showTgOverlay, 120000);
       });
