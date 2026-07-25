@@ -296,25 +296,20 @@ function selectChannel(el, id, name) {
 
   // Destroy previous HLS instance
   if (hls) { hls.destroy(); hls = null; }
-  if (window._catCpHandler) { video.removeEventListener('canplay', window._catCpHandler); }
   video.src = '';
 
   const url = PROXY + '/stream?channel=' + id;
   if (typeof Hls === 'undefined') { setTimeout(function() { selectChannel(el, id, name); }, 300); return; }
 
-  window._catCpHandler = function() {
-    video.removeEventListener('canplay', window._catCpHandler); window._catCpHandler = null;
-    video.muted = true; video.volume = 1; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
-  };
-  video.addEventListener('canplay', window._catCpHandler);
-
   if (Hls.isSupported()) {
     hls = new Hls({liveSyncDurationCount:3, lowLatencyMode:false, enableWorker:false});
     hls.loadSource(url);
     hls.attachMedia(video);
+    video.muted = true; video.volume = 1; var p0 = video.play(); if (p0 && typeof p0.then === 'function') { p0.catch(function(){}); }
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       statusEl.textContent = '🔴 Пряма трансляція — ' + name;
       liveBadge.classList.add('show');
+      video.muted = true; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
         overlayTimer = setTimeout(function() {

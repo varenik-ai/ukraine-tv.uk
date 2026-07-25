@@ -1503,11 +1503,8 @@ function setStatus(msg, isError = false) {
   reloadBtn.style.display = isError ? 'block' : 'none';
 }
 
-var _canPlayHandler = null;
-
 function stopStream() {
   if (hls) { hls.destroy(); hls = null; }
-  if (_canPlayHandler) { video.removeEventListener('canplay', _canPlayHandler); _canPlayHandler = null; }
   video.src = '';
   liveBadge.style.display = 'none';
 }
@@ -1524,30 +1521,25 @@ function loadStream(ch) {
 
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
-  // play() викликається з canplay — коли буфер вже заповнений.
-  // На Chrome 53 play() при readyState=0 ігнорується (без помилки) → чорний екран.
-  _canPlayHandler = function() {
-    video.removeEventListener('canplay', _canPlayHandler);
-    _canPlayHandler = null;
-    video.muted = true;
-    video.volume = 1;
-    userUnmuted = false;
-    unmuteBtn.textContent = '🔊 Увімкнути звук';
+  function doPlay() {
+    video.muted = true; video.volume = 1;
+    userUnmuted = false; unmuteBtn.textContent = '🔊 Увімкнути звук';
     var p = video.play();
-    if (p && typeof p.then === 'function') {
-      p.catch(function() { setStatus('Натисніть ▶ для відтворення'); });
-    }
-  };
-  video.addEventListener('canplay', _canPlayHandler);
+    if (p && typeof p.then === 'function') { p.catch(function() {}); }
+  }
 
   if (Hls.isSupported()) {
     hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
+    // Викликаємо play() одразу після attachMedia — ще в контексті user gesture (клік).
+    // На TV Chrome 53 autoplay без user gesture блокується навіть для muted.
+    // hls.attachMedia() синхронно встановлює video.src = MediaSourceURL, тому src вже валідний.
+    doPlay();
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      // Telegram overlay через 2 хвилини після старту трансляції
+      doPlay(); // повторний виклик — сегменти вже завантажуються
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
         overlayTimer = setTimeout(function() {
@@ -1569,6 +1561,7 @@ function loadStream(ch) {
       video.removeEventListener('loadedmetadata', onMeta);
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
+      doPlay();
     }
     video.addEventListener('loadedmetadata', onMeta);
   } else {

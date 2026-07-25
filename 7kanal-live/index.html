@@ -607,17 +607,13 @@ function startStream() {
   setStatus('⏳ Підключення...');
   if (typeof Hls === 'undefined') { setTimeout(startStream, 300); return; }
   const url = PROXY + '/stream?channel=' + ch_id;
-  // play() при canplay — коли буфер заповнений (Chrome 53: play() до даних ігнорується)
-  var _cpHandler = function() {
-    video.removeEventListener('canplay', _cpHandler);
-    video.muted = true; video.volume = 1; video.play().catch(function() {});
-  };
-  video.addEventListener('canplay', _cpHandler);
   if (Hls.isSupported()) {
     hls = new Hls({liveSyncDurationCount:3,lowLatencyMode:false,enableWorker:false});
     hls.loadSource(url);
     hls.attachMedia(video);
+    video.muted = true; video.volume = 1; video.play().catch(function() {});
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.muted = true; video.play().catch(()=>{});
       setStatus('▶ Трансляція запущена');
       setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
     });
@@ -626,6 +622,7 @@ function startStream() {
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = url;
+    video.muted = true; video.play().catch(()=>{});
     setStatus('▶ Трансляція запущена');
     setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
   }
