@@ -1646,6 +1646,13 @@ overlaySkip.addEventListener('click', () => {
 // ── Init ──────────────────────────────────────────────────────
 buildGrid();
 renderSidebarBlocks();
+// TV DEBUG: JS ran successfully
+(function() {
+  var b = document.createElement('div');
+  b.style.cssText = 'position:fixed;top:44px;left:0;right:0;background:#080;color:#fff;font-size:16px;font-weight:bold;padding:8px;text-align:center;z-index:9999999;font-family:sans-serif';
+  b.textContent = 'JS ПРАЦЮЄ — каналів: ' + (typeof CHANNEL_GROUPS !== 'undefined' ? CHANNEL_GROUPS.reduce(function(s,g){return s+g.channels.length;},0) : '?');
+  document.body.appendChild(b);
+})();
 
 
 // ── Anti-AdBlock — перевірка через власний player-config.js ─────────────
