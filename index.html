@@ -913,6 +913,10 @@
     </style>
 </head>
 <body>
+<!-- TV Debug: показує JS помилки прямо на екрані -->
+<div id="tv-dbg" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#c00;color:#fff;font-size:13px;padding:8px;z-index:99999;font-family:monospace;word-break:break-all;"></div>
+<script>window.onerror=function(m,s,l){var d=document.getElementById('tv-dbg');if(d){d.style.display='block';d.textContent='ERR: '+m+' ['+l+']';}return true;};</script>
+<!-- TV version check: v2 -->
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PTZRN8HT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
