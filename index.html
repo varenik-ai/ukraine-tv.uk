@@ -1359,13 +1359,13 @@ const POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne
 // ── Recently viewed (localStorage, top 5) ─────────────────────
 const LS_RECENT = 'utv_recent_v1';
 function getRecent() {
-  try { return JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); } catch(e) { return []; }
 }
 function saveRecent(id) {
   let arr = getRecent().filter(x => x !== id);
   arr.unshift(id);
   arr = arr.slice(0, 5);
-  try { localStorage.setItem(LS_RECENT, JSON.stringify(arr)); } catch {}
+  try { localStorage.setItem(LS_RECENT, JSON.stringify(arr)); } catch(e) {}
 }
 
 // ── Find channel object by id ──────────────────────────────────
@@ -1592,7 +1592,7 @@ fsBtn.addEventListener('click', () => {
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
     fsBtn.textContent = '⛶ Повний екран';
   } else {
-    if (playerWrap.requestFullscreen) playerWrap.requestFullscreen().catch(()=>{});
+    if (playerWrap.requestFullscreen) { var fsP = playerWrap.requestFullscreen(); if (fsP && typeof fsP.catch === 'function') { fsP.catch(function(){}); } }
     else if (playerWrap.webkitRequestFullscreen) playerWrap.webkitRequestFullscreen();
     else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iOS Safari
     fsBtn.textContent = '✕ Вийти';
@@ -1611,7 +1611,7 @@ video.addEventListener('webkitendfullscreen', () => { fsBtn.textContent = '⛶ �
 overlaySkip.addEventListener('click', () => {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
-  video.play().catch(() => {});
+  var ovp = video.play(); if (ovp && typeof ovp.catch === 'function') { ovp.catch(function(){}); }
 });
 
 // ── Player controls fade on mousemove ────────────────────────
