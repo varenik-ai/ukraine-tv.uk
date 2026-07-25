@@ -100,7 +100,8 @@
     .intro-text.active{display:block}
     /* PLAYER */
     .player-section{max-width:900px;margin:24px auto 0;padding:0 24px}
-    .player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+    .player-wrap{position:relative;width:100%;aspect-ratio:16/9;padding-top:56.25%;background:#000;border-radius:12px;overflow:hidden}
+    @supports (aspect-ratio:16/9){.player-wrap{padding-top:0}}
     .player-wrap video{width:100%;height:100%;display:block;object-fit:contain}
     .player-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;gap:12px;flex-wrap:wrap}
     .player-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;flex:1;min-width:0;overflow:hidden}

@@ -465,6 +465,10 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       aspect-ratio: 16/9;
+      padding-top: 56.25%; /* fallback for TV browsers without aspect-ratio */
+    }
+    @supports (aspect-ratio: 16/9) {
+      .player-wrap { padding-top: 0; }
     }
 
     video {
@@ -1319,7 +1323,7 @@ function renderSidebarMini(gridId, blockId, ids) {
   grid.innerHTML = '';
   channels.forEach(ch => {
     const card = document.createElement('div');
-    card.className = 'mini-ch-card' + (currentCh?.id === ch.id ? ' active' : '');
+    card.className = 'mini-ch-card' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
     card.innerHTML = `<span class="mini-ch-dot"></span>${ch.name}`;
     card.onclick = () => openChannel(ch);
     grid.appendChild(card);
@@ -1362,7 +1366,7 @@ function buildGrid(search = '') {
 
     filtered.forEach(ch => {
       const item = document.createElement('div');
-      item.className = 'ch-item' + (currentCh?.id === ch.id ? ' active' : '');
+      item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
       item.dataset.id = ch.id;
       item.setAttribute('aria-label', `${ch.name} — дивитися онлайн`);
       item.innerHTML = `
@@ -1393,10 +1397,11 @@ function openChannel(ch) {
   buildGrid(searchInput.value);
   renderSidebarBlocks();
 
-  // Scroll to player
-  const playerWrap = document.getElementById('player-wrap');
+  // Scroll to player (TV-compatible)
+  var playerWrap = document.getElementById('player-wrap');
   if (playerWrap) {
-    playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try { playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    catch(e) { playerWrap.scrollIntoView(true); }
   }
 
   // Update info card
@@ -1410,9 +1415,12 @@ function openChannel(ch) {
   ciDesc.textContent = ch.desc;
   ciTags.innerHTML = ch.tags.map(t => `<span class="ci-tag">${t}</span>`).join('');
 
-  // Scroll active tile into view
-  const activeItem = channelGrid.querySelector('.ch-item.active');
-  if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Scroll active tile into view (TV-compatible)
+  var activeItem = channelGrid.querySelector('.ch-item.active');
+  if (activeItem) {
+    try { activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    catch(e) { activeItem.scrollIntoView(true); }
+  }
 
   // Скидаємо таймер при зміні каналу
   clearTimeout(overlayTimer);

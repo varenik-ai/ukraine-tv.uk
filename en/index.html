@@ -115,7 +115,8 @@
     .ch-desc-s{display:none}
     .live-indicator{display:none}
     .player-col{display:flex;flex-direction:column;gap:14px}
-    .player-wrap{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);aspect-ratio:16/9}
+    .player-wrap{position:relative;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);aspect-ratio:16/9;padding-top:56.25%}
+    @supports (aspect-ratio:16/9){.player-wrap{padding-top:0}}
     video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
     .player-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg2)}
     .player-empty .big-icon{font-size:56px;opacity:.3}
@@ -458,7 +459,7 @@ function buildSidebar(filter) {
     catGroup.className = 'cat-group'; sidebar.appendChild(catGroup);
     matching.forEach(ch => {
       const item = document.createElement('div');
-      item.className = 'ch-item' + (currentCh?.id === ch.id ? ' active' : '');
+      item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
       item.innerHTML = `<div class="ch-icon-s" style="background:${ch.iconBg};color:${ch.color}">${ch.icon}</div><div class="ch-name-s">${ch.name}</div>`;
       item.onclick = () => openChannel(ch);
       catGroup.appendChild(item);
@@ -471,9 +472,9 @@ searchInput.addEventListener('input', e => buildSidebar(e.target.value));
 
 function openChannel(ch) {
   currentCh = ch; buildSidebar(searchInput.value);
-  // Scroll to player
-  const pw = document.getElementById('player-wrap');
-  if (pw) pw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll to player (TV-compatible)
+  var pw = document.getElementById('player-wrap');
+  if (pw) { try { pw.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch(e) { pw.scrollIntoView(true); } }
   playerEmpty.classList.add('hidden');
   npName.textContent = ch.name; npDesc.textContent = ch.desc;
   npBar.classList.add('visible');
