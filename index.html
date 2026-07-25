@@ -189,8 +189,8 @@
   </script>
 
   <meta name="theme-color" content="#0a0a14" />
-  <!-- HLS.js и player-config с defer — не блокируют парсинг HTML -->
-  <script src="/player-config.js" onerror="window._playerReady=false"></script>
+  <!-- HLS.js и player-config: async не блокирует парсинг HTML -->
+  <script src="/player-config.js" async onerror="window._playerReady=false"></script>
   <script src="/hls.min.js" defer></script>
 
   <!-- ═══ Monetag: In-Page Push Banner (zone 11258077) ═══ -->
