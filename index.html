@@ -35,9 +35,11 @@
   <link rel="alternate icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='16' fill='%230057B7'/%3E%3Crect y='16' width='32' height='16' fill='%23FFD700'/%3E%3C/svg%3E" />
   <meta name="theme-color" content="#0057B7" />
 
-  <!-- ═══ Typography ═══ -->
+  <!-- ═══ Typography (non-blocking) ═══ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
   <!-- ═══ Open Graph (Facebook, Telegram preview) ═══ -->
   <meta property="og:type"        content="website" />
@@ -187,15 +189,14 @@
   </script>
 
   <meta name="theme-color" content="#0a0a14" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
-  <script src="/player-config.js" onerror="window._playerReady=false"></script>
+  <!-- HLS.js и player-config с defer — не блокируют парсинг HTML -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js" defer></script>
+  <script src="/player-config.js" defer onerror="window._playerReady=false"></script>
 
   <!-- ═══ Monetag: In-Page Push Banner (zone 11258077) ═══ -->
-  <script>(function(s){s.dataset.zone='11258077',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <script defer>(function(s){s.dataset.zone='11258077',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <!-- ═══ Monetag: Vignette Banner (zone 11258093) ═══ -->
-  <script>(function(s){s.dataset.zone='11258093',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+  <script defer>(function(s){s.dataset.zone='11258093',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
   <style>
     :root {
