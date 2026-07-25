@@ -1261,8 +1261,27 @@
      JAVASCRIPT
      ═══════════════════════════════════════════════════════════ -->
 <!-- channels.js + app.js: весь JS винесений окремо (TV Chrome 53 не виконує великий inline-скрипт) -->
-<script src="/channels.js?v=2"></script>
-<script src="/app.js?v=2"></script>
+<script>
+// Динамічне завантаження: channels.js → app.js, з обробкою помилок
+(function() {
+  function flag(t) { var f = document.getElementById('js-flag'); if (f) f.textContent = t; }
+  function load(url, ok, err) {
+    var s = document.createElement('script');
+    s.src = url;
+    s.onload = ok || function(){};
+    s.onerror = err || function(){};
+    document.head.appendChild(s);
+  }
+  flag('LOADING CH...');
+  load('/channels.js?v=3',
+    function() {
+      flag('CH OK, LOADING APP...');
+      load('/app.js?v=3', null, function() { flag('APP.JS LOAD ERR'); });
+    },
+    function() { flag('CHANNELS.JS LOAD ERR'); }
+  );
+})();
+</script>
 
 </body>
 </html>
