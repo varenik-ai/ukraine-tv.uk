@@ -1,138 +1,167 @@
-// DEBUG STEP 1: app.js почав виконуватись
+// app.js — ES5 only (Chrome 47+ / Samsung Tizen 3+ / LG WebOS 3+)
+
+// DEBUG STEP 1
 (function(){var f=document.getElementById('js-flag');if(f)f.textContent='1:APP.JS OK';})();
 
 var PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
 var TG_URL = 'https://t.me/UkraineTVHub';
 
-
 // ── State ─────────────────────────────────────────────────────
-let currentCh = null, hls = null, overlayTimer = null, userUnmuted = false, _overlayCount = 0;
+var currentCh = null, hls = null, overlayTimer = null, userUnmuted = false, _overlayCount = 0;
 
 // ── DOM ───────────────────────────────────────────────────────
-const video        = document.getElementById('video');
-const playerEmpty  = document.getElementById('player-empty');
-const liveBadge    = document.getElementById('live-badge');
-const npBar        = document.getElementById('now-playing-bar');
-const npName       = document.getElementById('np-name');
-const npDesc       = document.getElementById('np-desc');
-const reloadBtn    = document.getElementById('reload-btn');
-const fsBtn        = document.getElementById('fullscreen-btn');
-const unmuteBtn    = document.getElementById('unmute-btn');
-const unmuteBanner = document.getElementById('unmute-banner');
-const tgOverlay    = document.getElementById('tg-overlay');
-const overlaySkip  = document.getElementById('overlay-skip');
-const statusEl     = document.getElementById('player-status');
-const infoCard     = document.getElementById('channel-info-card');
-const ciTitle      = document.getElementById('ci-title');
-const ciDesc       = document.getElementById('ci-desc');
-const ciTags       = document.getElementById('ci-tags');
-const searchInput  = document.getElementById('search-input');
-const channelGrid  = document.getElementById('channel-grid');
+var video        = document.getElementById('video');
+var playerEmpty  = document.getElementById('player-empty');
+var liveBadge    = document.getElementById('live-badge');
+var npBar        = document.getElementById('now-playing-bar');
+var npName       = document.getElementById('np-name');
+var npDesc       = document.getElementById('np-desc');
+var reloadBtn    = document.getElementById('reload-btn');
+var fsBtn        = document.getElementById('fullscreen-btn');
+var unmuteBtn    = document.getElementById('unmute-btn');
+var unmuteBanner = document.getElementById('unmute-banner');
+var tgOverlay    = document.getElementById('tg-overlay');
+var overlaySkip  = document.getElementById('overlay-skip');
+var statusEl     = document.getElementById('player-status');
+var infoCard     = document.getElementById('channel-info-card');
+var ciTitle      = document.getElementById('ci-title');
+var ciDesc       = document.getElementById('ci-desc');
+var ciTags       = document.getElementById('ci-tags');
+var searchInput  = document.getElementById('search-input');
+var channelGrid  = document.getElementById('channel-grid');
 
-// DEBUG STEP 2: DOM-елементи отримано
+// DEBUG STEP 2
 (function(){var f=document.getElementById('js-flag');if(f)f.textContent='2:DOM OK ch='+(typeof CHANNEL_GROUPS!=='undefined'?CHANNEL_GROUPS.length:'?');})();
 
-// ── Popular channels (hardcoded) ──────────────────────────────
-const POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
+// ── Popular channels ──────────────────────────────────────────
+var POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
 
-// ── Recently viewed (localStorage, top 5) ─────────────────────
-const LS_RECENT = 'utv_recent_v1';
+// ── Recently viewed (localStorage) ───────────────────────────
+var LS_RECENT = 'utv_recent_v1';
 function getRecent() {
   try { return JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); } catch(e) { return []; }
 }
 function saveRecent(id) {
-  let arr = getRecent().filter(x => x !== id);
+  var arr = getRecent().filter(function(x) { return x !== id; });
   arr.unshift(id);
   arr = arr.slice(0, 5);
   try { localStorage.setItem(LS_RECENT, JSON.stringify(arr)); } catch(e) {}
 }
 
-// ── Find channel object by id ──────────────────────────────────
+// ── Find channel by id ────────────────────────────────────────
 function findChannel(id) {
-  for (const g of CHANNEL_GROUPS) {
-    const ch = g.channels.find(c => c.id === id);
-    if (ch) return ch;
+  for (var gi = 0; gi < CHANNEL_GROUPS.length; gi++) {
+    var g = CHANNEL_GROUPS[gi];
+    for (var ci = 0; ci < g.channels.length; ci++) {
+      if (g.channels[ci].id === id) return g.channels[ci];
+    }
   }
   return null;
 }
 
-// ── Render Popular/Recent in right sidebar ────────────────────
+// ── Render Popular/Recent sidebar ─────────────────────────────
 function renderSidebarMini(gridId, blockId, ids) {
-  const grid = document.getElementById(gridId);
-  const block = document.getElementById(blockId);
+  var grid = document.getElementById(gridId);
+  var block = document.getElementById(blockId);
   if (!grid || !block) return;
-  const channels = ids.map(findChannel).filter(Boolean);
+  var channels = [];
+  for (var i = 0; i < ids.length; i++) {
+    var ch = findChannel(ids[i]);
+    if (ch) channels.push(ch);
+  }
   block.style.display = channels.length ? '' : 'none';
   grid.innerHTML = '';
-  channels.forEach(ch => {
-    const card = document.createElement('div');
-    card.className = 'mini-ch-card' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
-    card.innerHTML = `<span class="mini-ch-dot"></span>${ch.name}`;
-    card.onclick = () => openChannel(ch);
-    grid.appendChild(card);
-  });
+  for (var j = 0; j < channels.length; j++) {
+    (function(ch) {
+      var card = document.createElement('div');
+      card.className = 'mini-ch-card' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
+      card.innerHTML = '<span class="mini-ch-dot"></span>' + ch.name;
+      card.onclick = function() { openChannel(ch); };
+      grid.appendChild(card);
+    })(channels[j]);
+  }
 }
 
 function renderSidebarBlocks() {
   renderSidebarMini('popular-grid', 'popular-block', POPULAR_IDS);
-  const recentIds = getRecent();
+  var recentIds = getRecent();
   renderSidebarMini('recent-grid', 'recent-block', recentIds);
 }
 
-// ── Active filter state ───────────────────────────────────────
-let activeFilter = '';
+// ── Active filter ─────────────────────────────────────────────
+var activeFilter = '';
 
 // ── Build channel grid ────────────────────────────────────────
 function buildGrid(search) {
   search = search || '';
-  channelGrid.innerHTML = '<div id="grid-dbg" style="color:lime;font-size:14px;padding:4px;font-family:monospace">JS OK — buildGrid() запущено</div>';
-  const q = search.toLowerCase();
+  channelGrid.innerHTML = '<div style="color:lime;font-size:14px;padding:4px;font-family:monospace">buildGrid() OK</div>';
+  var q = search.toLowerCase();
 
-  CHANNEL_GROUPS.forEach(group => {
-    // Filter by search query
-    const matchingChannels = group.channels.filter(ch =>
-      !q || ch.name.toLowerCase().includes(q) || ch.tags.some(t => t.includes(q))
-    );
-    // Filter by active category tab
-    const filtered = activeFilter
-      ? matchingChannels.filter(() => group.label === activeFilter)
+  for (var gi = 0; gi < CHANNEL_GROUPS.length; gi++) {
+    var group = CHANNEL_GROUPS[gi];
+
+    var matchingChannels = [];
+    for (var ci = 0; ci < group.channels.length; ci++) {
+      var ch = group.channels[ci];
+      if (!q) {
+        matchingChannels.push(ch);
+      } else {
+        var nameMatch = ch.name.toLowerCase().indexOf(q) >= 0;
+        var tagMatch = false;
+        for (var ti = 0; ti < ch.tags.length; ti++) {
+          if (ch.tags[ti].indexOf(q) >= 0) { tagMatch = true; break; }
+        }
+        if (nameMatch || tagMatch) matchingChannels.push(ch);
+      }
+    }
+
+    var filtered = activeFilter
+      ? (group.label === activeFilter ? matchingChannels : [])
       : matchingChannels;
-    if (!filtered.length) return;
+    if (!filtered.length) continue;
 
-    const label = document.createElement('div');
+    var label = document.createElement('div');
     label.className = 'cat-label';
     label.textContent = group.label;
     channelGrid.appendChild(label);
 
-    const catGroup = document.createElement('div');
+    var catGroup = document.createElement('div');
     catGroup.className = 'cat-group';
     channelGrid.appendChild(catGroup);
 
-    filtered.forEach(ch => {
-      const item = document.createElement('div');
-      item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
-      item.dataset.id = ch.id;
-      item.setAttribute('aria-label', `${ch.name} — дивитися онлайн`);
-      item.innerHTML = `
-        <div class="ch-icon-s" style="background:${ch.iconBg};color:${ch.color}" role="img" aria-label="${ch.name}">${ch.icon}</div>
-        <div class="ch-name-s">${ch.name}</div>`;
-      item.onclick = () => openChannel(ch);
-      catGroup.appendChild(item);
-    });
-  });
+    for (var fi = 0; fi < filtered.length; fi++) {
+      (function(ch) {
+        var item = document.createElement('div');
+        item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
+        item.dataset.id = ch.id;
+        item.setAttribute('aria-label', ch.name + ' — дивитися онлайн');
+        item.innerHTML =
+          '<div class="ch-icon-s" style="background:' + ch.iconBg + ';color:' + ch.color + '" role="img" aria-label="' + ch.name + '">' + ch.icon + '</div>' +
+          '<div class="ch-name-s">' + ch.name + '</div>';
+        item.onclick = function() { openChannel(ch); };
+        catGroup.appendChild(item);
+      })(filtered[fi]);
+    }
+  }
 }
 
-// ── Filter tabs logic ─────────────────────────────────────────
-document.getElementById('filter-tabs').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-tab');
-  if (!btn) return;
-  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+// ── Filter tabs ───────────────────────────────────────────────
+document.getElementById('filter-tabs').addEventListener('click', function(e) {
+  var btn = e.target;
+  // walk up to find .filter-tab
+  while (btn && btn !== this) {
+    if (btn.className && btn.className.indexOf('filter-tab') >= 0) break;
+    btn = btn.parentNode;
+  }
+  if (!btn || btn === this) return;
+  var tabs = document.querySelectorAll('.filter-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
   btn.classList.add('active');
-  activeFilter = btn.dataset.filter;
+  activeFilter = btn.dataset.filter || btn.getAttribute('data-filter') || '';
   buildGrid(searchInput.value);
 });
 
-searchInput.addEventListener('input', e => buildGrid(e.target.value));
+searchInput.addEventListener('input', function(e) { buildGrid(e.target.value); });
 
 // ── Open channel ──────────────────────────────────────────────
 function openChannel(ch) {
@@ -141,14 +170,12 @@ function openChannel(ch) {
   buildGrid(searchInput.value);
   renderSidebarBlocks();
 
-  // Scroll to player (TV-compatible)
   var playerWrap = document.getElementById('player-wrap');
   if (playerWrap) {
     try { playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    catch(e) { playerWrap.scrollIntoView(true); }
+    catch(e) { try { playerWrap.scrollIntoView(true); } catch(e2) {} }
   }
 
-  // Update info card
   playerEmpty.classList.add('hidden');
   npName.textContent = ch.name;
   npDesc.textContent = ch.desc;
@@ -157,29 +184,29 @@ function openChannel(ch) {
   infoCard.style.display = 'block';
   ciTitle.textContent = ch.name;
   ciDesc.textContent = ch.desc;
-  ciTags.innerHTML = ch.tags.map(t => `<span class="ci-tag">${t}</span>`).join('');
+  var tagHtml = '';
+  for (var i = 0; i < ch.tags.length; i++) {
+    tagHtml += '<span class="ci-tag">' + ch.tags[i] + '</span>';
+  }
+  ciTags.innerHTML = tagHtml;
 
-  // Scroll active tile into view (TV-compatible)
   var activeItem = channelGrid.querySelector('.ch-item.active');
   if (activeItem) {
     try { activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-    catch(e) { activeItem.scrollIntoView(true); }
+    catch(e) { try { activeItem.scrollIntoView(true); } catch(e2) {} }
   }
 
-  // Скидаємо таймер при зміні каналу
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
-
   loadStream(ch);
 }
 
 // ── Stream ────────────────────────────────────────────────────
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
-
-function setStatus(msg, isError = false) {
+function setStatus(msg, isError) {
+  if (isError === undefined) isError = false;
   statusEl.innerHTML = isError
-    ? `⚠️ ${msg}`
-    : `<span class="status-dot"></span>${msg}`;
+    ? '⚠️ ' + msg
+    : '<span class="status-dot"></span>' + msg;
   reloadBtn.style.display = isError ? 'block' : 'none';
 }
 
@@ -193,7 +220,6 @@ function loadStream(ch) {
   stopStream();
   setStatus('Отримуємо потік...');
 
-  // HLS.js може ще не завантажитись (defer) — чекаємо
   if (typeof Hls === 'undefined') {
     setTimeout(function() { loadStream(ch); }, 300);
     return;
@@ -212,14 +238,11 @@ function loadStream(ch) {
     hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
-    // Викликаємо play() одразу після attachMedia — ще в контексті user gesture (клік).
-    // На TV Chrome 53 autoplay без user gesture блокується навіть для muted.
-    // hls.attachMedia() синхронно встановлює video.src = MediaSourceURL, тому src вже валідний.
     doPlay();
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      doPlay(); // повторний виклик — сегменти вже завантажуються
+      doPlay();
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
         overlayTimer = setTimeout(function() {
@@ -229,7 +252,7 @@ function loadStream(ch) {
         }, 120000);
       }
     });
-    hls.on(Hls.Events.ERROR, function(e, data) {
+    hls.on(Hls.Events.ERROR, function(ev, data) {
       if (!data.fatal) return;
       if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { try { hls.startLoad(); } catch(e) {} return; }
       if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
@@ -250,7 +273,7 @@ function loadStream(ch) {
 }
 
 // ── Unmute ────────────────────────────────────────────────────
-unmuteBtn.addEventListener('click', () => {
+unmuteBtn.addEventListener('click', function() {
   if (video.muted) {
     video.muted = false; video.volume = 1; userUnmuted = true;
     unmuteBtn.textContent = '🔇 Вимкнути звук';
@@ -261,87 +284,97 @@ unmuteBtn.addEventListener('click', () => {
 });
 
 // ── Reload ────────────────────────────────────────────────────
-reloadBtn.addEventListener('click', () => { if (currentCh) loadStream(currentCh); });
+reloadBtn.addEventListener('click', function() { if (currentCh) loadStream(currentCh); });
 
 // ── Fullscreen ────────────────────────────────────────────────
-const playerWrap = document.getElementById('player-wrap');
-fsBtn.addEventListener('click', () => {
-  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+var playerWrap = document.getElementById('player-wrap');
+fsBtn.addEventListener('click', function() {
+  var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
   if (fsEl) {
     if (document.exitFullscreen) document.exitFullscreen();
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    fsBtn.textContent = '⛶ Повний екран';
+    fsBtn.textContent = '⧶ Повний екран';
   } else {
-    if (playerWrap.requestFullscreen) { var fsP = playerWrap.requestFullscreen(); if (fsP && typeof fsP.catch === 'function') { fsP.catch(function(){}); } }
-    else if (playerWrap.webkitRequestFullscreen) playerWrap.webkitRequestFullscreen();
-    else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iOS Safari
+    if (playerWrap.requestFullscreen) {
+      var fsP = playerWrap.requestFullscreen();
+      if (fsP && typeof fsP.catch === 'function') { fsP.catch(function(){}); }
+    } else if (playerWrap.webkitRequestFullscreen) {
+      playerWrap.webkitRequestFullscreen();
+    } else if (video.webkitEnterFullscreen) {
+      video.webkitEnterFullscreen();
+    }
     fsBtn.textContent = '✕ Вийти';
   }
 });
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement) fsBtn.textContent = '⛶ Повний екран';
+document.addEventListener('fullscreenchange', function() {
+  if (!document.fullscreenElement) fsBtn.textContent = '⧶ Повний екран';
 });
-document.addEventListener('webkitfullscreenchange', () => {
-  if (!document.webkitFullscreenElement) fsBtn.textContent = '⛶ Повний екран';
+document.addEventListener('webkitfullscreenchange', function() {
+  if (!document.webkitFullscreenElement) fsBtn.textContent = '⧶ Повний екран';
 });
-video.addEventListener('webkitbeginfullscreen', () => { fsBtn.textContent = '✕ Вийти'; });
-video.addEventListener('webkitendfullscreen', () => { fsBtn.textContent = '⛶ Повний екран'; });
+video.addEventListener('webkitbeginfullscreen', function() { fsBtn.textContent = '✕ Вийти'; });
+video.addEventListener('webkitendfullscreen', function() { fsBtn.textContent = '⧶ Повний екран'; });
 
 // ── Telegram overlay ──────────────────────────────────────────
-overlaySkip.addEventListener('click', () => {
+overlaySkip.addEventListener('click', function() {
   tgOverlay.classList.remove('show');
   clearTimeout(overlayTimer);
-  var ovp = video.play(); if (ovp && typeof ovp.catch === 'function') { ovp.catch(function(){}); }
+  var ovp = video.play();
+  if (ovp && typeof ovp.catch === 'function') { ovp.catch(function(){}); }
 });
 
-// ── Player controls fade on mousemove ────────────────────────
-(function initControlsFade() {
-  const wrap = document.getElementById('player-wrap');
-  let hideTimer = null;
+// ── Player controls fade ──────────────────────────────────────
+(function() {
+  var wrap = document.getElementById('player-wrap');
+  var hideTimer = null;
 
   function showControls() {
     wrap.classList.add('controls-visible');
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => wrap.classList.remove('controls-visible'), 3000);
+    hideTimer = setTimeout(function() { wrap.classList.remove('controls-visible'); }, 3000);
   }
 
   wrap.addEventListener('mousemove', showControls);
   wrap.addEventListener('mouseenter', showControls);
-  wrap.addEventListener('mouseleave', () => {
+  wrap.addEventListener('mouseleave', function() {
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => wrap.classList.remove('controls-visible'), 600);
+    hideTimer = setTimeout(function() { wrap.classList.remove('controls-visible'); }, 600);
   });
-
-  // Touch support
-  wrap.addEventListener('touchstart', () => { showControls(); }, { passive: true });
+  try {
+    wrap.addEventListener('touchstart', function() { showControls(); }, { passive: true });
+  } catch(e) {
+    wrap.addEventListener('touchstart', function() { showControls(); });
+  }
 })();
 
-// DEBUG STEP 3: перед buildGrid
+// DEBUG STEP 3
 (function(){var f=document.getElementById('js-flag');if(f)f.textContent='3:BEFORE GRID';})();
 
 // ── Init ──────────────────────────────────────────────────────
 buildGrid();
 renderSidebarBlocks();
-// DEBUG STEP 4: після buildGrid
+
+// DEBUG STEP 4
 (function(){var f=document.getElementById('js-flag');if(f)f.textContent='4:GRID DONE';})();
-// TV DEBUG: JS ran successfully
+
+// Green success banner
 (function() {
   var b = document.createElement('div');
   b.style.cssText = 'position:fixed;top:44px;left:0;right:0;background:#080;color:#fff;font-size:16px;font-weight:bold;padding:8px;text-align:center;z-index:9999999;font-family:sans-serif';
-  b.textContent = 'JS ПРАЦЮЄ — каналів: ' + (typeof CHANNEL_GROUPS !== 'undefined' ? CHANNEL_GROUPS.reduce(function(s,g){return s+g.channels.length;},0) : '?');
+  var cnt = 0;
+  if (typeof CHANNEL_GROUPS !== 'undefined') {
+    for (var i = 0; i < CHANNEL_GROUPS.length; i++) cnt += CHANNEL_GROUPS[i].channels.length;
+  }
+  b.textContent = 'JS ПРАЦЮЄ — каналів: ' + (cnt || '?');
   document.body.appendChild(b);
 })();
 
-
-// ── Anti-AdBlock — перевірка через власний player-config.js ─────────────
-// AdBlock блокує /player-config.js за списками фільтрів → window._playerReady не стає true
-let isAdBlocked = false;
-let pendingChannel = null;
+// ── Anti-AdBlock ──────────────────────────────────────────────
+var isAdBlocked = false;
+var pendingChannel = null;
 
 function checkAdBlock() {
-  // Спосіб 1: player-config.js не завантажився (блокування запиту)
   if (window._playerReady !== true) return true;
-  // Спосіб 2: bait-div прихований AdBlock через CSS-фільтри
   var bait = document.getElementById('ad-bait');
   if (bait) {
     var cs = window.getComputedStyle(bait);
@@ -357,32 +390,31 @@ function hideAdBlockOverlay() {
   document.getElementById('adblock-overlay').style.display = 'none';
 }
 
-// Кнопка перевірки: перезавантажуємо player-config.js і дивимось результат
 document.getElementById('adblock-check-btn').addEventListener('click', function() {
-  const btn = this;
+  var btn = this;
   btn.textContent = '⏳ Перевірка...';
   window._playerReady = undefined;
-  const s = document.createElement('script');
+  var s = document.createElement('script');
   s.src = '/player-config.js?t=' + Date.now();
-  s.onload = () => {
+  s.onload = function() {
     if (window._playerReady === true) {
       hideAdBlockOverlay();
       isAdBlocked = false;
       if (pendingChannel) { openChannel(pendingChannel); pendingChannel = null; }
     } else {
       btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-      setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+      setTimeout(function() { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
     }
   };
-  s.onerror = () => {
+  s.onerror = function() {
     btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-    setTimeout(() => { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
+    setTimeout(function() { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
   };
   document.head.appendChild(s);
 });
 
-// Патчим openChannel: перевіряємо перед запуском
-const _origOpenChannel = openChannel;
+// Patch openChannel with adblock check
+var _origOpenChannel = openChannel;
 openChannel = function(ch) {
   isAdBlocked = checkAdBlock();
   if (isAdBlocked) {
