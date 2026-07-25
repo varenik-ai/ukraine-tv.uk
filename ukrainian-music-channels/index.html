@@ -130,7 +130,9 @@
     .channels-section{max-width:1100px;margin:24px auto;padding:0 24px}
     .channels-section h2{font-size:18px;font-weight:800;margin-bottom:4px}
     .channels-hint{font-size:13px;color:var(--muted);margin-bottom:16px}
-    .ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+    .ch-grid{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:10px}
+    .ch-card{-webkit-box-flex:1;-ms-flex:1 1 160px;flex:1 1 160px;min-width:140px;max-width:220px}
+    @supports (display:grid){.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}.ch-card{-webkit-box-flex:unset;-ms-flex:unset;flex:unset;max-width:unset}}
     .ch-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
               padding:16px 14px;transition:.2s;display:flex;flex-direction:column;gap:6px;cursor:pointer}
     .ch-card:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-2px)}
@@ -308,14 +310,14 @@ function selectChannel(el, id, name) {
     hls = new Hls({liveSyncDurationCount:3, lowLatencyMode:true, enableWorker:true});
     hls.loadSource(url);
     hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
       statusEl.textContent = '🔴 Пряма трансляція — ' + name;
       liveBadge.classList.add('show');
-      try { await video.play(); } catch(e) {}
+      var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
       // Telegram overlay after 2 minutes of actual playback
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
-        overlayTimer = setTimeout(() => {
+        overlayTimer = setTimeout(function() {
           tgOverlay.classList.add('show');
           _overlayCount++;
           video.pause();

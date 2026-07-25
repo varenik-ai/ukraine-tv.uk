@@ -93,9 +93,9 @@
              padding:14px 28px;border-radius:28px;font-size:16px;font-weight:800;transition:.2s}
     .btn-tg:hover{background:#1a8dc5;transform:translateY(-2px)}
     /* FEATURES */
-    .features{max-width:900px;margin:0 auto;padding:40px 24px;display:grid;
-               grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-    .feat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+    .features{max-width:900px;margin:0 auto;padding:40px 24px;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:16px}
+    .feat{-webkit-box-flex:1;-ms-flex:1 1 200px;flex:1 1 200px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+    @supports (display:grid){.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.feat{-webkit-box-flex:unset;-ms-flex:unset;flex:unset}}
     .feat-icon{font-size:32px;margin-bottom:10px}
     .feat-title{font-size:15px;font-weight:700;margin-bottom:4px}
     .feat-desc{font-size:12px;color:var(--muted);line-height:1.5}
@@ -107,8 +107,9 @@
     .channels-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 24px}
     .channels-section h2{text-align:center;font-size:22px;font-weight:800;margin-bottom:8px}
     .channels-section .sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px}
-    .ch-grid{max-width:1100px;margin:0 auto;display:grid;
-              grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+    .ch-grid{max-width:1100px;margin:0 auto;display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:10px}
+    .ch-card{-webkit-box-flex:1;-ms-flex:1 1 160px;flex:1 1 160px;min-width:140px;max-width:220px}
+    @supports (display:grid){.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}.ch-card{-webkit-box-flex:unset;-ms-flex:unset;flex:unset;max-width:unset}}
     .ch-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
               padding:14px 12px;transition:.2s;display:flex;flex-direction:column;gap:4px}
     .ch-card:hover{border-color:var(--accent);background:var(--bg3);transform:translateY(-2px)}

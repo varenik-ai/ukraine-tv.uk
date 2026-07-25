@@ -87,14 +87,20 @@
     .cnt-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--accent2)}
     .live-badge-main{display:flex;align-items:center;gap:5px;background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--red)}
     .live-dot-main{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
-    /* ── 2-column layout ── */
-    .main-wrap{display:grid;grid-template-columns:1fr 300px;gap:16px;max-width:1400px;margin:0 auto;padding:0 16px 16px}
-    .player-col{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:14px}
-    .right-sidebar{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:14px;
+    /* ── 2-column layout (flexbox fallback for TV/Chrome<57) ── */
+    .main-wrap{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:16px;max-width:1400px;margin:0 auto;padding:0 16px 16px}
+    .player-col{-webkit-box-flex:1;-ms-flex:1 1 0px;flex:1 1 0px;min-width:0;display:flex;flex-direction:column;gap:14px}
+    .right-sidebar{width:300px;-ms-flex-negative:0;flex-shrink:0;display:flex;flex-direction:column;gap:14px;
       position:sticky;top:76px;align-self:start;max-height:calc(100vh - 90px);
       overflow-y:auto;scrollbar-width:none}
     .right-sidebar::-webkit-scrollbar{display:none}
-    .sidebar-wrapper{grid-column:1;grid-row:2}
+    .sidebar-wrapper{width:100%;-webkit-box-flex:0;-ms-flex:0 0 100%;flex:0 0 100%}
+    @supports (display:grid){
+      .main-wrap{display:grid;grid-template-columns:1fr 300px}
+      .player-col{grid-column:1;grid-row:1;width:auto;-webkit-box-flex:unset;-ms-flex:unset;flex:unset}
+      .right-sidebar{grid-column:2;grid-row:1/3;align-self:start;width:auto}
+      .sidebar-wrapper{grid-column:1;grid-row:2;width:auto;-webkit-box-flex:unset;-ms-flex:unset;flex:unset}
+    }
     .channel-sidebar{display:flex;flex-direction:column}
     .sidebar-search{position:relative;margin-bottom:10px}
     .sidebar-search input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:9px 12px 9px 36px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
@@ -102,7 +108,9 @@
     .sidebar-search input::placeholder{color:var(--muted)}
     .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px}
     .cat-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:14px 0 6px}
-    .cat-group{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:0 0 4px}
+    .cat-group{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:7px;padding:0 0 4px}
+    .cat-group .ch-item{-webkit-box-flex:0;-ms-flex:0 0 calc(20% - 6px);flex:0 0 calc(20% - 6px);min-width:0}
+    @supports (display:grid){.cat-group{display:grid;grid-template-columns:repeat(5,1fr)}.cat-group .ch-item{-webkit-box-flex:unset;-ms-flex:unset;flex:unset}}
     .ch-item{display:flex;flex-direction:column;align-items:center;padding:8px 6px 7px;gap:5px;
       background:var(--bg3);border:1px solid var(--border);border-radius:12px;
       cursor:pointer;transition:all .15s;text-align:center}
@@ -168,7 +176,9 @@
     .tg-cta-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--tg-color);color:white;padding:11px 16px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s;width:100%}
     .tg-cta-btn:hover{background:#1a8dc5;transform:translateY(-1px)}
     .about-section{max-width:1400px;margin:0 auto;padding:0 16px 40px}
-    .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+    .about-grid{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+    .about-card{-webkit-box-flex:1;-ms-flex:1 1 200px;flex:1 1 200px}
+    @supports (display:grid){.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.about-card{-webkit-box-flex:unset;-ms-flex:unset;flex:unset}}
     .about-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
     .about-card .icon{font-size:28px;margin-bottom:8px}
     .about-card .num{font-size:24px;font-weight:900;color:var(--accent2)}
@@ -492,21 +502,28 @@ function stopStream() {
   if (hls) { hls.destroy(); hls = null; } video.src = ''; liveBadge.style.display = 'none';
 }
 
-async function loadStream(ch) {
+function loadStream(ch) {
   stopStream(); setStatus('Loading stream...');
-  const streamUrl = PROXY + '/stream?channel=' + ch.id;
-  async function tryPlay() {
+  var streamUrl = PROXY + '/stream?channel=' + ch.id;
+  function tryPlay() {
     video.muted = false; video.volume = 1;
-    try { await video.play(); userUnmuted = true; unmuteBtn.textContent = '🔇'; }
-    catch(e) { video.muted = true; userUnmuted = false; unmuteBtn.textContent = '🔊 Unmute'; try { await video.play(); } catch(e2) { setStatus('Tap ▶ to play'); } }
+    var p = video.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function() { userUnmuted = true; unmuteBtn.textContent = '🔇'; })
+       .catch(function() { video.muted = true; userUnmuted = false; unmuteBtn.textContent = '🔊 Unmute';
+         var p2 = video.play(); if (p2 && typeof p2.then === 'function') { p2.catch(function() { setStatus('Tap ▶ to play'); }); }
+       });
+    }
   }
   if (Hls.isSupported()) {
     hls = new Hls({ liveSyncDurationCount:3, lowLatencyMode:true, enableWorker:true, backBufferLength:30 });
     hls.loadSource(streamUrl); hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, async () => { setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; await tryPlay(); clearTimeout(overlayTimer); if (_overlayCount < 2) { overlayTimer = setTimeout(() => { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 120000); } });
-    hls.on(Hls.Events.ERROR, (_, d) => { if (d.fatal) { setStatus('Stream error. Click Reconnect.', true); liveBadge.style.display = 'none'; } });
+    hls.on(Hls.Events.MANIFEST_PARSED, function() { setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; tryPlay(); clearTimeout(overlayTimer); if (_overlayCount < 2) { overlayTimer = setTimeout(function() { tgOverlay.classList.add('show'); _overlayCount++; video.pause(); }, 120000); } });
+    hls.on(Hls.Events.ERROR, function(_, d) { if (d.fatal) { setStatus('Stream error. Click Reconnect.', true); liveBadge.style.display = 'none'; } });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = streamUrl; setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; await tryPlay();
+    video.src = streamUrl;
+    function onMeta() { video.removeEventListener('loadedmetadata', onMeta); setStatus('Live — ' + ch.name); liveBadge.style.display = 'flex'; tryPlay(); }
+    video.addEventListener('loadedmetadata', onMeta);
   }
 }
 

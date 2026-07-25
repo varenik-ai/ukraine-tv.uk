@@ -335,17 +335,31 @@
     .live-dot-main{width:6px;height:6px;background:var(--red);border-radius:50%;animation:pulse 1s infinite}
 
     /* ── MAIN LAYOUT ────────────────────────────────────────────── */
+    /* Flexbox fallback for TV browsers (Chrome <57, no CSS Grid) */
     .main-wrap {
-      display: grid;
-      grid-template-columns: 1fr 300px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
       gap: 16px;
       max-width: 1400px;
       margin: 0 auto;
       padding: 0 16px 16px;
     }
-    .player-col    { grid-column: 1; grid-row: 1; }
-    .right-sidebar { grid-column: 2; grid-row: 1 / 3; align-self: start; }
-    .channels-section { grid-column: 1; grid-row: 2; }
+    .player-col    { -webkit-box-flex: 1; -ms-flex: 1 1 0px; flex: 1 1 0px; min-width: 0; }
+    .right-sidebar { width: 300px; -ms-flex-negative: 0; flex-shrink: 0; }
+    .channels-section { width: 100%; -webkit-box-flex: 0; -ms-flex: 0 0 100%; flex: 0 0 100%; }
+    /* CSS Grid upgrade for modern browsers */
+    @supports (display: grid) {
+      .main-wrap {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+      }
+      .player-col    { grid-column: 1; grid-row: 1; width: auto; }
+      .right-sidebar { grid-column: 2; grid-row: 1 / 3; align-self: start; width: auto; }
+      .channels-section { grid-column: 1; grid-row: 2; width: auto; }
+    }
 
     /* ── CHANNEL SEARCH ─────────────────────────────────────────── */
     .sidebar-search {
@@ -389,11 +403,28 @@
     .cat-label:first-child { padding-top: 4px; }
 
     /* ── CHANNEL GRID (5-col cards) ─────────────────────────────── */
+    /* Flexbox fallback for TV browsers */
     .cat-group {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
       gap: 7px;
       padding: 0 0 4px;
+    }
+    .cat-group .ch-item {
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 calc(20% - 6px);
+      flex: 0 0 calc(20% - 6px);
+      min-width: 0;
+    }
+    @supports (display: grid) {
+      .cat-group {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .cat-group .ch-item { -webkit-box-flex: unset; -ms-flex: unset; flex: unset; }
     }
 
     .ch-item {
@@ -439,8 +470,25 @@
       padding: 0 0 8px;
     }
     .sidebar-mini-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
       gap: 5px;
+    }
+    .sidebar-mini-grid .mini-ch-card {
+      -webkit-box-flex: 0;
+      -ms-flex: 0 0 calc(50% - 3px);
+      flex: 0 0 calc(50% - 3px);
+      min-width: 0;
+    }
+    @supports (display: grid) {
+      .sidebar-mini-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .sidebar-mini-grid .mini-ch-card { -webkit-box-flex: unset; -ms-flex: unset; flex: unset; }
     }
     .mini-ch-card {
       background: var(--bg3); border: 1px solid var(--border);
@@ -776,23 +824,34 @@
 
     /* ── TABLET 1024px ───────────────────────────────────────────── */
     @media (max-width: 1024px) {
-      .main-wrap { grid-template-columns: 1fr 260px; gap: 12px; }
-      .cat-group { grid-template-columns: repeat(4, 1fr); }
+      .right-sidebar { width: 260px; }
+      @supports (display: grid) {
+        .main-wrap { grid-template-columns: 1fr 260px; gap: 12px; }
+      }
+      @supports (display: grid) {
+        .cat-group { grid-template-columns: repeat(4, 1fr); }
+        .cat-group .ch-item { -webkit-box-flex: unset; -ms-flex: unset; flex: unset; }
+      }
+      .cat-group .ch-item { -ms-flex: 0 0 calc(25% - 6px); flex: 0 0 calc(25% - 6px); }
     }
 
     /* ── MOBILE 900px ────────────────────────────────────────────── */
     @media (max-width: 900px) {
-      .main-wrap {
-        grid-template-columns: 1fr;
-        padding: 10px; gap: 12px;
+      .main-wrap { padding: 10px; gap: 12px; }
+      .right-sidebar { width: 100%; }
+      @supports (display: grid) {
+        .main-wrap { grid-template-columns: 1fr; }
+        .player-col     { grid-column: 1; grid-row: 1; order: 1; }
+        .right-sidebar  { grid-column: 1; grid-row: 2; order: 2;
+                          position: static; max-height: none;
+                          flex-direction: row; flex-wrap: wrap; }
+        .channels-section { grid-column: 1; grid-row: 3; order: 3; }
       }
-      .player-col     { grid-column: 1; grid-row: 1; order: 1; }
-      .right-sidebar  { grid-column: 1; grid-row: 2; order: 2;
-                        position: static; max-height: none;
-                        flex-direction: row; flex-wrap: wrap; }
-      .channels-section { grid-column: 1; grid-row: 3; order: 3; }
-
-      .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .cat-group .ch-item { -ms-flex: 0 0 calc(50% - 4px); flex: 0 0 calc(50% - 4px); }
+      @supports (display: grid) {
+        .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .cat-group .ch-item { -webkit-box-flex: unset; -ms-flex: unset; flex: unset; }
+      }
 
       /* Оверлей на весь экран на мобиле */
       .tg-overlay { position: fixed; z-index: 9999; }
@@ -817,7 +876,11 @@
 
     /* ── MOBILE 640px ────────────────────────────────────────────── */
     @media (max-width: 640px) {
-      .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .cat-group .ch-item { -ms-flex: 0 0 calc(50% - 4px); flex: 0 0 calc(50% - 4px); }
+      @supports (display: grid) {
+        .cat-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .cat-group .ch-item { -webkit-box-flex: unset; -ms-flex: unset; flex: unset; }
+      }
     }
 
     /* ── MOBILE PORTRAIT 600px ───────────────────────────────────── */
@@ -1445,26 +1508,31 @@ function stopStream() {
   liveBadge.style.display = 'none';
 }
 
-async function loadStream(ch) {
+function loadStream(ch) {
   stopStream();
   setStatus('Отримуємо потік...');
 
-  const streamUrl = PROXY + '/stream?channel=' + ch.id;
+  var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
-  async function tryPlay() {
+  function tryPlay() {
     video.muted = false;
     video.volume = 1;
-    try {
-      await video.play();
-      // успешно — звук включён
-      userUnmuted = true;
-      unmuteBtn.textContent = '🔇 Вимкнути звук';
-    } catch(e) {
-      // браузер заблокував — fallback на muted
-      video.muted = true;
-      userUnmuted = false;
-      unmuteBtn.textContent = '🔊 Увімкнути звук';
-      try { await video.play(); } catch(e2) { setStatus('Натисніть ▶ для відтворення'); }
+    var p = video.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function() {
+        // успешно — звук включён
+        userUnmuted = true;
+        unmuteBtn.textContent = '🔇 Вимкнути звук';
+      }).catch(function() {
+        // браузер заблокував — fallback на muted
+        video.muted = true;
+        userUnmuted = false;
+        unmuteBtn.textContent = '🔊 Увімкнути звук';
+        var p2 = video.play();
+        if (p2 && typeof p2.then === 'function') {
+          p2.catch(function() { setStatus('Натисніть ▶ для відтворення'); });
+        }
+      });
     }
   }
 
@@ -1472,21 +1540,21 @@ async function loadStream(ch) {
     hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: true, enableWorker: true, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, async () => {
+    hls.on(Hls.Events.MANIFEST_PARSED, function() {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      await tryPlay();
+      tryPlay();
       // Telegram overlay через 2 хвилини після старту трансляції
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
-        overlayTimer = setTimeout(() => {
+        overlayTimer = setTimeout(function() {
           tgOverlay.classList.add('show');
           _overlayCount++;
           video.pause();
         }, 120000);
       }
     });
-    hls.on(Hls.Events.ERROR, (e, data) => {
+    hls.on(Hls.Events.ERROR, function(e, data) {
       if (!data.fatal) return;
       if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { try { hls.startLoad(); } catch(e) {} return; }
       if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
@@ -1494,11 +1562,13 @@ async function loadStream(ch) {
     });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = streamUrl;
-    video.addEventListener('loadedmetadata', async () => {
+    function onMeta() {
+      video.removeEventListener('loadedmetadata', onMeta);
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      await tryPlay();
-    }, { once: true });
+      tryPlay();
+    }
+    video.addEventListener('loadedmetadata', onMeta);
   } else {
     setStatus('Ваш браузер не підтримує HLS потоки', true);
   }
