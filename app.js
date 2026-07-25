@@ -1,3 +1,6 @@
+// DEBUG STEP 1: app.js почав виконуватись
+(function(){var f=document.getElementById('js-flag');if(f)f.textContent='1:APP.JS OK';})();
+
 var PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
 var TG_URL = 'https://t.me/UkraineTVHub';
 
@@ -25,6 +28,9 @@ const ciDesc       = document.getElementById('ci-desc');
 const ciTags       = document.getElementById('ci-tags');
 const searchInput  = document.getElementById('search-input');
 const channelGrid  = document.getElementById('channel-grid');
+
+// DEBUG STEP 2: DOM-елементи отримано
+(function(){var f=document.getElementById('js-flag');if(f)f.textContent='2:DOM OK ch='+(typeof CHANNEL_GROUPS!=='undefined'?CHANNEL_GROUPS.length:'?');})();
 
 // ── Popular channels (hardcoded) ──────────────────────────────
 const POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
@@ -310,9 +316,14 @@ overlaySkip.addEventListener('click', () => {
   wrap.addEventListener('touchstart', () => { showControls(); }, { passive: true });
 })();
 
+// DEBUG STEP 3: перед buildGrid
+(function(){var f=document.getElementById('js-flag');if(f)f.textContent='3:BEFORE GRID';})();
+
 // ── Init ──────────────────────────────────────────────────────
 buildGrid();
 renderSidebarBlocks();
+// DEBUG STEP 4: після buildGrid
+(function(){var f=document.getElementById('js-flag');if(f)f.textContent='4:GRID DONE';})();
 // TV DEBUG: JS ran successfully
 (function() {
   var b = document.createElement('div');
