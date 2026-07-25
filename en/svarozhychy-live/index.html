@@ -601,12 +601,13 @@
   function loadStream() {
     status.textContent = 'Connecting...';
     if (typeof Hls === 'undefined') { setTimeout(loadStream, 300); return; }
+    var _cpH = function() { video.removeEventListener('canplay', _cpH); video.muted = true; video.volume = 1; video.play().catch(function() {}); };
+    video.addEventListener('canplay', _cpH);
     if (Hls.isSupported()) {
       var hls = new Hls({maxBufferLength:20,maxMaxBufferLength:40,lowLatencyMode:false,enableWorker:false});
       hls.loadSource(STREAM);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        video.muted = true; video.volume = 1; video.play().catch(function() {});
         status.textContent = '🔴 LIVE';
         _overlayTimer = setTimeout(showTgOverlay, 120000);
       });
@@ -616,7 +617,6 @@
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = STREAM;
       video.addEventListener('loadedmetadata', function() {
-        video.play();
         status.textContent = '🔴 LIVE';
         _overlayTimer = setTimeout(showTgOverlay, 120000);
       });

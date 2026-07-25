@@ -1503,8 +1503,11 @@ function setStatus(msg, isError = false) {
   reloadBtn.style.display = isError ? 'block' : 'none';
 }
 
+var _canPlayHandler = null;
+
 function stopStream() {
   if (hls) { hls.destroy(); hls = null; }
+  if (_canPlayHandler) { video.removeEventListener('canplay', _canPlayHandler); _canPlayHandler = null; }
   video.src = '';
   liveBadge.style.display = 'none';
 }
@@ -1521,8 +1524,11 @@ function loadStream(ch) {
 
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
-  function tryPlay() {
-    // <video muted> — autoplay завжди дозволено; показуємо кнопку unmute
+  // play() викликається з canplay — коли буфер вже заповнений.
+  // На Chrome 53 play() при readyState=0 ігнорується (без помилки) → чорний екран.
+  _canPlayHandler = function() {
+    video.removeEventListener('canplay', _canPlayHandler);
+    _canPlayHandler = null;
     video.muted = true;
     video.volume = 1;
     userUnmuted = false;
@@ -1531,7 +1537,8 @@ function loadStream(ch) {
     if (p && typeof p.then === 'function') {
       p.catch(function() { setStatus('Натисніть ▶ для відтворення'); });
     }
-  }
+  };
+  video.addEventListener('canplay', _canPlayHandler);
 
   if (Hls.isSupported()) {
     hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
@@ -1540,7 +1547,6 @@ function loadStream(ch) {
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      tryPlay();
       // Telegram overlay через 2 хвилини після старту трансляції
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
@@ -1563,7 +1569,6 @@ function loadStream(ch) {
       video.removeEventListener('loadedmetadata', onMeta);
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
-      tryPlay();
     }
     video.addEventListener('loadedmetadata', onMeta);
   } else {

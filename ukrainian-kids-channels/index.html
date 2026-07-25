@@ -292,10 +292,17 @@ function selectChannel(el, id, name) {
 
   // Destroy previous HLS instance
   if (hls) { hls.destroy(); hls = null; }
+  if (window._catCpHandler) { video.removeEventListener('canplay', window._catCpHandler); }
   video.src = '';
 
   const url = PROXY + '/stream?channel=' + id;
   if (typeof Hls === 'undefined') { setTimeout(function() { selectChannel(el, id, name); }, 300); return; }
+
+  window._catCpHandler = function() {
+    video.removeEventListener('canplay', window._catCpHandler); window._catCpHandler = null;
+    video.muted = true; video.volume = 1; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
+  };
+  video.addEventListener('canplay', window._catCpHandler);
 
   if (Hls.isSupported()) {
     hls = new Hls({liveSyncDurationCount:3, lowLatencyMode:false, enableWorker:false});
@@ -304,8 +311,6 @@ function selectChannel(el, id, name) {
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       statusEl.textContent = '🔴 Пряма трансляція — ' + name;
       liveBadge.classList.add('show');
-      video.muted = true; video.volume = 1; var p = video.play(); if (p && typeof p.then === 'function') { p.catch(function(){}); }
-      // Telegram overlay after 2 minutes of actual playback
       clearTimeout(overlayTimer);
       if (_overlayCount < 2) {
         overlayTimer = setTimeout(function() {
