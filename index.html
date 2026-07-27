@@ -1560,11 +1560,6 @@ function loadStream(ch) {
   stopStream();
   setStatus('Отримуємо потік...');
 
-  if (typeof Hls === 'undefined') {
-    setTimeout(function() { loadStream(ch); }, 300);
-    return;
-  }
-
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
   function doPlay() {
@@ -1574,7 +1569,8 @@ function loadStream(ch) {
     if (p && typeof p.then === 'function') { p.catch(function() {}); }
   }
 
-  if (Hls.isSupported()) {
+  function tryPlay() {
+    if (typeof Hls !== 'undefined' && Hls.isSupported()) {
     hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
@@ -1598,17 +1594,37 @@ function loadStream(ch) {
       if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
       setStatus('Помилка підключення. Спробуйте ще раз.', true);
     });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = streamUrl;
-    function onMeta() {
-      video.removeEventListener('loadedmetadata', onMeta);
-      setStatus('Пряма трансляція — ' + ch.name);
-      liveBadge.style.display = 'flex';
-      doPlay();
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Native HLS (Samsung/LG TV, Safari)
+      video.src = streamUrl;
+      function onMeta() {
+        video.removeEventListener('loadedmetadata', onMeta);
+        setStatus('Пряма трансляція — ' + ch.name);
+        liveBadge.style.display = 'flex';
+        doPlay();
+      }
+      video.addEventListener('loadedmetadata', onMeta);
+    } else {
+      setStatus('Ваш браузер не підтримує HLS потоки', true);
     }
-    video.addEventListener('loadedmetadata', onMeta);
+  }
+
+  // Якщо HLS.js не завантажився за 3 секунди — пробуємо нативний HLS
+  if (typeof Hls !== 'undefined') {
+    tryPlay();
   } else {
-    setStatus('Ваш браузер не підтримує HLS потоки', true);
+    var waited = 0;
+    var waitTimer = setInterval(function() {
+      waited += 200;
+      if (typeof Hls !== 'undefined') {
+        clearInterval(waitTimer);
+        tryPlay();
+      } else if (waited >= 3000) {
+        clearInterval(waitTimer);
+        setStatus('HLS.js не завантажено, пробуємо нативний...');
+        tryPlay(); // спробує native HLS або покаже помилку
+      }
+    }, 200);
   }
 }
 
