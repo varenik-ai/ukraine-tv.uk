@@ -1607,15 +1607,18 @@ function loadStream(ch) {
 
   function tryPlay() {
     if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+      setStatus('HLS.js підключення...');
       startHlsJs();
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      setStatus('Native HLS підключення...');
       startNativeHls();
     } else {
-      setStatus('Ваш браузер не підтримує HLS потоки', true);
+      setStatus('Помилка: HLS не підтримується', true);
     }
   }
 
   if (typeof Hls !== 'undefined') {
+    setStatus('HLS.js: запуск...');
     tryPlay();
   } else {
     var _hlsWaited = 0;
@@ -1623,9 +1626,11 @@ function loadStream(ch) {
       _hlsWaited += 200;
       if (typeof Hls !== 'undefined') {
         clearInterval(_hlsTimer);
+        setStatus('HLS.js: запуск...');
         tryPlay();
       } else if (_hlsWaited >= 3000) {
         clearInterval(_hlsTimer);
+        setStatus('Нативний HLS: запуск...');
         tryPlay();
       }
     }, 200);
@@ -1734,7 +1739,8 @@ var isAdBlocked = false;
 var pendingChannel = null;
 
 function checkAdBlock() {
-  if (window._playerReady !== true) return true;
+  if (window._playerReady === false) return true; // явно заблоковано
+  // undefined = player-config.js ще не завантажився (async) — вважаємо ОК
   var bait = document.getElementById('ad-bait');
   if (bait) {
     var cs = window.getComputedStyle(bait);
