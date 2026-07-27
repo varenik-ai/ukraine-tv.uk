@@ -1262,24 +1262,28 @@
      ═══════════════════════════════════════════════════════════ -->
 <!-- channels.js + app.js: весь JS винесений окремо (TV Chrome 53 не виконує великий inline-скрипт) -->
 <script>
-// Динамічне завантаження: channels.js → app.js, з обробкою помилок
 (function() {
   function flag(t) { var f = document.getElementById('js-flag'); if (f) f.textContent = t; }
-  function load(url, ok, err) {
-    var s = document.createElement('script');
-    s.src = url;
-    s.onload = ok || function(){};
-    s.onerror = err || function(){};
-    document.head.appendChild(s);
+  function addScript(url) { var s = document.createElement('script'); s.src = url; document.head.appendChild(s); }
+
+  // 1) Завантажуємо channels.js
+  addScript('/channels.js?v=4');
+  flag('CH...');
+
+  // 2) Опитуємо кожні 200мс поки CHANNEL_GROUPS не з'явиться (без onload)
+  var n = 0;
+  function poll() {
+    if (typeof CHANNEL_GROUPS !== 'undefined') {
+      flag('CH OK');
+      addScript('/app.js?v=4');
+    } else if (n++ < 50) {
+      flag('CH ' + n);
+      setTimeout(poll, 200);
+    } else {
+      flag('CH TIMEOUT');
+    }
   }
-  flag('LOADING CH...');
-  load('/channels.js?v=3',
-    function() {
-      flag('CH OK, LOADING APP...');
-      load('/app.js?v=3', null, function() { flag('APP.JS LOAD ERR'); });
-    },
-    function() { flag('CHANNELS.JS LOAD ERR'); }
-  );
+  setTimeout(poll, 200);
 })();
 </script>
 
