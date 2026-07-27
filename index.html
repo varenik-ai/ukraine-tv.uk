@@ -1596,26 +1596,14 @@ function loadStream(ch) {
   }
 
   function startNativeHls() {
-    setStatus('Native HLS: підключення...');
-    var _nativeTimeout = setTimeout(function() {
-      setStatus('Native HLS: немає відповіді (10с)', true);
-    }, 10000);
-    video.addEventListener('error', function onErr() {
-      video.removeEventListener('error', onErr);
-      clearTimeout(_nativeTimeout);
-      var code = video.error ? video.error.code : '?';
-      var msg = {1:'ABORTED',2:'NETWORK',3:'DECODE',4:'SRC_NOT_SUPPORTED'}[code] || code;
-      setStatus('Native HLS помилка: ' + msg, true);
-    });
-    video.addEventListener('loadedmetadata', function onMeta() {
-      video.removeEventListener('loadedmetadata', onMeta);
-      clearTimeout(_nativeTimeout);
-      setStatus('Пряма трансляція — ' + ch.name);
-      liveBadge.style.display = 'flex';
-    });
     video.src = streamUrl;
     video.load();
     doPlay();
+    video.addEventListener('loadedmetadata', function onMeta() {
+      video.removeEventListener('loadedmetadata', onMeta);
+      setStatus('Пряма трансляція — ' + ch.name);
+      liveBadge.style.display = 'flex';
+    });
   }
 
   function tryPlay() {
