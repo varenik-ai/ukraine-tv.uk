@@ -643,29 +643,8 @@
     }
     .tg-overlay-skip:hover { color: rgba(255,255,255,.7); }
 
-    /* ── ANTI-ADBLOCK ───────────────────────────────────────────── */
-    #adblock-overlay {
-      display: none; position: fixed; inset: 0; z-index: 99999;
-      background: rgba(8,8,20,.93); backdrop-filter: blur(8px);
-      align-items: center; justify-content: center; text-align: center; padding: 20px;
-    }
-    .adblock-card {
-      background: var(--card); border: 1px solid var(--border2);
-      border-radius: 16px; padding: 32px 28px; max-width: 380px;
-    }
-    .adblock-icon { font-size: 52px; margin-bottom: 14px; }
-    .adblock-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-    .adblock-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
-    .adblock-btn {
-      display: block; background: var(--accent2); color: #fff;
-      padding: 12px 24px; border-radius: 24px; font-weight: 700; font-size: 15px;
-      border: none; width: 100%; cursor: pointer; margin-bottom: 10px; transition: .2s;
-    }
-    .adblock-btn:hover { background: #0077ee; }
-    .adblock-skip { font-size: 12px; color: var(--muted2); cursor: pointer; transition: .2s; }
-    .adblock-skip:hover { color: var(--muted); }
 
-    /* ── AD BELOW PLAYER ─────────────────────────────────────────── */
+/* ── AD BELOW PLAYER ─────────────────────────────────────────── */
     .ad-below {
       background: var(--bg2); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 8px;
@@ -925,19 +904,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PTZRN8HT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<!-- Bait element: AdBlock hides elements with these classes via CSS filters -->
-<div id="ad-bait" class="adsbox ad-placement adsbygoogle ads-zone" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;pointer-events:none" aria-hidden="true"></div>
 
-<!-- Anti-AdBlock overlay -->
-<div id="adblock-overlay">
-  <div class="adblock-card">
-    <div class="adblock-icon">🚫</div>
-    <div class="adblock-title">AdBlock виявлено</div>
-    <div class="adblock-desc">Для перегляду каналів необхідно вимкнути блокувальник реклами. Сайт безкоштовний — реклама є єдиним джерелом доходу.</div>
-    <button class="adblock-btn" id="adblock-check-btn">✅ Я вимкнув AdBlock — перевірити</button>
-    <div style="font-size:12px;color:var(--muted2);margin-top:10px">Як вимкнути: натисніть іконку розширення у браузері → Pause / Disable для цього сайту</div>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════
      HEADER
@@ -1740,62 +1707,7 @@ renderSidebarBlocks();
   document.body.appendChild(b);
 })();
 
-// ── Anti-AdBlock ──────────────────────────────────────────────
-var isAdBlocked = false;
-var pendingChannel = null;
 
-function checkAdBlock() {
-  if (window._playerReady === false) return true; // явно заблоковано
-  // undefined = player-config.js ще не завантажився (async) — вважаємо ОК
-  var bait = document.getElementById('ad-bait');
-  if (bait) {
-    var cs = window.getComputedStyle(bait);
-    if (bait.offsetHeight === 0 || cs.display === 'none' || cs.visibility === 'hidden') return true;
-  }
-  return false;
-}
-
-function showAdBlockOverlay() {
-  document.getElementById('adblock-overlay').style.display = 'flex';
-}
-function hideAdBlockOverlay() {
-  document.getElementById('adblock-overlay').style.display = 'none';
-}
-
-document.getElementById('adblock-check-btn').addEventListener('click', function() {
-  var btn = this;
-  btn.textContent = '⏳ Перевірка...';
-  window._playerReady = undefined;
-  var s = document.createElement('script');
-  s.src = '/player-config.js?t=' + Date.now();
-  s.onload = function() {
-    if (window._playerReady === true) {
-      hideAdBlockOverlay();
-      isAdBlocked = false;
-      if (pendingChannel) { openChannel(pendingChannel); pendingChannel = null; }
-    } else {
-      btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-      setTimeout(function() { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
-    }
-  };
-  s.onerror = function() {
-    btn.textContent = '❌ AdBlock ще активний — спробуйте ще раз';
-    setTimeout(function() { btn.textContent = '✅ Я вимкнув AdBlock — перевірити'; }, 2000);
-  };
-  document.head.appendChild(s);
-});
-
-// Patch openChannel with adblock check
-var _origOpenChannel = openChannel;
-openChannel = function(ch) {
-  isAdBlocked = checkAdBlock();
-  if (isAdBlocked) {
-    pendingChannel = ch;
-    showAdBlockOverlay();
-    return;
-  }
-  _origOpenChannel(ch);
-};
 </script>
 
 </body>
