@@ -1574,21 +1574,7 @@ function loadStream(ch) {
           if (line && line.charAt(0) !== '#') { directUrl = line; break; }
         }
         if (!directUrl) { directUrl = streamUrl; }
-        setStatus('Native HLS: запуск...');
-        video.addEventListener('error', function onVidErr() {
-          video.removeEventListener('error', onVidErr);
-          var codes = {1:'ABORTED',2:'NETWORK',3:'DECODE',4:'NOT_SUPPORTED'};
-          var c = video.error ? video.error.code : 0;
-          setStatus('ERR ' + (codes[c]||c) + ' | url:' + directUrl.substring(0,40), true);
-        });
-        video.addEventListener('loadedmetadata', function onMeta() {
-          video.removeEventListener('loadedmetadata', onMeta);
-          setStatus('Пряма трансляція — ' + ch.name);
-          liveBadge.style.display = 'flex';
-          doPlay();
-        });
-        video.src = directUrl;
-        doPlay();
+        setStatus('URL: ' + directUrl.substring(0, 70));
       })
       .catch(function(err) {
         setStatus('Помилка: ' + String(err).substring(0, 50), true);
