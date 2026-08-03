@@ -1575,6 +1575,7 @@ function loadStream(ch) {
         }
         if (!directUrl) { directUrl = streamUrl; }
         setStatus('Native HLS: ' + directUrl.substring(8, 50));
+        video.crossOrigin = 'anonymous';
         video.src = directUrl;
         doPlay();
         video.addEventListener('loadedmetadata', function onMeta() {
