@@ -191,7 +191,7 @@
   <meta name="theme-color" content="#0a0a14" />
   <!-- HLS.js и player-config: async не блокирует парсинг HTML -->
   <script src="/player-config.js" async onerror="window._playerReady=false"></script>
-  <script src="/hls.min.js" defer></script>
+  <script src="/hls.min.js"></script>
 
   <!-- ═══ Monetag: In-Page Push Banner (zone 11258077) ═══ -->
   <script defer>(function(s){s.dataset.zone='11258077',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
@@ -1563,27 +1563,24 @@ function loadStream(ch) {
   }
 
   function startNativeHls() {
-    setStatus('Fetch: запрос...');
-    fetch(streamUrl)
-      .then(function(r) {
-        var ct = r.headers.get('content-type') || 'no-ct';
-        setStatus('Fetch: ' + r.status + ' | ' + ct.substring(0, 40));
-        return r.text();
-      })
-      .then(function(txt) {
-        setStatus('DATA: ' + txt.substring(0, 80).replace(/\n/g,' '));
-      })
-      .catch(function(err) {
-        setStatus('Fetch ERR: ' + String(err).substring(0, 60), true);
-      });
+    video.src = streamUrl;
+    doPlay();
+    video.addEventListener('loadedmetadata', function onMeta() {
+      video.removeEventListener('loadedmetadata', onMeta);
+      setStatus('Пряма трансляція — ' + ch.name);
+      liveBadge.style.display = 'flex';
+    });
   }
 
   function tryPlay() {
     if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-      setStatus('HLS.js підключення...');
+      setStatus('HLS.js: запуск...');
       startHlsJs();
+    } else if (typeof Hls !== 'undefined') {
+      setStatus('HLS.js є, MSE: ні. Native HLS...');
+      startNativeHls();
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      setStatus('Native HLS підключення...');
+      setStatus('Native HLS (без HLS.js)...');
       startNativeHls();
     } else {
       setStatus('Помилка: HLS не підтримується', true);
