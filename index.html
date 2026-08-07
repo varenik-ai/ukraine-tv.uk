@@ -901,8 +901,6 @@
 <!-- Unregister old SW (Monetag 3nbf4.com) — must run first -->
 <script>if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(function(r){for(var i=0;i<r.length;i++)r[i].unregister();}).catch(function(){});}</script>
 <!-- TV DEBUG BANNER v6 -->
-<div id="tv-banner" style="position:fixed;top:0;left:0;right:0;background:#d00;color:#fff;font-size:18px;font-weight:bold;padding:10px;text-align:center;z-index:9999999;font-family:sans-serif">HTML OK v8 — JS: <span id="js-flag">ВИМКНЕНО</span></div>
-<script>document.getElementById('js-flag').textContent='УВІМКНЕНО';</script>
 <!-- TV Debug JS errors -->
 <div id="tv-dbg" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#900;color:#fff;font-size:13px;padding:8px;z-index:9999999;font-family:monospace;word-break:break-all;"></div>
 <script>window.onerror=function(m,s,l){var d=document.getElementById('tv-dbg');if(d){d.style.display='block';d.textContent='ERR: '+m+' ['+l+']';}return true;};</script>
@@ -1314,7 +1312,6 @@ var CHANNEL_GROUPS = [
 // app.js — ES5 only (Chrome 47+ / Samsung Tizen 3+ / LG WebOS 3+)
 
 // DEBUG STEP 1
-(function(){var f=document.getElementById('js-flag');if(f)f.textContent='1:APP.JS OK';})();
 
 var PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
 var TG_URL = 'https://t.me/UkraineTVHub';
@@ -1344,7 +1341,6 @@ var searchInput  = document.getElementById('search-input');
 var channelGrid  = document.getElementById('channel-grid');
 
 // DEBUG STEP 2
-(function(){var f=document.getElementById('js-flag');if(f)f.textContent='2:DOM OK ch='+(typeof CHANNEL_GROUPS!=='undefined'?CHANNEL_GROUPS.length:'?');})();
 
 // ── Popular channels ──────────────────────────────────────────
 var POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
@@ -1717,26 +1713,14 @@ overlaySkip.addEventListener('click', function() {
 })();
 
 // DEBUG STEP 3
-(function(){var f=document.getElementById('js-flag');if(f)f.textContent='3:BEFORE GRID';})();
 
 // ── Init ──────────────────────────────────────────────────────
 buildGrid();
 renderSidebarBlocks();
 
 // DEBUG STEP 4
-(function(){var f=document.getElementById('js-flag');if(f)f.textContent='4:GRID DONE';})();
 
 // Green success banner
-(function() {
-  var b = document.createElement('div');
-  b.style.cssText = 'position:fixed;top:44px;left:0;right:0;background:#080;color:#fff;font-size:16px;font-weight:bold;padding:8px;text-align:center;z-index:9999999;font-family:sans-serif';
-  var cnt = 0;
-  if (typeof CHANNEL_GROUPS !== 'undefined') {
-    for (var i = 0; i < CHANNEL_GROUPS.length; i++) cnt += CHANNEL_GROUPS[i].channels.length;
-  }
-  b.textContent = 'JS ПРАЦЮЄ — каналів: ' + (cnt || '?');
-  document.body.appendChild(b);
-})();
 
 
 </script>
