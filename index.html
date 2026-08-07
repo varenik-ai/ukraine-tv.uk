@@ -46,6 +46,12 @@
   <meta property="og:site_name"   content="Україна ТВ" />
   <meta property="og:title"       content="Україна ТВ — 36 каналів наживо безкоштовно" />
   <meta property="og:description" content="36 українських телеканалів онлайн — без реєстрації, безкоштовно, 24/7. Новини, розваги, кіно, музика, дитячі та регіональні канали." />
+  <meta property="og:title" content="Україна ТВ — Дивитись онлайн безкоштовно | 36 каналів наживо 24/7"/>
+  <meta property="og:url" content="https://ukraine-tv.uk/"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Україна ТВ"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Україна ТВ — 36 каналів онлайн безкоштовно"/>
   <meta property="og:url"         content="https://ukraine-tv.uk/" />
   <meta property="og:locale"      content="uk_UA" />
   <!-- og:image: добавьте ссылку на превью 1200x630px -->
@@ -895,7 +901,7 @@
 <!-- Unregister old SW (Monetag 3nbf4.com) — must run first -->
 <script>if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(function(r){for(var i=0;i<r.length;i++)r[i].unregister();}).catch(function(){});}</script>
 <!-- TV DEBUG BANNER v6 -->
-<div id="tv-banner" style="position:fixed;top:0;left:0;right:0;background:#d00;color:#fff;font-size:18px;font-weight:bold;padding:10px;text-align:center;z-index:9999999;font-family:sans-serif">HTML OK v7 — JS: <span id="js-flag">ВИМКНЕНО</span></div>
+<div id="tv-banner" style="position:fixed;top:0;left:0;right:0;background:#d00;color:#fff;font-size:18px;font-weight:bold;padding:10px;text-align:center;z-index:9999999;font-family:sans-serif">HTML OK v8 — JS: <span id="js-flag">ВИМКНЕНО</span></div>
 <script>document.getElementById('js-flag').textContent='УВІМКНЕНО';</script>
 <!-- TV Debug JS errors -->
 <div id="tv-dbg" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#900;color:#fff;font-size:13px;padding:8px;z-index:9999999;font-family:monospace;word-break:break-all;"></div>
@@ -1563,31 +1569,41 @@ function loadStream(ch) {
   }
 
   function startNativeHls() {
-    setStatus('Отримуємо посилання...');
-    fetch(streamUrl)
-      .then(function(r) { return r.text(); })
-      .then(function(m3u8) {
-        var lines = m3u8.split('\n');
-        var directUrl = '';
-        for (var i = 0; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (line && line.charAt(0) !== '#') { directUrl = line; break; }
-        }
-        if (!directUrl) { directUrl = streamUrl; }
-        setStatus('Native HLS: ' + directUrl.substring(8, 50));
-        video.crossOrigin = 'anonymous';
-        video.src = directUrl;
-        doPlay();
-        video.addEventListener('loadedmetadata', function onMeta() {
-          video.removeEventListener('loadedmetadata', onMeta);
-          setStatus('Пряма трансляція — ' + ch.name);
-          liveBadge.style.display = 'flex';
-          doPlay();
-        });
-      })
-      .catch(function(err) {
-        setStatus('Fetch ERR: ' + String(err).substring(0, 50), true);
-      });
+    setStatus('Native HLS: підключення...');
+
+    video.addEventListener('playing', function onPlay() {
+      video.removeEventListener('playing', onPlay);
+      setStatus('Пряма трансляція — ' + ch.name);
+      liveBadge.style.display = 'flex';
+    });
+
+    video.addEventListener('canplay', function onCan() {
+      video.removeEventListener('canplay', onCan);
+      setStatus('Буферизація ок...');
+      doPlay();
+    });
+
+    video.addEventListener('error', function onErr() {
+      video.removeEventListener('error', onErr);
+      var e = video.error;
+      var code = e ? e.code : 0;
+      var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg';
+      setStatus('ERR ' + code + ': ' + msg, true);
+    });
+
+    video.addEventListener('stalled', function onStalled() {
+      setStatus('Stalled...');
+    });
+
+    video.addEventListener('waiting', function onWait() {
+      setStatus('Буферизація...');
+    });
+
+    // crossOrigin ПЕРЕД src — браузер відправляє Origin: https://ukraine-tv.uk
+    // для ВСІХ запитів нативного HLS плеєра (playlist + segments)
+    video.crossOrigin = 'anonymous';
+    video.src = streamUrl;
+    doPlay();
   }
 
   function tryPlay() {
