@@ -1627,12 +1627,13 @@ function loadStream(ch) {
     });
 
     var _nativeRetries = 0;
+    var _nativeRetryTimer;
     video.addEventListener('stalled', function onStalled() {
       setStatus('Stalled...');
       if (_nativeRetries < PROXY_LIST.length) {
         _nativeRetries++;
-        clearTimeout(hlsRetryTimer);
-        hlsRetryTimer = setTimeout(function() {
+        clearTimeout(_nativeRetryTimer);
+        _nativeRetryTimer = setTimeout(function() {
           _nextProxy();
           streamUrl = PROXY + '/stream?channel=' + ch.id;
           video.src = '';
