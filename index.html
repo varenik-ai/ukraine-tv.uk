@@ -1537,7 +1537,7 @@ function stopStream() {
 
 function loadStream(ch) {
   stopStream();
-  setStatus('Отримуємо потік...');
+  setStatus('Підключення до ' + ch.name + '...');
 
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
@@ -1553,21 +1553,30 @@ function loadStream(ch) {
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
     doPlay();
+
+    // Авто-retry: якщо через 15с відео не почало буферизацію — перезапуск
+    var hlsRetryTimer = setTimeout(function() {
+      if (video.readyState < 2) {
+        setStatus('Повторне підключення...');
+        try { hls.stopLoad(); hls.startLoad(); doPlay(); } catch(e) {}
+      }
+    }, 15000);
+
     hls.on(Hls.Events.MANIFEST_PARSED, function() {
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
       doPlay();
-      clearTimeout(overlayTimer);
-      if (_overlayCount < 2) {
-        overlayTimer = setTimeout(function() {
-          tgOverlay.classList.add('show');
-          _overlayCount++;
-          video.pause();
-        }, 120000);
+    });
+    hls.on(Hls.Events.FRAG_BUFFERED, function() {
+      clearTimeout(hlsRetryTimer);
+      if (video.readyState >= 3) {
+        setStatus('Пряма трансляція — ' + ch.name);
+        liveBadge.style.display = 'flex';
       }
     });
     hls.on(Hls.Events.ERROR, function(ev, data) {
       if (!data.fatal) return;
+      clearTimeout(hlsRetryTimer);
       if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { try { hls.startLoad(); } catch(e) {} return; }
       if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
       setStatus('Помилка підключення. Спробуйте ще раз.', true);
