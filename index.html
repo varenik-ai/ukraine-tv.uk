@@ -1637,7 +1637,6 @@ function loadStream(ch) {
           _nextProxy();
           streamUrl = PROXY + '/stream?channel=' + ch.id;
           video.src = '';
-          video.crossOrigin = 'anonymous';
           video.src = streamUrl;
           doPlay();
         }, 3000);
@@ -1648,9 +1647,7 @@ function loadStream(ch) {
       setStatus('Буферизація...');
     });
 
-    // crossOrigin ПЕРЕД src — браузер відправляє Origin: https://ukraine-tv.uk
-    // для ВСІХ запитів нативного HLS плеєра (playlist + segments)
-    video.crossOrigin = 'anonymous';
+    // Без crossOrigin — сегменти беруться напряму з CDN (без CORS)
     video.src = streamUrl;
     doPlay();
   }
