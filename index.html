@@ -1626,8 +1626,21 @@ function loadStream(ch) {
       setStatus('ERR ' + code + ': ' + msg, true);
     });
 
+    var _nativeRetries = 0;
     video.addEventListener('stalled', function onStalled() {
       setStatus('Stalled...');
+      if (_nativeRetries < PROXY_LIST.length) {
+        _nativeRetries++;
+        clearTimeout(hlsRetryTimer);
+        hlsRetryTimer = setTimeout(function() {
+          _nextProxy();
+          streamUrl = PROXY + '/stream?channel=' + ch.id;
+          video.src = '';
+          video.crossOrigin = 'anonymous';
+          video.src = streamUrl;
+          doPlay();
+        }, 3000);
+      }
     });
 
     video.addEventListener('waiting', function onWait() {
