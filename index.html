@@ -1607,13 +1607,11 @@ function loadStream(ch) {
     setStatus('Native HLS: підключення...');
 
     video.addEventListener('playing', function onPlay() {
-      video.removeEventListener('playing', onPlay);
       setStatus('Пряма трансляція — ' + ch.name);
       liveBadge.style.display = 'flex';
     });
 
     video.addEventListener('canplay', function onCan() {
-      video.removeEventListener('canplay', onCan);
       setStatus('Буферизація ок...');
       doPlay();
     });
@@ -1626,21 +1624,8 @@ function loadStream(ch) {
       setStatus('ERR ' + code + ': ' + msg, true);
     });
 
-    var _nativeRetries = 0;
-    var _nativeRetryTimer;
     video.addEventListener('stalled', function onStalled() {
       setStatus('Stalled...');
-      if (_nativeRetries < PROXY_LIST.length) {
-        _nativeRetries++;
-        clearTimeout(_nativeRetryTimer);
-        _nativeRetryTimer = setTimeout(function() {
-          _nextProxy();
-          streamUrl = PROXY + '/stream?channel=' + ch.id;
-          video.src = '';
-          video.src = streamUrl;
-          doPlay();
-        }, 3000);
-      }
     });
 
     video.addEventListener('waiting', function onWait() {
