@@ -1323,7 +1323,21 @@ var CHANNEL_GROUPS = [
 
 // DEBUG STEP 1
 
-var PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
+// ── Proxy rotation (loaded from /proxy.json) ──────────────────
+var PROXY_LIST = ['https://ukraine-worker.dyaltd.workers.dev'];
+var _proxyIdx = 0;
+var PROXY = PROXY_LIST[0];
+fetch('/proxy.json').then(function(r) { return r.json(); }).then(function(d) {
+  if (d && d.urls && d.urls.length) {
+    PROXY_LIST = d.urls.concat(['https://ukraine-worker.dyaltd.workers.dev']);
+    PROXY = PROXY_LIST[0];
+  }
+}).catch(function() {});
+function _nextProxy() {
+  _proxyIdx = (_proxyIdx + 1) % PROXY_LIST.length;
+  PROXY = PROXY_LIST[_proxyIdx];
+}
+
 var TG_URL = 'https://t.me/UkraineTVHub';
 
 // ── State ─────────────────────────────────────────────────────
@@ -1577,7 +1591,13 @@ function loadStream(ch) {
     hls.on(Hls.Events.ERROR, function(ev, data) {
       if (!data.fatal) return;
       clearTimeout(hlsRetryTimer);
-      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { try { hls.startLoad(); } catch(e) {} return; }
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+        // Пробуем следующий прокси перед тем как сдаться
+        _nextProxy();
+        streamUrl = PROXY + '/stream?channel=' + ch.id;
+        try { hls.stopLoad(); hls.loadSource(streamUrl); hls.startLoad(); doPlay(); } catch(e) {}
+        return;
+      }
       if (data.type === Hls.ErrorTypes.MEDIA_ERROR)   { try { hls.recoverMediaError(); } catch(e) {} return; }
       setStatus('Помилка підключення. Спробуйте ще раз.', true);
     });
