@@ -1614,12 +1614,50 @@ function loadStream(ch) {
 
   function startNativeHls() {
     setStatus('Native HLS: підключення...');
+    var _nativeRetry = null;
+    var _stalledRetry = null;
+    var _playing = false;
 
-    function onPlay()    { setStatus('Пряма трансляція — ' + ch.name); liveBadge.style.display = 'flex'; }
+    function _clearTimers() {
+      if (_nativeRetry)  { clearTimeout(_nativeRetry);  _nativeRetry  = null; }
+      if (_stalledRetry) { clearTimeout(_stalledRetry); _stalledRetry = null; }
+    }
+
+    function _restart() {
+      _clearTimers();
+      _nextProxy();
+      streamUrl = PROXY + '/stream?channel=' + ch.id;
+      setStatus('Повторне підключення (' + PROXY.replace('https://','').split('.')[0] + ')...');
+      video.src = streamUrl;
+      doPlay();
+    }
+
+    function onPlay()    { _playing = true; _clearTimers(); setStatus('Пряма трансляція — ' + ch.name); liveBadge.style.display = 'flex'; }
     function onCan()     { setStatus('Буферизація ок...'); doPlay(); }
-    function onErr()     { var e = video.error; var code = e ? e.code : 0; var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg'; setStatus('ERR ' + code + ': ' + msg, true); }
-    function onStalled() { setStatus('Stalled...'); }
-    function onWait()    { setStatus('Буферизація...'); }
+    function onErr()     {
+      _clearTimers();
+      var e = video.error; var code = e ? e.code : 0;
+      // err 3 = decode error, err 4 = src not supported — обидва підлягають retry
+      if ((code === 3 || code === 4) && !_playing) {
+        setStatus('Перемикання проксі...');
+        _nativeRetry = setTimeout(_restart, 2000);
+      } else {
+        var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg';
+        setStatus('ERR ' + code + ': ' + msg, true);
+      }
+    }
+    function onStalled() {
+      if (_playing) return; // якщо вже грає — stalled це нормально
+      setStatus('Буферизація... (може зайняти 30–60с)');
+      // якщо stalled понад 20с до початку відтворення — пробуємо ще раз
+      if (!_stalledRetry) {
+        _stalledRetry = setTimeout(function() {
+          _stalledRetry = null;
+          if (!_playing) _restart();
+        }, 20000);
+      }
+    }
+    function onWait()    { if (!_playing) setStatus('Буферизація...'); }
 
     _nativeHandlers = { onPlay: onPlay, onCan: onCan, onErr: onErr, onStalled: onStalled, onWait: onWait };
     video.addEventListener('playing', onPlay);
