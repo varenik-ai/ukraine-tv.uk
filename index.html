@@ -1543,8 +1543,17 @@ function setStatus(msg, isError) {
   reloadBtn.style.display = isError ? 'block' : 'none';
 }
 
+var _nativeHandlers = null;
 function stopStream() {
   if (hls) { hls.destroy(); hls = null; }
+  if (_nativeHandlers) {
+    video.removeEventListener('playing', _nativeHandlers.onPlay);
+    video.removeEventListener('canplay', _nativeHandlers.onCan);
+    video.removeEventListener('error',   _nativeHandlers.onErr);
+    video.removeEventListener('stalled', _nativeHandlers.onStalled);
+    video.removeEventListener('waiting', _nativeHandlers.onWait);
+    _nativeHandlers = null;
+  }
   video.src = '';
   liveBadge.style.display = 'none';
 }
@@ -1606,33 +1615,19 @@ function loadStream(ch) {
   function startNativeHls() {
     setStatus('Native HLS: підключення...');
 
-    video.addEventListener('playing', function onPlay() {
-      setStatus('Пряма трансляція — ' + ch.name);
-      liveBadge.style.display = 'flex';
-    });
+    function onPlay()    { setStatus('Пряма трансляція — ' + ch.name); liveBadge.style.display = 'flex'; }
+    function onCan()     { setStatus('Буферизація ок...'); doPlay(); }
+    function onErr()     { var e = video.error; var code = e ? e.code : 0; var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg'; setStatus('ERR ' + code + ': ' + msg, true); }
+    function onStalled() { setStatus('Stalled...'); }
+    function onWait()    { setStatus('Буферизація...'); }
 
-    video.addEventListener('canplay', function onCan() {
-      setStatus('Буферизація ок...');
-      doPlay();
-    });
+    _nativeHandlers = { onPlay: onPlay, onCan: onCan, onErr: onErr, onStalled: onStalled, onWait: onWait };
+    video.addEventListener('playing', onPlay);
+    video.addEventListener('canplay', onCan);
+    video.addEventListener('error',   onErr);
+    video.addEventListener('stalled', onStalled);
+    video.addEventListener('waiting', onWait);
 
-    video.addEventListener('error', function onErr() {
-      video.removeEventListener('error', onErr);
-      var e = video.error;
-      var code = e ? e.code : 0;
-      var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg';
-      setStatus('ERR ' + code + ': ' + msg, true);
-    });
-
-    video.addEventListener('stalled', function onStalled() {
-      setStatus('Stalled...');
-    });
-
-    video.addEventListener('waiting', function onWait() {
-      setStatus('Буферизація...');
-    });
-
-    // Без crossOrigin — сегменти беруться напряму з CDN (без CORS)
     video.src = streamUrl;
     doPlay();
   }
