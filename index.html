@@ -861,7 +861,9 @@
       .ad-leaderboard { display: none; }
       .ad-below { display: none; }
       nav { display: none; }
-      .lang-switcher { display: none; }
+      /* lang-switcher залишаємо видимим на мобільних — компактний вигляд */
+      .lang-switcher { gap: 3px; }
+      .lang-link { padding: 3px 6px; font-size: 11px; }
     }
 
     /* ── MOBILE 640px ────────────────────────────────────────────── */
@@ -882,6 +884,8 @@
       .tg-header-btn { padding: 8px; font-size: 12px; gap: 5px; border-radius: 50%; width: 36px; height: 36px; justify-content: center; }
       .tg-header-btn span:not(.tg-icon) { display: none; }
       .tg-icon { font-size: 0; display: flex; align-items: center; justify-content: center; }
+      /* Ще компактніший lang-switcher на маленьких екранах */
+      .lang-link { padding: 2px 4px; font-size: 10px; }
 
       .main-wrap { padding: 8px; gap: 8px; }
       .right-sidebar { flex-direction: column; }
@@ -1503,12 +1507,6 @@ function openChannel(ch) {
   buildGrid(searchInput.value);
   renderSidebarBlocks();
 
-  var playerWrap = document.getElementById('player-wrap');
-  if (playerWrap) {
-    try { playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    catch(e) { try { playerWrap.scrollIntoView(true); } catch(e2) {} }
-  }
-
   playerEmpty.classList.add('hidden');
   npName.textContent = ch.name;
   npDesc.textContent = ch.desc;
@@ -1532,6 +1530,15 @@ function openChannel(ch) {
   clearTimeout(overlayTimer);
   tgOverlay.classList.remove('show');
   loadStream(ch);
+
+  // Скролл до плеєра — після оновлення DOM (для мобільних)
+  setTimeout(function() {
+    var playerWrap = document.getElementById('player-wrap');
+    if (playerWrap) {
+      try { playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      catch(e) { try { playerWrap.scrollIntoView(true); } catch(e2) {} }
+    }
+  }, 100);
 }
 
 // ── Stream ────────────────────────────────────────────────────
@@ -1565,10 +1572,26 @@ function loadStream(ch) {
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
   function doPlay() {
-    video.muted = true; video.volume = 1;
-    userUnmuted = false; unmuteBtn.textContent = '🔊 Увімкнути звук';
+    video.volume = 1;
+    video.muted = false;
     var p = video.play();
-    if (p && typeof p.then === 'function') { p.catch(function() {}); }
+    if (p && typeof p.then === 'function') {
+      p.then(function() {
+        userUnmuted = true;
+        unmuteBtn.textContent = '🔇 Вимкнути звук';
+      }).catch(function() {
+        // Autoplay заблоковано браузером — запускаємо з muted
+        video.muted = true;
+        userUnmuted = false;
+        unmuteBtn.textContent = '🔊 Увімкнути звук';
+        var p2 = video.play();
+        if (p2 && typeof p2.then === 'function') { p2.catch(function() {}); }
+      });
+    } else {
+      // Синхронний play (старі браузери)
+      userUnmuted = true;
+      unmuteBtn.textContent = '🔇 Вимкнути звук';
+    }
   }
 
   function startHlsJs() {
