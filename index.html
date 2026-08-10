@@ -1611,7 +1611,15 @@ function loadStream(ch) {
   }
 
   function startHlsJs() {
-    hls = new Hls({ liveSyncDurationCount: 1, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
+    hls = new Hls({
+      liveSyncDurationCount: 1,
+      lowLatencyMode: false,
+      enableWorker: false,
+      backBufferLength: 30,
+      fragLoadingTimeOut: 60000,
+      manifestLoadingTimeOut: 30000,
+      levelLoadingTimeOut: 30000
+    });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
     doPlay();
