@@ -1664,21 +1664,20 @@ function loadStream(ch) {
   function startNativeHls() {
     setStatus('Native HLS: підключення...');
     var _nativeRetry = null;
-    var _stalledRetry = null;
+    var _errTimer = null;
     var _playing = false;
     var _restartCount = 0;
 
     function _clearTimers() {
-      if (_nativeRetry)  { clearTimeout(_nativeRetry);  _nativeRetry  = null; }
-      if (_stalledRetry) { clearTimeout(_stalledRetry); _stalledRetry = null; }
+      if (_nativeRetry) { clearTimeout(_nativeRetry); _nativeRetry = null; }
+      if (_errTimer)    { clearTimeout(_errTimer);    _errTimer    = null; }
     }
 
     function _restart() {
       _clearTimers();
       _restartCount++;
-      // Після 6 невдалих спроб (2 повних цикли по всіх проксі) — показуємо помилку
       if (_restartCount > 6) {
-        setStatus('Не вдалося підключитися. Перевірте з\'єднання або натисніть «Ще раз».', true);
+        setStatus('Не вдалося підключитися. Натисніть «Ще раз».', true);
         return;
       }
       _nextProxy();
@@ -1688,31 +1687,30 @@ function loadStream(ch) {
       doPlay();
     }
 
-    function onPlay()    { _playing = true; _clearTimers(); setStatus('Пряма трансляція — ' + ch.name); liveBadge.style.display = 'flex'; }
-    function onCan()     { setStatus('Буферизація ок...'); doPlay(); }
-    function onErr()     {
+    function onPlay() { _playing = true; _clearTimers(); setStatus('Пряма трансляція — ' + ch.name); liveBadge.style.display = 'flex'; }
+    function onCan()  { setStatus('Буферизація ок...'); doPlay(); }
+    function onErr()  {
       _clearTimers();
       var e = video.error; var code = e ? e.code : 0;
-      // err 2 = network, err 3 = decode, err 4 = src not supported — всі підлягають retry
-      if ((code === 2 || code === 3 || code === 4) && !_playing) {
+      if (!_playing) {
         setStatus('Перемикання проксі...');
         _nativeRetry = setTimeout(_restart, 1500);
-      } else if (code && !_playing) {
-        _nativeRetry = setTimeout(_restart, 3000);
       }
     }
+    // stalled = мережа зупинилась: НЕ перезапускаємо — чекаємо поки Safari сам відновить
+    // Перезапуск тільки при справжній помилці (onErr)
     function onStalled() {
       if (_playing) return;
-      setStatus('Буферизація... (може зайняти до 60с при повільному з\'єднанні)');
-      // Чекаємо 60с — сегменти 5–6 МБ потребують часу при поганому каналі
-      if (!_stalledRetry) {
-        _stalledRetry = setTimeout(function() {
-          _stalledRetry = null;
+      setStatus('Завантаження... (може зайняти хвилину при повільному з\'єднанні)');
+      // Якщо через 3 хвилини так і не стартувало — помилка
+      if (!_errTimer) {
+        _errTimer = setTimeout(function() {
+          _errTimer = null;
           if (!_playing) _restart();
-        }, 60000);
+        }, 180000);
       }
     }
-    function onWait()    { if (!_playing) setStatus('Буферизація...'); }
+    function onWait() { if (!_playing) setStatus('Завантаження...'); }
 
     _nativeHandlers = { onPlay: onPlay, onCan: onCan, onErr: onErr, onStalled: onStalled, onWait: onWait };
     video.addEventListener('playing', onPlay);
