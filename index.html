@@ -896,6 +896,31 @@
       .ctrl-btn { padding: 6px 10px; font-size: 11px; }
     }
 
+    /* ── TG MOBILE BANNER ───────────────────────────────────────── */
+    .tg-mobile-banner { display: none; }
+
+    @media (max-width: 900px) {
+      .tg-mobile-banner {
+        display: flex; align-items: center; gap: 12px;
+        background: linear-gradient(135deg, #0c2340 0%, #0e2f50 50%, #0a2a45 100%);
+        border: 1px solid rgba(34,158,217,.25);
+        border-radius: 12px; padding: 12px 14px; margin-top: 8px;
+        text-decoration: none; color: #fff;
+        transition: opacity .2s;
+      }
+      .tg-mobile-banner:active { opacity: .85; }
+      .tg-mb-icon { font-size: 30px; flex-shrink: 0; line-height: 1; }
+      .tg-mb-text { flex: 1; min-width: 0; }
+      .tg-mb-title { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+      .tg-mb-desc { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.4; }
+      .tg-mb-btn {
+        background: #229ed9; border-radius: 8px;
+        padding: 8px 13px; font-size: 12px; font-weight: 700;
+        white-space: nowrap; flex-shrink: 0;
+        box-shadow: 0 3px 10px rgba(34,158,217,.3);
+      }
+    }
+
     /* ── SMALL PHONES 400px ──────────────────────────────────────── */
     @media (max-width: 400px) {
       .logo { font-size: 17px; }
@@ -1030,6 +1055,16 @@
     <div class="player-status" id="player-status">
       Оберіть канал для перегляду
     </div>
+
+    <!-- TG-баннер під статусом (тільки мобільний) -->
+    <a href="https://t.me/UkraineTVHub" target="_blank" class="tg-mobile-banner">
+      <div class="tg-mb-icon">✈️</div>
+      <div class="tg-mb-text">
+        <div class="tg-mb-title">Дивіться в Telegram</div>
+        <div class="tg-mb-desc">36 каналів — безкоштовно, без реклами, на будь-якому пристрої</div>
+      </div>
+      <div class="tg-mb-btn">Відкрити →</div>
+    </a>
 
     <!-- Банер під плеером -->
     <div class="player-banner" id="banner-below"></div>
