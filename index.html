@@ -1604,30 +1604,14 @@ function loadStream(ch) {
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
   function doPlay() {
-    video.volume = 1;
-    video.muted = false;
+    video.muted = true; video.volume = 1;
+    userUnmuted = false; unmuteBtn.textContent = '🔊 Увімкнути звук';
     var p = video.play();
-    if (p && typeof p.then === 'function') {
-      p.then(function() {
-        userUnmuted = true;
-        unmuteBtn.textContent = '🔇 Вимкнути звук';
-      }).catch(function() {
-        // Autoplay заблоковано браузером — запускаємо з muted
-        video.muted = true;
-        userUnmuted = false;
-        unmuteBtn.textContent = '🔊 Увімкнути звук';
-        var p2 = video.play();
-        if (p2 && typeof p2.then === 'function') { p2.catch(function() {}); }
-      });
-    } else {
-      // Синхронний play (старі браузери)
-      userUnmuted = true;
-      unmuteBtn.textContent = '🔇 Вимкнути звук';
-    }
+    if (p && typeof p.then === 'function') { p.catch(function() {}); }
   }
 
   function startHlsJs() {
-    hls = new Hls({ liveSyncDurationCount: 3, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
+    hls = new Hls({ liveSyncDurationCount: 1, lowLatencyMode: false, enableWorker: false, backBufferLength: 30 });
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
     doPlay();
