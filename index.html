@@ -1665,6 +1665,7 @@ function loadStream(ch) {
     var _nativeRetry = null;
     var _stalledRetry = null;
     var _playing = false;
+    var _restartCount = 0;
 
     function _clearTimers() {
       if (_nativeRetry)  { clearTimeout(_nativeRetry);  _nativeRetry  = null; }
@@ -1673,9 +1674,15 @@ function loadStream(ch) {
 
     function _restart() {
       _clearTimers();
+      _restartCount++;
+      // Після 6 невдалих спроб (2 повних цикли по всіх проксі) — показуємо помилку
+      if (_restartCount > 6) {
+        setStatus('Не вдалося підключитися. Перевірте з\'єднання або натисніть «Ще раз».', true);
+        return;
+      }
       _nextProxy();
       streamUrl = PROXY + '/stream?channel=' + ch.id;
-      setStatus('Повторне підключення (' + PROXY.replace('https://','').split('.')[0] + ')...');
+      setStatus('Підключення (' + PROXY.replace('https://','').split('.')[0] + ')...');
       video.src = streamUrl;
       doPlay();
     }
@@ -1685,24 +1692,23 @@ function loadStream(ch) {
     function onErr()     {
       _clearTimers();
       var e = video.error; var code = e ? e.code : 0;
-      // err 3 = decode error, err 4 = src not supported — обидва підлягають retry
-      if ((code === 3 || code === 4) && !_playing) {
+      // err 2 = network, err 3 = decode, err 4 = src not supported — всі підлягають retry
+      if ((code === 2 || code === 3 || code === 4) && !_playing) {
         setStatus('Перемикання проксі...');
-        _nativeRetry = setTimeout(_restart, 2000);
-      } else {
-        var msg = (e && e.message) ? e.message.substring(0, 50) : 'no msg';
-        setStatus('ERR ' + code + ': ' + msg, true);
+        _nativeRetry = setTimeout(_restart, 1500);
+      } else if (code && !_playing) {
+        _nativeRetry = setTimeout(_restart, 3000);
       }
     }
     function onStalled() {
-      if (_playing) return; // якщо вже грає — stalled це нормально
-      setStatus('Буферизація... (може зайняти 30–60с)');
-      // якщо stalled понад 20с до початку відтворення — пробуємо ще раз
+      if (_playing) return;
+      setStatus('Буферизація... (може зайняти до 60с при повільному з\'єднанні)');
+      // Чекаємо 60с — сегменти 5–6 МБ потребують часу при поганому каналі
       if (!_stalledRetry) {
         _stalledRetry = setTimeout(function() {
           _stalledRetry = null;
           if (!_playing) _restart();
-        }, 20000);
+        }, 60000);
       }
     }
     function onWait()    { if (!_playing) setStatus('Буферизація...'); }
