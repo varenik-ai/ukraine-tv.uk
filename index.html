@@ -1362,16 +1362,13 @@ var CHANNEL_GROUPS = [
 
 // DEBUG STEP 1
 
-// ── Proxy rotation (loaded from /proxy.json) ──────────────────
-var PROXY_LIST = ['https://ukraine-worker.dyaltd.workers.dev'];
+// ── Proxy — аналогично russian-tv.com: без ротации на заблокированные воркеры ──
+var PROXY_LIST = [
+  'https://oak-stream.varenik-tab.workers.dev',
+  'https://pine-stream.varenik-tab.workers.dev'
+];
 var _proxyIdx = 0;
 var PROXY = PROXY_LIST[0];
-fetch('/proxy.json').then(function(r) { return r.json(); }).then(function(d) {
-  if (d && d.urls && d.urls.length) {
-    PROXY_LIST = d.urls.concat(['https://ukraine-worker.dyaltd.workers.dev']);
-    PROXY = PROXY_LIST[0];
-  }
-}).catch(function() {});
 function _nextProxy() {
   _proxyIdx = (_proxyIdx + 1) % PROXY_LIST.length;
   PROXY = PROXY_LIST[_proxyIdx];
