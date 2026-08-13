@@ -1375,10 +1375,23 @@ function loadStream(ch) {
   var streamUrl = PROXY + '/stream?channel=' + ch.id;
 
   function doPlay() {
-    video.muted = true; video.volume = 1;
-    userUnmuted = false; unmuteBtn.textContent = '🔊 Unmute';
+    video.muted = false;
+    video.volume = 1;
     var p = video.play();
-    if (p && typeof p.then === 'function') { p.catch(function() {}); }
+    if (p && typeof p.then === 'function') {
+      p.then(function() {
+        userUnmuted = true;
+        unmuteBtn.textContent = '🔊';
+      }).catch(function() {
+        video.muted = true;
+        userUnmuted = false;
+        unmuteBtn.textContent = '🔇';
+        video.play().catch(function() {});
+      });
+    } else {
+      userUnmuted = !video.muted;
+      unmuteBtn.textContent = video.muted ? '🔇' : '🔊';
+    }
   }
 
   function startHlsJs() {
