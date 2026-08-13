@@ -16,12 +16,13 @@ var CHANNEL_GROUPS = [
     channels: [
       { id:'ntn',        name:'НТН',            desc:'Кіно та серіали',           icon:'НТН',  color:'#e53935', iconBg:'#1a0808', tags:['кіно','серіали'] },
       { id:'oneplusone', name:'1+1 Міжнар.',    desc:'Розваги та шоу',            icon:'1+1',  color:'#FFD500', iconBg:'#1a1400', tags:['розваги','шоу'] },
+      { id:'marafon',    name:'1+1 Марафон',    desc:'Марафон новин 24/7',        icon:'МАР',  color:'#FFD500', iconBg:'#1a1400', tags:['новини','марафон'] },
       { id:'kvartal',    name:'Квартал ТВ',     desc:'Гумор та розваги',          icon:'КВ',   color:'#ff6d00', iconBg:'#1a1000', tags:['гумор','розваги'] },
       { id:'interplus',  name:'Інтер+',         desc:'Серіали та кіно',           icon:'INT+', color:'#7b1fa2', iconBg:'#140a18', tags:['серіали','кіно'] },
       { id:'mega',       name:'Мега',           desc:'Кіно та серіали',           icon:'МГ',   color:'#d81b60', iconBg:'#180810', tags:['кіно','серіали'] },
       { id:'k2',         name:'К2',             desc:'Кіно та розваги',           icon:'К2',   color:'#6a1b9a', iconBg:'#130a18', tags:['кіно','розваги'] },
-      { id:'cinema4ever',name:'4ever Cinema',   desc:'Кіно 24/7',                 icon:'4CIN', color:'#e65100', iconBg:'#1a0e00', tags:['кіно'] },
-      { id:'drama4ever', name:'4ever Drama',    desc:'Серіали та драми',          icon:'4DRM', color:'#4a148c', iconBg:'#0e0a18', tags:['серіали','драми'] }
+      { id:'filmualive', name:'FilmUA Live',    desc:'Українське кіно 24/7',      icon:'FUA',  color:'#e65100', iconBg:'#1a0e00', tags:['кіно'] },
+      { id:'filmua_drama',name:'FilmUA Drama',  desc:'Серіали та драми',          icon:'FUAD', color:'#4a148c', iconBg:'#0e0a18', tags:['серіали','драми'] }
     ]
   },
   {
@@ -48,26 +49,13 @@ var CHANNEL_GROUPS = [
     label: '🎵 Музика',
     channels: [
       { id:'muzvar',    name:'Мюзвар',         desc:'Українська музика 24/7',     icon:'МЗВ',  color:'#FFD500', iconBg:'#1a1400', tags:['музика','українська'] },
-      { id:'nashemus',  name:'NASHE Music',    desc:'Українська музика',          icon:'НШМ',  color:'#005BBB', iconBg:'#08101a', tags:['музика','українська'] },
-      { id:'m1',        name:'М1',             desc:'Музика та кліпи',            icon:'М1',   color:'#c62828', iconBg:'#180808', tags:['музика','кліпи'] },
-      { id:'music4ever',name:'4ever Music',    desc:'Музика 24/7',                icon:'4MUS', color:'#1565c0', iconBg:'#0a0f1a', tags:['музика'] },
-      { id:'uamusic',   name:'UA Music',       desc:'Українська музика',          icon:'UAM',  color:'#2e7d32', iconBg:'#081208', tags:['музика','українська'] }
-    ]
-  },
-  {
-    label: '👶 Дитячі',
-    channels: [
-      { id:'nikikids',  name:'Niki Kids',      desc:'Мультфільми та шоу',         icon:'NIK',  color:'#f57f17', iconBg:'#181000', tags:['дитячий','мультфільми'] },
-      { id:'nikijunior',name:'Niki Junior',    desc:'Для найменших',              icon:'NIKJ', color:'#e91e63', iconBg:'#180810', tags:['дитячий'] }
+      { id:'nashemus',  name:'NASHE Music',    desc:'Українська музика',          icon:'НШМ',  color:'#005BBB', iconBg:'#08101a', tags:['музика','українська'] }
     ]
   },
   {
     label: '🎯 Тематичні',
     channels: [
-      { id:'rybalka',   name:'Rybalka TV',     desc:'Риболовля та природа',       icon:'РИБ',  color:'#0277bd', iconBg:'#081218', tags:['риболовля','природа'] },
-      { id:'uafashion', name:'UA Fashion TV',  desc:'Мода та стиль',              icon:'МОД',  color:'#e91e63', iconBg:'#180810', tags:['мода','стиль'] },
-      { id:'svarozhychy',name:'Svarozhychy',  desc:'Традиції та культура',       icon:'СВР',  color:'#5d4037', iconBg:'#120a08', tags:['культура','традиції'] },
-      { id:'equalympic',name:'Equalympic',     desc:'Спорт для всіх',             icon:'EQL',  color:'#2e7d32', iconBg:'#081208', tags:['спорт'] }
+      { id:'rybalka',   name:'Rybalka TV',     desc:'Риболовля та природа',       icon:'РИБ',  color:'#0277bd', iconBg:'#081218', tags:['риболовля','природа'] }
     ]
   }
 ];
