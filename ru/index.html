@@ -1339,6 +1339,224 @@ var CHANNEL_GROUPS = [
   }
 ];
 
+/* ── app.js (inline, ES5) ── */
+// app.js — ES5 only (Chrome 47+ / Samsung Tizen 3+ / LG WebOS 3+)
+
+// DEBUG STEP 1
+
+// ── Proxy — аналогично russian-tv.com: без ротации на заблокированные воркеры ──
+var PROXY_LIST = [
+  'https://api.ukraine-tv.uk',
+  'https://birch-stream.dyaltd.workers.dev',
+  'https://oak-stream.varenik-tab.workers.dev',
+  'https://pine-stream.varenik-tab.workers.dev'
+];
+var _proxyIdx = 0;
+var PROXY = PROXY_LIST[0];
+function _nextProxy() {
+  _proxyIdx = (_proxyIdx + 1) % PROXY_LIST.length;
+  PROXY = PROXY_LIST[_proxyIdx];
+}
+
+var TG_URL = 'https://t.me/UkraineTVHub';
+
+// ── State ─────────────────────────────────────────────────────
+var currentCh = null, hls = null, overlayTimer = null, userUnmuted = false, _overlayCount = 0;
+
+// ── DOM ───────────────────────────────────────────────────────
+var video        = document.getElementById('video');
+var playerEmpty  = document.getElementById('player-empty');
+var liveBadge    = document.getElementById('live-badge');
+var npBar        = document.getElementById('now-playing-bar');
+var npName       = document.getElementById('np-name');
+var npDesc       = document.getElementById('np-desc');
+var reloadBtn    = document.getElementById('reload-btn');
+var fsBtn        = document.getElementById('fullscreen-btn');
+var unmuteBtn    = document.getElementById('unmute-btn');
+var unmuteBanner = document.getElementById('unmute-banner');
+var tgOverlay    = document.getElementById('tg-overlay');
+var overlaySkip  = document.getElementById('overlay-skip');
+var statusEl     = document.getElementById('player-status');
+var infoCard     = document.getElementById('channel-info-card');
+var ciTitle      = document.getElementById('ci-title');
+var ciDesc       = document.getElementById('ci-desc');
+var ciTags       = document.getElementById('ci-tags');
+var searchInput  = document.getElementById('search-input');
+var channelGrid  = document.getElementById('channel-grid');
+
+// DEBUG STEP 2
+
+// ── Popular channels ──────────────────────────────────────────
+var POPULAR_IDS = ['ukraine24', 'oneplusone', 'kvartal', 'pershyi', 'channel5'];
+
+// ── Recently viewed (localStorage) ───────────────────────────
+var LS_RECENT = 'utv_recent_v1';
+function getRecent() {
+  try { return JSON.parse(localStorage.getItem(LS_RECENT) || '[]'); } catch(e) { return []; }
+}
+function saveRecent(id) {
+  var arr = getRecent().filter(function(x) { return x !== id; });
+  arr.unshift(id);
+  arr = arr.slice(0, 5);
+  try { localStorage.setItem(LS_RECENT, JSON.stringify(arr)); } catch(e) {}
+}
+
+// ── Find channel by id ────────────────────────────────────────
+function findChannel(id) {
+  for (var gi = 0; gi < CHANNEL_GROUPS.length; gi++) {
+    var g = CHANNEL_GROUPS[gi];
+    for (var ci = 0; ci < g.channels.length; ci++) {
+      if (g.channels[ci].id === id) return g.channels[ci];
+    }
+  }
+  return null;
+}
+
+// ── Render Popular/Recent sidebar ─────────────────────────────
+function renderSidebarMini(gridId, blockId, ids) {
+  var grid = document.getElementById(gridId);
+  var block = document.getElementById(blockId);
+  if (!grid || !block) return;
+  var channels = [];
+  for (var i = 0; i < ids.length; i++) {
+    var ch = findChannel(ids[i]);
+    if (ch) channels.push(ch);
+  }
+  block.style.display = channels.length ? '' : 'none';
+  grid.innerHTML = '';
+  for (var j = 0; j < channels.length; j++) {
+    (function(ch) {
+      var card = document.createElement('div');
+      card.className = 'mini-ch-card' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
+      card.innerHTML = '<span class="mini-ch-dot"></span>' + ch.name;
+      card.onclick = function() { openChannel(ch); };
+      grid.appendChild(card);
+    })(channels[j]);
+  }
+}
+
+function renderSidebarBlocks() {
+  renderSidebarMini('popular-grid', 'popular-block', POPULAR_IDS);
+  var recentIds = getRecent();
+  renderSidebarMini('recent-grid', 'recent-block', recentIds);
+}
+
+// ── Active filter ─────────────────────────────────────────────
+var activeFilter = '';
+
+// ── Build channel grid ────────────────────────────────────────
+function buildGrid(search) {
+  search = search || '';
+  channelGrid.innerHTML = '<div style="color:lime;font-size:14px;padding:4px;font-family:monospace">buildGrid() OK</div>';
+  var q = search.toLowerCase();
+
+  for (var gi = 0; gi < CHANNEL_GROUPS.length; gi++) {
+    var group = CHANNEL_GROUPS[gi];
+
+    var matchingChannels = [];
+    for (var ci = 0; ci < group.channels.length; ci++) {
+      var ch = group.channels[ci];
+      if (!q) {
+        matchingChannels.push(ch);
+      } else {
+        var nameMatch = ch.name.toLowerCase().indexOf(q) >= 0;
+        var tagMatch = false;
+        for (var ti = 0; ti < ch.tags.length; ti++) {
+          if (ch.tags[ti].indexOf(q) >= 0) { tagMatch = true; break; }
+        }
+        if (nameMatch || tagMatch) matchingChannels.push(ch);
+      }
+    }
+
+    var filtered = activeFilter
+      ? (group.label === activeFilter ? matchingChannels : [])
+      : matchingChannels;
+    if (!filtered.length) continue;
+
+    var label = document.createElement('div');
+    label.className = 'cat-label';
+    label.textContent = group.label;
+    channelGrid.appendChild(label);
+
+    var catGroup = document.createElement('div');
+    catGroup.className = 'cat-group';
+    channelGrid.appendChild(catGroup);
+
+    for (var fi = 0; fi < filtered.length; fi++) {
+      (function(ch) {
+        var item = document.createElement('div');
+        item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
+        item.dataset.id = ch.id;
+        item.setAttribute('aria-label', ch.name + ' — дивитися онлайн');
+        item.innerHTML =
+          '<div class="ch-icon-s" style="background:' + ch.iconBg + ';color:' + ch.color + '" role="img" aria-label="' + ch.name + '">' + ch.icon + '</div>' +
+          '<div class="ch-name-s">' + ch.name + '</div>';
+        item.onclick = function() { openChannel(ch); };
+        catGroup.appendChild(item);
+      })(filtered[fi]);
+    }
+  }
+}
+
+// ── Filter tabs ───────────────────────────────────────────────
+document.getElementById('filter-tabs').addEventListener('click', function(e) {
+  var btn = e.target;
+  // walk up to find .filter-tab
+  while (btn && btn !== this) {
+    if (btn.className && btn.className.indexOf('filter-tab') >= 0) break;
+    btn = btn.parentNode;
+  }
+  if (!btn || btn === this) return;
+  var tabs = document.querySelectorAll('.filter-tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter || btn.getAttribute('data-filter') || '';
+  buildGrid(searchInput.value);
+});
+
+searchInput.addEventListener('input', function(e) { buildGrid(e.target.value); });
+
+// ── Open channel ──────────────────────────────────────────────
+function openChannel(ch) {
+  currentCh = ch;
+  saveRecent(ch.id);
+  buildGrid(searchInput.value);
+  renderSidebarBlocks();
+
+  playerEmpty.classList.add('hidden');
+  npName.textContent = ch.name;
+  npDesc.textContent = ch.desc;
+  npBar.classList.add('visible');
+  liveBadge.style.setProperty('background', ch.color);
+  infoCard.style.display = 'block';
+  ciTitle.textContent = ch.name;
+  ciDesc.textContent = ch.desc;
+  var tagHtml = '';
+  for (var i = 0; i < ch.tags.length; i++) {
+    tagHtml += '<span class="ci-tag">' + ch.tags[i] + '</span>';
+  }
+  ciTags.innerHTML = tagHtml;
+
+  var activeItem = channelGrid.querySelector('.ch-item.active');
+  if (activeItem) {
+    try { activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    catch(e) { try { activeItem.scrollIntoView(true); } catch(e2) {} }
+  }
+
+  clearTimeout(overlayTimer);
+  tgOverlay.classList.remove('show');
+  loadStream(ch);
+
+  // Скролл до плеєра — після оновлення DOM (для мобільних)
+  setTimeout(function() {
+    var playerWrap = document.getElementById('player-wrap');
+    if (playerWrap) {
+      try { playerWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      catch(e) { try { playerWrap.scrollIntoView(true); } catch(e2) {} }
+    }
+  }, 100);
+}
+
 // ── Stream ────────────────────────────────────────────────────
 function setStatus(msg, isError) {
   if (isError === undefined) isError = false;
