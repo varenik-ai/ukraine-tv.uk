@@ -20,7 +20,7 @@
   <!-- Google Search Console -->
   <meta name="google-site-verification" content="Pks9QUQKaCCYB4X-kCuaEZKaO2iLILr3aABfVFeoegU" />
   <title>Еспресо ТВ дивитися онлайн безкоштовно — пряма трансляція | Україна ТВ</title>
-  <meta name="description" content="Еспресо ТВ онлайн — Суспільно-політичне мовлення 24/7. Дивіться Еспресо ТВ безкоштовно у прямому ефірі без реєстрації — для українців у Великобританії та Лондоні. Пряма трансляція 24/7 на ukraine-tv.uk."/>
+  <meta name="description" content="Еспресо ТВ онлайн — Суспільно-політичне мовлення 24/7. Дивіться Еспресо ТВ безкоштовно у прямому ефірі без реєстрації. Пряма трансляція 24/7 на ukraine-tv.uk."/>
   <meta name="keywords" content="Еспресо ТВ онлайн, Еспресо ТВ дивитися, Еспресо ТВ пряма трансляція, Еспресо ТВ безкоштовно, еспресо тв live, українське тв онлайн"/>
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
   <link rel="canonical" href="https://ukraine-tv.uk/espreso-live/"/>
@@ -110,7 +110,7 @@
           "name": "Чи є Еспресо ТВ у Telegram?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Так! Підписуйтесь на @UkraineTVHub у Telegram — там доступні всі 36 каналів включно з Еспресо ТВ."
+            "text": "Так! Підписуйтесь на @UkraineTVHub у Telegram — там доступні всі 29 каналів включно з Еспресо ТВ."
           }
         }
       ]
@@ -294,6 +294,18 @@ let hls = null, overlayTimer = null;
 
   return false;
 }
+
+// SEO: static H1 for search engines
+(function(){
+  var h=document.createElement('h1');
+  h.style.cssText='font-size:26px;font-weight:900;color:#e8e8f8;line-height:1.25;margin:16px 20px 6px;font-family:Inter,sans-serif';
+  h.textContent='Еспресо ТВ дивитися онлайн безкоштовно — пряма трансляція';
+  var p=document.createElement('p');
+  p.style.cssText='font-size:14px;color:#7878a0;line-height:1.6;margin:0 20px 8px;font-family:Inter,sans-serif';
+  p.textContent='Еспресо ТВ онлайн — Суспільно-політичне мовлення 24/7. Дивіться Еспресо ТВ безкоштовно у прямому ефірі без реєстрації. Пряма трансляція 24/7 на ukraine-tv.uk.';
+  var w=document.querySelector('.page-title-wrap');
+  if(w){w.prepend(p);w.prepend(h);}else{document.body.prepend(p);document.body.prepend(h);}
+})();
 
 function setStatus(msg) { status.textContent = msg; }
 
