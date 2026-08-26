@@ -1279,60 +1279,74 @@ var CHANNEL_GROUPS = [
   {
     label: '📡 News & General',
     channels: [
-      { id:'pershyi',    name:'Перший канал',   desc:'Main channel of Ukraine',    icon:'1',    color:'#005BBB', iconBg:'#08101a', tags:['новини','загальний'] },
-      { id:'channel5',   name:'5 Канал',        desc:'News & Analytics',       icon:'5',    color:'#1565c0', iconBg:'#0a0f1a', tags:['новини','аналітика'] },
-      { id:'espreso',    name:'Еспресо ТВ',     desc:'News 24/7',               icon:'ЕСП',  color:'#005BBB', iconBg:'#08101a', tags:['новини'] },
-      { id:'ukraine24',  name:'Україна 24',     desc:'News 24/7',               icon:'У24',  color:'#1565c0', iconBg:'#0a0f1a', tags:['новини'] },
-      { id:'kyiv24',     name:'Київ 24',        desc:'Capital news',            icon:'К24',  color:'#0277bd', iconBg:'#081218', tags:['новини','Київ'] },
-      { id:'news24',     name:'24 Канал',       desc:'News & Reports',       icon:'24',   color:'#c62828', iconBg:'#180808', tags:['новини'] },
-      { id:'rada',       name:'Рада ТВ',        desc:'Parliament channel',      icon:'РД',   color:'#2e7d32', iconBg:'#081208', tags:['парламент','суспільний'] }
+      { id:'pershyi', slug:'pershyi-live', name:'Перший канал',   desc:'Main channel of Ukraine',    icon:'1',    color:'#005BBB', iconBg:'#08101a', tags:['новини','загальний'] },
+      { id:'channel5', slug:'channel5-live', name:'5 Канал',        desc:'News & Analytics',       icon:'5',    color:'#1565c0', iconBg:'#0a0f1a', tags:['новини','аналітика'] },
+      { id:'espreso', slug:'espreso-live', name:'Еспресо ТВ',     desc:'News 24/7',               icon:'ЕСП',  color:'#005BBB', iconBg:'#08101a', tags:['новини'] },
+      { id:'ukraine24', slug:'ukraina24-live', name:'Україна 24',     desc:'News 24/7',               icon:'У24',  color:'#1565c0', iconBg:'#0a0f1a', tags:['новини'] },
+      { id:'kyiv24', slug:'kyiv24-live', name:'Київ 24',        desc:'Capital news',            icon:'К24',  color:'#0277bd', iconBg:'#081218', tags:['новини','Київ'] },
+      { id:'news24', slug:'24kanal-live', name:'24 Канал',       desc:'News & Reports',       icon:'24',   color:'#c62828', iconBg:'#180808', tags:['новини'] },
+      { id:'rada', slug:'rada-tv-live', name:'Рада ТВ',        desc:'Parliament channel',      icon:'РД',   color:'#2e7d32', iconBg:'#081208', tags:['парламент','суспільний'] }
     ]
   },
   {
     label: '🎬 Entertainment & Movies',
     channels: [
-      { id:'ntn',        name:'НТН',            desc:'Movies & Series',           icon:'НТН',  color:'#e53935', iconBg:'#1a0808', tags:['кіно','серіали'] },
-      { id:'oneplusone', name:'1+1 Міжнар.',    desc:'Entertainment & Shows',            icon:'1+1',  color:'#FFD500', iconBg:'#1a1400', tags:['розваги','шоу'] },
-      { id:'marafon',    name:'1+1 Марафон',   desc:'News Marathon 24/7',                icon:'МАР',  color:'#FFD500', iconBg:'#1a1400', tags:['новини','марафон'] },
-      { id:'kvartal',    name:'Квартал ТВ',     desc:'Comedy & Entertainment',          icon:'КВ',   color:'#ff6d00', iconBg:'#1a1000', tags:['гумор','розваги'] },
-      { id:'interplus',  name:'Інтер+',         desc:'Series & Movies',           icon:'INT+', color:'#7b1fa2', iconBg:'#140a18', tags:['серіали','кіно'] },
-      { id:'mega',       name:'Мега',           desc:'Movies & Series',           icon:'МГ',   color:'#d81b60', iconBg:'#180810', tags:['кіно','серіали'] },
-      { id:'k2',         name:'К2',             desc:'Movies & Entertainment',           icon:'К2',   color:'#6a1b9a', iconBg:'#130a18', tags:['кіно','розваги'] },
-      { id:'filmualive', name:'FilmUA Live', desc:'Українське кіно 24/7', icon:'FUA',  color:'#e65100', iconBg:'#1a0e00', tags:['кіно'] },
-      { id:'filmua_drama', name:'FilmUA Drama', desc:'Серіали та драми',  icon:'FUAD', color:'#4a148c', iconBg:'#0e0a18', tags:['серіали','драми'] }
+      { id:'ntn', slug:'ntn-live', name:'НТН',            desc:'Movies & Series',           icon:'НТН',  color:'#e53935', iconBg:'#1a0808', tags:['кіно','серіали'] },
+      { id:'inter', slug:'inter-live', name:'Inter TV',       desc:'TV series & movies',        icon:'ІНТ',  color:'#00897b', iconBg:'#081412', tags:['серіали','кіно'] },
+      { id:'oneplusone', slug:'1plus1-live', name:'1+1 Міжнар.',    desc:'Entertainment & Shows',            icon:'1+1',  color:'#FFD500', iconBg:'#1a1400', tags:['розваги','шоу'] },
+      { id:'marafon', slug:'', name:'1+1 Марафон',   desc:'News Marathon 24/7',                icon:'МАР',  color:'#FFD500', iconBg:'#1a1400', tags:['новини','марафон'] },
+      { id:'kvartal', slug:'kvartal-tv-live', name:'Квартал ТВ',     desc:'Comedy & Entertainment',          icon:'КВ',   color:'#ff6d00', iconBg:'#1a1000', tags:['гумор','розваги'] },
+      { id:'interplus', slug:'inter-plus-live', name:'Інтер+',         desc:'Series & Movies',           icon:'INT+', color:'#7b1fa2', iconBg:'#140a18', tags:['серіали','кіно'] },
+      { id:'mega', slug:'mega-live', name:'Мега',           desc:'Movies & Series',           icon:'МГ',   color:'#d81b60', iconBg:'#180810', tags:['кіно','серіали'] },
+      { id:'k2', slug:'k2-live', name:'К2',             desc:'Movies & Entertainment',           icon:'К2',   color:'#6a1b9a', iconBg:'#130a18', tags:['кіно','розваги'] },
+      { id:'filmualive', slug:'4ever-cinema-live', name:'FilmUA Live', desc:'Українське кіно 24/7', icon:'FUA',  color:'#e65100', iconBg:'#1a0e00', tags:['кіно'] },
+      { id:'filmua_drama', slug:'4ever-drama-live', name:'FilmUA Drama', desc:'Серіали та драми',  icon:'FUAD', color:'#4a148c', iconBg:'#0e0a18', tags:['серіали','драми'] }
     ]
   },
   {
     label: '📺 Public Broadcasting',
     channels: [
-      { id:'suspilne',  name:'Суспільне Київ', desc:'Public broadcasting',        icon:'СУС',  color:'#2e7d32', iconBg:'#081208', tags:['суспільний'] },
-      { id:'irt',       name:'IRT',            desc:'Community channel',          icon:'IRT',  color:'#00838f', iconBg:'#081214', tags:['громадський'] },
-      { id:'armytv',    name:'Армія ТВ',       desc:'Armed Forces channel',    icon:'АРМ',  color:'#33691e', iconBg:'#0a1408', tags:['армія','збройні сили'] }
+      { id:'suspilne', slug:'suspilne-live', name:'Суспільне Київ', desc:'Public broadcasting',        icon:'СУС',  color:'#2e7d32', iconBg:'#081208', tags:['суспільний'] },
+      { id:'irt', slug:'irt-live', name:'IRT',            desc:'Community channel',          icon:'IRT',  color:'#00838f', iconBg:'#081214', tags:['громадський'] },
+      { id:'armytv', slug:'armiya-tv-live', name:'Армія ТВ',       desc:'Armed Forces channel',    icon:'АРМ',  color:'#33691e', iconBg:'#0a1408', tags:['армія','збройні сили'] }
     ]
   },
   {
     label: '🏙️ Regional',
     channels: [
-      { id:'rai',       name:'RAI',            desc:'Entertainment & Music',          icon:'RAI',  color:'#ad1457', iconBg:'#180810', tags:['регіональний'] },
-      { id:'tva',       name:'TVA',            desc:'Regional TV',             icon:'TVA',  color:'#37474f', iconBg:'#0a0f12', tags:['регіональний'] },
-      { id:'ntk',       name:'NTK TV',         desc:'Kremenchuk TV',       icon:'NTK',  color:'#0277bd', iconBg:'#081218', tags:['регіональний','Кременчук'] },
-      { id:'dnipro',    name:'Дніпро TV',      desc:'Dnipro regional',        icon:'ДНП',  color:'#1565c0', iconBg:'#0a0f1a', tags:['регіональний','Дніпро'] },
-      { id:'ch7',       name:'7 Канал',        desc:'Odesa regional',         icon:'7К',   color:'#00838f', iconBg:'#081214', tags:['регіональний','Одеса'] },
-      { id:'rivne1',    name:'Рівне 1',        desc:'Rivne regional',          icon:'РВ1',  color:'#558b2f', iconBg:'#0a1408', tags:['регіональний','Рівне'] },
-      { id:'itv',       name:'ITV',            desc:'Regional TV',             icon:'ITV',  color:'#f57f17', iconBg:'#181000', tags:['регіональний'] }
+      { id:'rai', slug:'rai-live', name:'RAI',            desc:'Entertainment & Music',          icon:'RAI',  color:'#ad1457', iconBg:'#180810', tags:['регіональний'] },
+      { id:'tva', slug:'tva-live', name:'TVA',            desc:'Regional TV',             icon:'TVA',  color:'#37474f', iconBg:'#0a0f12', tags:['регіональний'] },
+      { id:'ntk', slug:'ntk-tv-live', name:'NTK TV',         desc:'Kremenchuk TV',       icon:'NTK',  color:'#0277bd', iconBg:'#081218', tags:['регіональний','Кременчук'] },
+      { id:'dnipro', slug:'dnipro-tv-live', name:'Дніпро TV',      desc:'Dnipro regional',        icon:'ДНП',  color:'#1565c0', iconBg:'#0a0f1a', tags:['регіональний','Дніпро'] },
+      { id:'ch7', slug:'7kanal-live', name:'7 Канал',        desc:'Odesa regional',         icon:'7К',   color:'#00838f', iconBg:'#081214', tags:['регіональний','Одеса'] },
+      { id:'rivne1', slug:'rivne1-live', name:'Рівне 1',        desc:'Rivne regional',          icon:'РВ1',  color:'#558b2f', iconBg:'#0a1408', tags:['регіональний','Рівне'] },
+      { id:'itv', slug:'itv-live', name:'ITV',            desc:'Regional TV',             icon:'ITV',  color:'#f57f17', iconBg:'#181000', tags:['регіональний'] }
     ]
   },
   {
     label: '🎵 Music',
     channels: [
-      { id:'muzvar',    name:'Мюзвар',         desc:'Ukrainian music 24/7',     icon:'МЗВ',  color:'#FFD500', iconBg:'#1a1400', tags:['музика','українська'] },
-      { id:'nashemus',  name:'NASHE Music',    desc:'Ukrainian Music',            icon:'НШМ',  color:'#005BBB', iconBg:'#08101a', tags:['музика','українська'] }
+      { id:'muzvar', slug:'muzvar-live', name:'Мюзвар',         desc:'Ukrainian music 24/7',     icon:'МЗВ',  color:'#FFD500', iconBg:'#1a1400', tags:['музика','українська'] },
+      { id:'nashemus', slug:'nashe-music-live', name:'NASHE Music',    desc:'Ukrainian Music',            icon:'НШМ',  color:'#005BBB', iconBg:'#08101a', tags:['музика','українська'] },
+      { id:'m1', slug:'m1-live', name:'M1',             desc:'Music & Videos',             icon:'М1',   color:'#8e24aa', iconBg:'#140a18', tags:['музика'] },
+      { id:'music4ever', slug:'4ever-music-live', name:'4ever Music',    desc:'Non-stop music 24/7',        icon:'4MUS', color:'#fb8c00', iconBg:'#1a1200', tags:['музика'] },
+      { id:'uamusic', slug:'ua-music-live', name:'UA Music',       desc:'Ukrainian music — supporting our own',  icon:'UAM',  color:'#43a047', iconBg:'#0a1408', tags:['музика','українська'] }
+    ]
+  },
+  {
+    label: '👶 Kids',
+    channels: [
+      { id:'nikikids', slug:'niki-kids-live', name:'Niki Kids',      desc:'Cartoons & shows for kids',  icon:'NIK',  color:'#29b6f6', iconBg:'#081418', tags:['діти','мультфільми'] },
+      { id:'nikijunior', slug:'niki-junior-live', name:'Niki Junior',    desc:'Educational content for the youngest', icon:'NIKJ', color:'#ec407a', iconBg:'#180810', tags:['діти','розвиток'] }
     ]
   },
   {
     label: '🎯 Thematic',
     channels: [
-      { id:'rybalka',   name:'Rybalka TV',     desc:'Fishing & Nature',          icon:'РИБ',  color:'#0277bd', iconBg:'#081218', tags:['риболовля','природа'] }
+      { id:'rybalka', slug:'rybalka-tv-live', name:'Rybalka TV',     desc:'Fishing & Nature',          icon:'РИБ',  color:'#0277bd', iconBg:'#081218', tags:['риболовля','природа'] },
+      { id:'uafashion', slug:'ua-fashion-tv-live', name:'UA Fashion TV',  desc:'Fashion, style & beauty',    icon:'МОД',  color:'#d81b60', iconBg:'#1a0812', tags:['мода','стиль'] },
+      { id:'svarozhychy', slug:'svarozhychy-live', name:'Svarozhychy',    desc:'Traditions, culture & heritage', icon:'СВР', color:'#6d4c41', iconBg:'#140e0a', tags:['культура','традиції'] },
+      { id:'equalympic', slug:'equalympic-live', name:'Equalympic',     desc:'Sport for everyone — adaptive sport', icon:'EQL', color:'#1e88e5', iconBg:'#0a1220', tags:['спорт'] }
     ]
   }
 ];
@@ -1482,14 +1496,19 @@ function buildGrid(search) {
 
     for (var fi = 0; fi < filtered.length; fi++) {
       (function(ch) {
-        var item = document.createElement('div');
+        var item = document.createElement('a');
+        item.href = ch.slug ? ('/' + ch.slug + '/') : '#';
         item.className = 'ch-item' + ((currentCh && currentCh.id === ch.id) ? ' active' : '');
         item.dataset.id = ch.id;
         item.setAttribute('aria-label', ch.name + ' — дивитися онлайн');
         item.innerHTML =
           '<div class="ch-icon-s" style="background:' + ch.iconBg + ';color:' + ch.color + '" role="img" aria-label="' + ch.name + '">' + ch.icon + '</div>' +
           '<div class="ch-name-s">' + ch.name + '</div>';
-        item.onclick = function() { openChannel(ch); };
+        item.onclick = function(e) {
+          if (ch.slug && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return;
+          e.preventDefault();
+          openChannel(ch);
+        };
         catGroup.appendChild(item);
       })(filtered[fi]);
     }
