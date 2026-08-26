@@ -282,185 +282,319 @@
     .tg-overlay-btn:hover{background:#1a8dc5}
     .tg-overlay-skip{display:block;font-size:12px;color:rgba(255,255,255,.35);cursor:pointer;margin-top:8px;transition:.2s}
     .tg-overlay-skip:hover{color:rgba(255,255,255,.65)}
-    
-const PROXY = 'https://ukraine-worker.dyaltd.workers.dev';
-const ch_id = 'music4ever';
-const video = document.getElementById('video');
-const overlay = document.getElementById('overlay');
-const status = document.getElementById('status');
-const tgOverlay = document.getElementById('tg-overlay');
-const overlaySkip = document.getElementById('overlay-skip');
-let hls = null, overlayTimer = null;
+    </style>
+</head>
+<body>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PTZRN8HT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<header>
+  <a href="https://ukraine-tv.uk/" class="logo">
+    <span class="logo-flag">🇺🇦</span><span class="blue">Україна</span><span class="yellow">ТВ</span>
+  </a>
+  <div class="h-right">
+    <a href="https://t.me/UkraineTVHub" target="_blank" rel="noopener" class="tg-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>
+      Telegram
+    </a>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="https://ukraine-tv.uk/">🇺🇦 Українське ТВ</a> › <span>4ever Music</span>
+</div>
+<div class="page-title-wrap">
+  <h1>4ever Music дивитися онлайн безкоштовно</h1>
+  <div class="live-badge"><div class="live-dot"></div> НАЖИВО · Пряма трансляція 24/7</div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- ── LEFT SIDEBAR: all channels ── -->
+  <aside class="left-sidebar">
+    <div class="sidebar-search-wrap">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="ch-search" placeholder="Пошук каналу...">
+    </div>
+    <div id="ch-list"></div>
+  </aside>
+
+  <!-- ── MAIN COLUMN: player ── -->
+  <div class="main-col">
+
+    <!-- Mobile TG banner -->
+    <a href="https://t.me/UkraineTVHub" target="_blank" rel="noopener" class="tg-card tg-card-mob">
+      <div style="display:flex;align-items:center;gap:10px;justify-content:center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="10" fill="#229ed9"/><path fill="#fff" d="M16.64 8.8l-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>
+        <strong>Дивіться в Telegram — 37 каналів безкоштовно</strong>
+      </div>
+    </a>
+
+    <!-- Player -->
+    <div class="player-wrap" id="player-wrap">
+      <video id="video" autoplay playsinline webkit-playsinline muted></video>
+      <div class="player-overlay" id="overlay">
+        <div class="play-btn">▶</div>
+        <p style="color:rgba(255,255,255,.8);font-size:14px">4ever Music — натисніть для перегляду</p>
+      </div>
+      <div class="unmute-banner" id="unmute-banner">
+        <button id="unmute-btn">🔊 Увімкнути звук</button>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="player-status" id="status">Підключення до 4ever Music...</div>
+
+    <!-- Controls -->
+    <div class="player-ctrls">
+      <button class="ctrl-btn" id="reload-btn">🔄 Перепідключитись</button>
+      <button class="ctrl-btn" id="fs-btn">⛶ Повний екран</button>
+    </div>
+
+    <!-- Channel info -->
+    <div class="channel-meta">
+      <h2>4ever Music</h2>
+      <p>Музика без зупинок 24/7. Дивіться 4ever Music онлайн безкоштовно у прямому ефірі без реєстрації та VPN.</p>
+      <span class="cat-badge">музика</span>
+    </div>
+
+    <!-- All channels link -->
+    <a href="https://ukraine-tv.uk/" class="all-link">← Всі 37 каналів на головній сторінці</a>
+
+    <!-- SEO description -->
+    <div class="desc-box">
+      <h2>Про канал 4ever Music</h2>
+      <p>
+        <strong>4ever Music</strong> — музика без зупинок 24/7. Канал доступний для перегляду онлайн безкоштовно у прямому ефірі 24/7
+        на сайті ukraine-tv.uk. Ніяких реєстрацій, VPN чи платежів не потрібно — просто відкрийте сторінку
+        та натисніть «Переглядати».
+      </p>
+      <p style="margin-top:8px">
+        Також доступні інші українські канали: <a href="https://ukraine-tv.uk/pershyi-live/">4ever Music</a>,
+        <a href="https://ukraine-tv.uk/ukraina24-live/">Україна 24</a>,
+        <a href="https://ukraine-tv.uk/channel5-live/">5 Канал</a>,
+        <a href="https://ukraine-tv.uk/espreso-live/">Еспресо ТВ</a>,
+        <a href="https://ukraine-tv.uk/1plus1-live/">1+1</a> та інші.
+      </p>
+    </div>
+
+  </div><!-- .main-col -->
+
+  <!-- ── RIGHT SIDE COL ── -->
+  <div class="side-col">
+    <div class="tg-card">
+      <div class="tg-card-live"><span class="tg-card-live-dot"></span>НАЖИВО · 24/7</div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#229ed9"/><path fill="#fff" d="M16.64 8.8l-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>
+      <h3>Дивіться без реклами</h3>
+      <p>37 українських каналів наживо у Telegram. iOS · Android · Desktop</p>
+      <a href="https://t.me/UkraineTVHub" target="_blank" rel="noopener">Відкрити @UkraineTVHub</a>
+    </div>
+    <div class="ad-wrap" id="ad-side">Реклама</div>
+  </div>
+
+</div><!-- .page-wrap -->
+
+<footer>
+  <div style="margin-bottom:8px">
+    <a href="https://ukraine-tv.uk/">Головна</a>
+    <a href="https://ukraine-tv.uk/ukrainske-tv-za-kordonom/">ТВ за кордоном</a>
+    <a href="https://t.me/UkraineTVHub" target="_blank">Telegram</a>
+  </div>
+  <div style="color:var(--muted2);font-size:11px">© 2025 ukraine-tv.uk · Безкоштовне українське ТВ онлайн</div>
+  <div style="color:var(--muted2);font-size:11px;margin-top:4px">Сайт не зберігає відеоконтент. Всі трансляції надаються третіми сторонами.</div>
+</footer>
 
 
-  return false;
+<!-- HLS.js -->
+<script src="https://ukraine-tv.uk/hls.min.js"></script>
+
+<script>
+
+/* ── channel-app.js ── */
+var CHANNEL_GROUPS = [{"label":"📡 Новини та загальні","channels":[{"id":"pershyi","slug":"pershyi-live","name":"Перший канал","desc":"Головний канал України","icon":"1","color":"#005BBB","iconBg":"#08101a"},{"id":"channel5","slug":"channel5-live","name":"5 Канал","desc":"Новини та аналітика","icon":"5","color":"#1565c0","iconBg":"#0a0f1a"},{"id":"espreso","slug":"espreso-live","name":"Еспресо ТВ","desc":"Новини 24/7","icon":"ЕСП","color":"#005BBB","iconBg":"#08101a"},{"id":"ukraine24","slug":"ukraina24-live","name":"Україна 24","desc":"Новини 24/7","icon":"У24","color":"#1565c0","iconBg":"#0a0f1a"},{"id":"kyiv24","slug":"kyiv24-live","name":"Київ 24","desc":"Новини столиці","icon":"К24","color":"#0277bd","iconBg":"#081218"},{"id":"news24","slug":"24kanal-live","name":"24 Канал","desc":"Новини та репортажі","icon":"24","color":"#c62828","iconBg":"#180808"},{"id":"rada","slug":"rada-tv-live","name":"Рада ТВ","desc":"Парламентський канал","icon":"РД","color":"#2e7d32","iconBg":"#081208"}]},{"label":"🎬 Розваги та кіно","channels":[{"id":"ntn","slug":"ntn-live","name":"НТН","desc":"Кіно та серіали","icon":"НТН","color":"#e53935","iconBg":"#1a0808"},{"id":"inter","slug":"inter-live","name":"Інтер","desc":"Серіали та кіно","icon":"ІНТ","color":"#00897b","iconBg":"#081412"},{"id":"oneplusone","slug":"1plus1-live","name":"1+1 Міжнар.","desc":"Розваги та шоу","icon":"1+1","color":"#FFD500","iconBg":"#1a1400"},{"id":"marafon","slug":"","name":"1+1 Марафон","desc":"Марафон новин 24/7","icon":"МАР","color":"#FFD500","iconBg":"#1a1400"},{"id":"kvartal","slug":"kvartal-tv-live","name":"Квартал ТВ","desc":"Гумор та розваги","icon":"КВ","color":"#ff6d00","iconBg":"#1a1000"},{"id":"interplus","slug":"inter-plus-live","name":"Інтер+","desc":"Серіали та кіно","icon":"INT+","color":"#7b1fa2","iconBg":"#140a18"},{"id":"mega","slug":"mega-live","name":"Мега","desc":"Кіно та серіали","icon":"МГ","color":"#d81b60","iconBg":"#180810"},{"id":"k2","slug":"k2-live","name":"К2","desc":"Кіно та розваги","icon":"К2","color":"#6a1b9a","iconBg":"#130a18"},{"id":"filmualive","slug":"4ever-cinema-live","name":"FilmUA Live","desc":"Українське кіно 24/7","icon":"FUA","color":"#e65100","iconBg":"#1a0e00"},{"id":"filmua_drama","slug":"4ever-drama-live","name":"FilmUA Drama","desc":"Серіали та драми","icon":"FUAD","color":"#4a148c","iconBg":"#0e0a18"}]},{"label":"📺 Суспільне та громадські","channels":[{"id":"suspilne","slug":"suspilne-live","name":"Суспільне Київ","desc":"Суспільне мовлення","icon":"СУС","color":"#2e7d32","iconBg":"#081208"},{"id":"irt","slug":"irt-live","name":"IRT","desc":"Громадський канал","icon":"IRT","color":"#00838f","iconBg":"#081214"},{"id":"armytv","slug":"armiya-tv-live","name":"Армія ТВ","desc":"Телеканал Збройних Сил","icon":"АРМ","color":"#33691e","iconBg":"#0a1408"}]},{"label":"🏙️ Регіональні","channels":[{"id":"rai","slug":"rai-live","name":"RAI","desc":"Розваги та музика","icon":"RAI","color":"#ad1457","iconBg":"#180810"},{"id":"tva","slug":"tva-live","name":"TVA","desc":"Регіональне ТВ","icon":"TVA","color":"#37474f","iconBg":"#0a0f12"},{"id":"ntk","slug":"ntk-tv-live","name":"NTK TV","desc":"Телеканал Кременчука","icon":"NTK","color":"#0277bd","iconBg":"#081218"},{"id":"dnipro","slug":"dnipro-tv-live","name":"Дніпро TV","desc":"Регіональний Дніпро","icon":"ДНП","color":"#1565c0","iconBg":"#0a0f1a"},{"id":"ch7","slug":"7kanal-live","name":"7 Канал","desc":"Регіональний Одеса","icon":"7К","color":"#00838f","iconBg":"#081214"},{"id":"rivne1","slug":"rivne1-live","name":"Рівне 1","desc":"Регіональне Рівне","icon":"РВ1","color":"#558b2f","iconBg":"#0a1408"},{"id":"itv","slug":"itv-live","name":"ITV","desc":"Регіональне ТВ","icon":"ITV","color":"#f57f17","iconBg":"#181000"}]},{"label":"🎵 Музика","channels":[{"id":"muzvar","slug":"muzvar-live","name":"Мюзвар","desc":"Українська музика 24/7","icon":"МЗВ","color":"#FFD500","iconBg":"#1a1400"},{"id":"nashemus","slug":"nashe-music-live","name":"NASHE Music","desc":"Українська музика","icon":"НШМ","color":"#005BBB","iconBg":"#08101a"},{"id":"m1","slug":"m1-live","name":"М1","desc":"Музика та кліпи","icon":"М1","color":"#8e24aa","iconBg":"#140a18"},{"id":"music4ever","slug":"4ever-music-live","name":"4ever Music","desc":"Музика без зупинок 24/7","icon":"4MUS","color":"#fb8c00","iconBg":"#1a1200"},{"id":"uamusic","slug":"ua-music-live","name":"UA Music","desc":"Українська музика — підтримуємо своїх","icon":"UAM","color":"#43a047","iconBg":"#0a1408"}]},{"label":"👶 Дитячі","channels":[{"id":"nikikids","slug":"niki-kids-live","name":"Niki Kids","desc":"Мультфільми та шоу для дітей","icon":"NIK","color":"#29b6f6","iconBg":"#081418"},{"id":"nikijunior","slug":"niki-junior-live","name":"Niki Junior","desc":"Для найменших — розвивальний контент","icon":"NIKJ","color":"#ec407a","iconBg":"#180810"}]},{"label":"🎯 Тематичні","channels":[{"id":"rybalka","slug":"rybalka-tv-live","name":"Rybalka TV","desc":"Риболовля та природа","icon":"РИБ","color":"#0277bd","iconBg":"#081218"},{"id":"uafashion","slug":"ua-fashion-tv-live","name":"UA Fashion TV","desc":"Мода, стиль та краса","icon":"МОД","color":"#d81b60","iconBg":"#1a0812"},{"id":"svarozhychy","slug":"svarozhychy-live","name":"Svarozhychy","desc":"Традиції, культура та спадщина","icon":"СВР","color":"#6d4c41","iconBg":"#140e0a"},{"id":"equalympic","slug":"equalympic-live","name":"Equalympic","desc":"Спорт для всіх — адаптивний спорт","icon":"EQL","color":"#1e88e5","iconBg":"#0a1220"}]}];
+
+var PROXY_LIST = [
+  'https://api.ukraine-tv.uk',
+  'https://birch-stream.dyaltd.workers.dev',
+  'https://oak-stream.varenik-tab.workers.dev',
+  'https://pine-stream.varenik-tab.workers.dev'
+];
+var _proxyIdx = 0;
+var PROXY = PROXY_LIST[0];
+function _nextProxy(){_proxyIdx=(_proxyIdx+1)%PROXY_LIST.length;PROXY=PROXY_LIST[_proxyIdx];}
+
+var currentCh = null;
+var hls = null;
+var video        = document.getElementById('video');
+var overlay      = document.getElementById('overlay');
+var reloadBtn    = document.getElementById('reload-btn');
+var fsBtn        = document.getElementById('fs-btn');
+var unmuteBtn    = document.getElementById('unmute-btn');
+var unmuteBanner = document.getElementById('unmute-banner');
+var statusEl     = document.getElementById('status');
+var chList       = document.getElementById('ch-list');
+var searchInput  = document.getElementById('ch-search');
+
+function findChannel(id){
+  for(var gi=0;gi<CHANNEL_GROUPS.length;gi++){
+    var g=CHANNEL_GROUPS[gi];
+    for(var ci=0;ci<g.channels.length;ci++){
+      if(g.channels[ci].id===id) return g.channels[ci];
+    }
+  }
+  return null;
 }
 
-function setStatus(msg) { status.textContent = msg; }
+function setStatus(msg,isErr){
+  statusEl.innerHTML=isErr?'⚠️ '+msg:'<span class="status-dot"></span>'+msg;
+}
 
-function startStream() {
-  overlay.style.display = 'none';
-  setStatus('⏳ Підключення...');
-  if (typeof Hls === 'undefined') { setTimeout(startStream, 300); return; }
-  const url = PROXY + '/stream?channel=' + ch_id;
-  if (Hls.isSupported()) {
-    hls = new Hls({liveSyncDurationCount:3,lowLatencyMode:false,enableWorker:false});
-    hls.loadSource(url);
+function stopStream(){
+  if(hls){hls.destroy();hls=null;}
+  video.src='';
+}
+
+function doPlay(){
+  video.muted=false;video.volume=1;
+  var p=video.play();
+  if(p&&typeof p.then==='function'){
+    p.catch(function(){video.muted=true;video.play().catch(function(){});unmuteBanner.classList.remove('hidden');});
+  }
+}
+
+function loadStream(ch){
+  stopStream();
+  setStatus('Підключення до '+ch.name+'...');
+  var streamUrl=PROXY+'/stream?channel='+ch.id;
+
+  if(Hls.isSupported()){
+    hls=new Hls({liveSyncDurationCount:1,lowLatencyMode:false,enableWorker:false,backBufferLength:30,fragLoadingTimeOut:60000,manifestLoadingTimeOut:30000,levelLoadingTimeOut:30000});
+    hls.loadSource(streamUrl);
     hls.attachMedia(video);
-    video.muted = true; video.volume = 1; video.play().catch(function() {});
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.muted = true; video.play().catch(()=>{});
-      setStatus('▶ Трансляція запущена');
-      setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
-    });
-    hls.on(Hls.Events.ERROR, (e, d) => {
-      if (d.fatal) setStatus('❌ Помилка трансляції — спробуйте пізніше');
-    });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = url;
-    video.muted = true; video.play().catch(()=>{});
-    setStatus('▶ Трансляція запущена');
-    setTimeout(() => { showPreroll(() => { scheduleOverlay(); }); }, 120000);
-  }
-}
-
-// Pre-roll: показується перед першим запуском потоку
-const prerollOverlay = document.getElementById('preroll-overlay');
-const prerollSkip = document.getElementById('preroll-skip');
-const prerollCount = document.getElementById('preroll-count');
-let _prerollShown = false;
-
-function showPreroll(callback) {
-  if (_prerollShown) { callback(); return; }
-  _prerollShown = true;
-  video.pause();
-  prerollOverlay.classList.add('show');
-  let sec = 8;
-  const tick = setInterval(() => {
-    sec--;
-    if (prerollCount) prerollCount.textContent = sec;
-    if (sec <= 0) {
-      clearInterval(tick);
-      if (prerollSkip) {
-        prerollSkip.textContent = '▶ Дивитися зараз';
-        prerollSkip.classList.add('ready');
+    doPlay();
+    hls.on(Hls.Events.MANIFEST_PARSED,function(){setStatus('Пряма трансляція — '+ch.name);});
+    hls.on(Hls.Events.ERROR,function(ev,data){
+      if(!data.fatal)return;
+      if(data.type===Hls.ErrorTypes.NETWORK_ERROR){
+        _nextProxy();streamUrl=PROXY+'/stream?channel='+ch.id;
+        try{hls.stopLoad();hls.loadSource(streamUrl);hls.startLoad();doPlay();}catch(e){}
+        return;
       }
-    }
-  }, 1000);
-  // Після 5 сек кнопка стає активною (клікабельною)
-  setTimeout(() => {
-    if (prerollSkip) prerollSkip.classList.add('ready');
-  }, 5000);
-  // Автозакриття після 8 сек
-  const autoTimer = setTimeout(() => {
-    prerollOverlay.classList.remove('show');
-    video.play().catch(()=>{});
-    callback();
-  }, 8000);
-  if (prerollSkip) {
-    prerollSkip.addEventListener('click', function handler() {
-      if (!prerollSkip.classList.contains('ready')) return;
-      clearInterval(tick);
-      clearTimeout(autoTimer);
-      prerollOverlay.classList.remove('show');
-      prerollSkip.removeEventListener('click', handler);
-      video.play().catch(()=>{});
-      callback();
+      if(data.type===Hls.ErrorTypes.MEDIA_ERROR){try{hls.recoverMediaError();}catch(e){}return;}
+      setStatus('Помилка підключення.',true);
     });
-  }
-}
-
-overlay.addEventListener('click', () => startStream());
-
-// Telegram overlay — макс. 2 рази за завантаження сторінки, пауза відео
-let _overlayCount = 0;
-
-overlaySkip.addEventListener('click', () => {
-  tgOverlay.classList.remove('show');
-  clearTimeout(overlayTimer);
-  video.play().catch(()=>{});
-});
-
-function scheduleOverlay() {
-  clearTimeout(overlayTimer);
-  tgOverlay.classList.remove('show');
-  if (_overlayCount < 2) {
-    overlayTimer = setTimeout(() => {
-      tgOverlay.classList.add('show');
-      _overlayCount++;
-      video.pause();
-    }, 120000);
-  }
-}
-
-// Fullscreen через кастомну кнопку — розгортаємо player-wrap, а не <video>
-const _playerWrap = document.getElementById('player-wrap');
-const fsBtn = document.getElementById('fs-btn');
-
-fsBtn.addEventListener('click', function() {
-  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-  if (fsEl) {
-    // Вихід з fullscreen
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+    video.src=streamUrl;
+    doPlay();
+    video.addEventListener('loadedmetadata',function(){setStatus('Пряма трансляція — '+ch.name);});
+    video.addEventListener('error',function(){
+      _nextProxy();
+      video.src=PROXY+'/stream?channel='+ch.id;
+      doPlay();
+    });
   } else {
-    // Вхід у fullscreen: спочатку player-wrap, fallback — нативний <video> (iOS)
-    if (_playerWrap.requestFullscreen) {
-      _playerWrap.requestFullscreen().catch(()=>{});
-    } else if (_playerWrap.webkitRequestFullscreen) {
-      _playerWrap.webkitRequestFullscreen();
-    } else if (video.webkitEnterFullscreen) {
-      // iOS Safari: тільки <video> підтримує fullscreen
-      video.webkitEnterFullscreen();
+    setStatus('HLS не підтримується у вашому браузері.',true);
+  }
+}
+
+function openChannel(ch){
+  currentCh=ch;
+  overlay.classList.add('hidden');
+  loadStream(ch);
+  // Update sidebar active state
+  var items=chList.querySelectorAll('.ch-item-s');
+  for(var i=0;i<items.length;i++){
+    if(items[i].dataset.id===ch.id) items[i].classList.add('active');
+    else items[i].classList.remove('active');
+  }
+  // Scroll to top on mobile
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildSidebar(search){
+  search=(search||'').toLowerCase();
+  chList.innerHTML='';
+  for(var gi=0;gi<CHANNEL_GROUPS.length;gi++){
+    var g=CHANNEL_GROUPS[gi];
+    var matching=[];
+    for(var ci=0;ci<g.channels.length;ci++){
+      var ch=g.channels[ci];
+      if(!search||ch.name.toLowerCase().indexOf(search)>=0){
+        matching.push(ch);
+      }
+    }
+    if(!matching.length)continue;
+    var lbl=document.createElement('div');
+    lbl.className='cat-label-s';
+    lbl.textContent=g.label;
+    chList.appendChild(lbl);
+    var grp=document.createElement('div');
+    grp.className='cat-group-s';
+    chList.appendChild(grp);
+    for(var mi=0;mi<matching.length;mi++){
+      (function(ch){
+        var item=document.createElement('a');
+        item.href=ch.slug?('/'+ch.slug+'/'):'#';
+        item.className='ch-item-s'+(currentCh&&currentCh.id===ch.id?' active':'');
+        item.dataset.id=ch.id;
+        item.setAttribute('aria-label',ch.name);
+        item.innerHTML=
+          '<div class="ch-icon-s" style="background:'+ch.iconBg+';color:'+ch.color+'">'+ch.icon+'</div>'+
+          '<div><div class="ch-name-s">'+ch.name+'</div><div class="ch-desc-s">'+ch.desc+'</div></div>'+
+          '<span class="live-dot-s"></span>';
+        item.onclick=function(e){
+          if(ch.slug&&(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1))return;
+          e.preventDefault();
+          openChannel(ch);
+        };
+        grp.appendChild(item);
+      })(matching[mi]);
     }
   }
-});
-
-function _onFsUpdate() {
-  const inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  fsBtn.textContent = inFs ? '✕' : '⛶';
-  if (inFs) scheduleOverlay();
-}
-document.addEventListener('fullscreenchange', _onFsUpdate);
-document.addEventListener('webkitfullscreenchange', _onFsUpdate);
-// iOS webkitbeginfullscreen на video
-video.addEventListener('webkitbeginfullscreen', function() { fsBtn.textContent = '✕'; });
-video.addEventListener('webkitendfullscreen', function() { fsBtn.textContent = '⛶'; });
-
-// Оверлеї запускаються після 2 хв перегляду — через showPreroll → scheduleOverlay
-
-// Scroll active channel into view on load
-(function(){
-  const active = document.querySelector('.ch-item-s.active');
-  if (active) active.scrollIntoView({block:'center', behavior:'auto'});
-})();
-
-// Sidebar search
-const chSearch = document.getElementById('ch-search');
-if (chSearch) {
-  chSearch.addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('.cat-group-s').forEach(group => {
-      let hasVisible = false;
-      group.querySelectorAll('.ch-item-s').forEach(el => {
-        const show = !q || el.dataset.name.toLowerCase().includes(q);
-        el.style.display = show ? '' : 'none';
-        if (show) hasVisible = true;
-      });
-      const label = group.previousElementSibling;
-      if (label && label.classList.contains('cat-label-s')) {
-        label.style.display = hasVisible ? '' : 'none';
-      }
-      group.style.display = hasVisible ? '' : 'none';
-    });
-  });
 }
 
-s.onerror = () => {
+// Search
+if(searchInput){
+  searchInput.addEventListener('input',function(){buildSidebar(this.value);});
+}
+
+// Fullscreen
+if(fsBtn){
+  fsBtn.onclick=function(){
+    var pw=document.getElementById('player-wrap');
+    if(document.fullscreenElement){document.exitFullscreen&&document.exitFullscreen();}
+    else{pw.requestFullscreen&&pw.requestFullscreen();}
   };
-  document.head.appendChild(s);
-});
+}
+
+// Reload
+if(reloadBtn){
+  reloadBtn.onclick=function(){if(currentCh)loadStream(currentCh);};
+}
+
+// Unmute
+if(unmuteBtn){
+  unmuteBtn.onclick=function(){
+    video.muted=false;video.volume=1;
+    video.play().catch(function(){});
+    unmuteBanner.classList.add('hidden');
+  };
+}
+
+// Overlay click to play
+if(overlay){
+  overlay.onclick=function(){
+    if(currentCh){overlay.classList.add('hidden');doPlay();}
+  };
+}
+
+// Build sidebar and auto-open channel
+buildSidebar();
+var autoLoad=findChannel('music4ever');
+if(autoLoad){
+  openChannel(autoLoad);
+}
 
 </script>
+
 </body>
 </html>
