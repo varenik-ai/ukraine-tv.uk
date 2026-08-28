@@ -34,7 +34,7 @@ var channelGrid  = document.getElementById('channel-grid');
 (function(){var f=document.getElementById('js-flag');if(f)f.textContent='2:DOM OK ch='+(typeof CHANNEL_GROUPS!=='undefined'?CHANNEL_GROUPS.length:'?');})();
 
 // ── Popular channels ──────────────────────────────────────────
-var POPULAR_IDS = ['pershyi', 'channel5', 'ukraine24', 'oneplusone', 'suspilne'];
+var POPULAR_IDS = ['pershyi', 'channel5', 'oneplusone', 'suspilne'];
 
 // ── Recently viewed (localStorage) ───────────────────────────
 var LS_RECENT = 'utv_recent_v1';
