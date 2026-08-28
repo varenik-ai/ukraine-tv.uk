@@ -5,7 +5,7 @@ var CHANNEL_GROUPS = [
       { id:'pershyi', slug:'pershyi-live', name:'Перший канал', desc:'Головний канал України', icon:'1', color:'#005BBB', iconBg:'#08101a', tags:['новини','загальний'] },
       { id:'channel5', slug:'channel5-live', name:'5 Канал', desc:'Новини та аналітика', icon:'5', color:'#1565c0', iconBg:'#0a0f1a', tags:['новини','аналітика'] },
       { id:'espreso', slug:'espreso-live', name:'Еспресо ТВ', desc:'Новини 24/7', icon:'ЕСП', color:'#005BBB', iconBg:'#08101a', tags:['новини'] },
-      { id:'ukraine24', slug:'ukraina24-live', name:'Україна 24', desc:'Новини 24/7', icon:'У24', color:'#1565c0', iconBg:'#0a0f1a', tags:['новини'] },
+      { id:'ukraine24', slug:'ukraina24-live', name:'Прямий', desc:'Новини 24/7', icon:'ПРЯ', color:'#1565c0', iconBg:'#0a0f1a', tags:['новини'] },
       { id:'kyiv24', slug:'kyiv24-live', name:'Київ 24', desc:'Новини столиці', icon:'К24', color:'#0277bd', iconBg:'#081218', tags:['новини','Київ'] },
       { id:'news24', slug:'24kanal-live', name:'24 Канал', desc:'Новини та репортажі', icon:'24', color:'#c62828', iconBg:'#180808', tags:['новини'] },
       { id:'rada', slug:'rada-tv-live', name:'Рада ТВ', desc:'Парламентський канал', icon:'РД', color:'#2e7d32', iconBg:'#081208', tags:['парламент','суспільний'] },
