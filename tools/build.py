@@ -457,6 +457,16 @@ def main():
     for slug, cat in old_cats.items():
         put('/' + slug + '/index.html', redirect_stub(p('en', CATS[cat]['en'][1])))
 
+    # данные для мини-аппа (ukraine-tv-hub/tools/gen_app_channels.py)
+    app = {'version': 1, 'groups': []}
+    for cat in CAT_ORDER:
+        items = [c for c in CH if c['cat'] == cat]
+        if items:
+            app['groups'].append({'cat': cat, 'emoji': CAT_EMOJI[cat], 'labels': {l: CATS[cat][l][0] for l in LANGS},
+                                  'channels': [{'id': c['id'], 'name': c['name']['uk'], 'nameEn': c['name']['en'], 'nameRu': c['name']['ru'], 'icon': c['icon'],
+                                                'color': c['color'], 'iconBg': c['bg'], 'slug': c['slug']} for c in items]})
+    put('/data/app-channels.json', json.dumps(app, ensure_ascii=False, indent=1) + '\n')
+
     # proxy.json
     put('/proxy.json', json.dumps({'urls': ['https://ukraine-stream-a.dyaltd.workers.dev', 'https://ukraine-stream-b.dyaltd.workers.dev', 'https://ukraine-stream-c.dyaltd.workers.dev']}, indent=2) + '\n')
     put('/robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n' % DOMAIN)
