@@ -1,0 +1,873 @@
+{
+ "version": 1,
+ "updated": "2026-10-25",
+ "groups": [
+  "📡 Новини та загальні",
+  "🎬 Розваги та кіно",
+  "📺 Суспільне та громадські",
+  "🏙️ Регіональні",
+  "🎵 Музика",
+  "👶 Дитячі",
+  "🎯 Тематичні"
+ ],
+ "channels": [
+  {
+   "id": "pershyi",
+   "slug": "pershyi-live",
+   "group": "📡 Новини та загальні",
+   "name": "Перший канал",
+   "desc": "Головний канал України",
+   "icon": "1",
+   "color": "#005BBB",
+   "iconBg": "#08101a",
+   "tags": [
+    "новини",
+    "загальний"
+   ],
+   "source": {
+    "url": "https://api-tv.ipnet.ua/api/v1/manifest/2118742505.m3u8",
+    "status": "ok",
+    "notes": "нет CORS на сегментах — нужен прокси сегментов или замена",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": true,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "channel5",
+   "slug": "channel5-live",
+   "group": "📡 Новини та загальні",
+   "name": "5 Канал",
+   "desc": "Новини та аналітика",
+   "icon": "5",
+   "color": "#1565c0",
+   "iconBg": "#0a0f1a",
+   "tags": [
+    "новини",
+    "аналітика"
+   ],
+   "source": {
+    "url": "https://api-tv.ipnet.ua/api/v1/manifest/2118742539.m3u8",
+    "status": "ok",
+    "notes": "нет CORS на сегментах",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": true,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "espreso",
+   "slug": "espreso-live",
+   "group": "📡 Новини та загальні",
+   "name": "Еспресо ТВ",
+   "desc": "Новини 24/7",
+   "icon": "ЕСП",
+   "color": "#005BBB",
+   "iconBg": "#08101a",
+   "tags": [
+    "новини"
+   ],
+   "source": {
+    "url": "https://api-tv.ipnet.ua/api/v1/manifest/2118742594.m3u8",
+    "status": "ok",
+    "notes": "нет CORS на сегментах",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": true,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "kyiv24",
+   "slug": "kyiv24-live",
+   "group": "📡 Новини та загальні",
+   "name": "Київ 24",
+   "desc": "Новини столиці",
+   "icon": "К24",
+   "color": "#0277bd",
+   "iconBg": "#081218",
+   "tags": [
+    "новини",
+    "Київ"
+   ],
+   "source": {
+    "url": "https://api-tv.ipnet.ua/api/v1/manifest/1293296300.m3u8",
+    "status": "verify",
+    "notes": "iptv-org: «Kyiv 1080p»; сверить, что это Київ 24; нет CORS на сегментах",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": true,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "news24",
+   "slug": "24kanal-live",
+   "group": "📡 Новини та загальні",
+   "name": "24 Канал",
+   "desc": "Новини та репортажі",
+   "icon": "24",
+   "color": "#c62828",
+   "iconBg": "#180808",
+   "tags": [
+    "новини"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/news24-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "замена http luxnet на https cdn15",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "rada",
+   "slug": "rada-tv-live",
+   "group": "📡 Новини та загальні",
+   "name": "Рада ТВ",
+   "desc": "Парламентський канал",
+   "icon": "РД",
+   "color": "#2e7d32",
+   "iconBg": "#081208",
+   "tags": [
+    "парламент",
+    "суспільний"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/rada-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "замена ipnet на cdn15 (CORS есть)",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "ntn",
+   "slug": "ntn-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "НТН",
+   "desc": "Кіно та серіали",
+   "icon": "НТН",
+   "color": "#e53935",
+   "iconBg": "#1a0808",
+   "tags": [
+    "кіно",
+    "серіали"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/ntn-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "inter",
+   "slug": "inter-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "Інтер",
+   "desc": "Серіали та кіно",
+   "icon": "ІНТ",
+   "color": "#00897b",
+   "iconBg": "#081412",
+   "tags": [
+    "серіали",
+    "кіно"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/inter-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "oneplusone",
+   "slug": "1plus1-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "1+1 Міжнар.",
+   "desc": "Розваги та шоу",
+   "icon": "1+1",
+   "color": "#FFD500",
+   "iconBg": "#1a1400",
+   "tags": [
+    "розваги",
+    "шоу"
+   ],
+   "source": {
+    "url": "https://dash2.antik.sk/live/test_one_plus_one_int_tizen/playlist.m3u8",
+    "status": "ok",
+    "notes": "тестовый/Tizen эндпоинт — хрупкий, искать замену",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "marafon",
+   "slug": "marafon-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "1+1 Марафон",
+   "desc": "Марафон новин 24/7",
+   "icon": "МАР",
+   "color": "#FFD500",
+   "iconBg": "#1a1400",
+   "tags": [
+    "новини",
+    "марафон"
+   ],
+   "source": {
+    "url": "https://dash2.antik.sk/live/1plus1_marathon/playlist.m3u8",
+    "status": "ok",
+    "notes": "раньше не работал (id не было в воркере); источник из iptv-org",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "kvartal",
+   "slug": "kvartal-tv-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "Квартал ТВ",
+   "desc": "Гумор та розваги",
+   "icon": "КВ",
+   "color": "#ff6d00",
+   "iconBg": "#1a1000",
+   "tags": [
+    "гумор",
+    "розваги"
+   ],
+   "source": {
+    "url": "https://dash2.antik.sk/live/kvartal_tv/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "WARN"
+   }
+  },
+  {
+   "id": "interplus",
+   "slug": "inter-plus-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "Інтер+",
+   "desc": "Серіали та кіно",
+   "icon": "INT+",
+   "color": "#7b1fa2",
+   "iconBg": "#140a18",
+   "tags": [
+    "серіали",
+    "кіно"
+   ],
+   "source": {
+    "url": null,
+    "status": "no_source",
+    "notes": "в воркере был тот же URL, что у Інтер; отдельный источник не найден — скрыть до замены"
+   }
+  },
+  {
+   "id": "mega",
+   "slug": "mega-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "Мега",
+   "desc": "Кіно та серіали",
+   "icon": "МГ",
+   "color": "#d81b60",
+   "iconBg": "#180810",
+   "tags": [
+    "кіно",
+    "серіали"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/mega-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "k2",
+   "slug": "k2-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "К2",
+   "desc": "Кіно та розваги",
+   "icon": "К2",
+   "color": "#6a1b9a",
+   "iconBg": "#130a18",
+   "tags": [
+    "кіно",
+    "розваги"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/k2-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "filmualive",
+   "slug": "filmua-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "FilmUA Live",
+   "desc": "Українське кіно 24/7",
+   "icon": "FUA",
+   "color": "#e65100",
+   "iconBg": "#1a0e00",
+   "tags": [
+    "кіно"
+   ],
+   "source": {
+    "url": "https://dash2.antik.sk/live/test_film_life_atktv/playlist.m3u8",
+    "status": "ok",
+    "notes": "настоящий FilmUA Live; ранее страница 4ever-cinema-live ошибочно называлась FilmUA",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "cinema4ever",
+   "slug": "4ever-cinema-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "4ever Cinema",
+   "desc": "Кіно 24/7",
+   "icon": "4CIN",
+   "color": "#e65100",
+   "iconBg": "#1a0e00",
+   "tags": [
+    "кіно"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch42/index.m3u8",
+    "status": "ok",
+    "notes": "4ever Cinema (страница 4ever-cinema-live)",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "drama4ever",
+   "slug": "4ever-drama-live",
+   "group": "🎬 Розваги та кіно",
+   "name": "4ever Drama",
+   "desc": "Серіали та драми",
+   "icon": "4DR",
+   "color": "#4a148c",
+   "iconBg": "#0e0a18",
+   "tags": [
+    "серіали",
+    "драми"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch49/index.m3u8",
+    "status": "ok",
+    "notes": "4ever Drama (страница 4ever-drama-live)",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "armytv",
+   "slug": "armiya-tv-live",
+   "group": "📺 Суспільне та громадські",
+   "name": "Армія ТВ",
+   "desc": "Телеканал Збройних Сил",
+   "icon": "АРМ",
+   "color": "#33691e",
+   "iconBg": "#0a1408",
+   "tags": [
+    "армія",
+    "збройні сили"
+   ],
+   "source": {
+    "url": "https://api-tv.ipnet.ua/api/v1/manifest/2118742632.m3u8",
+    "status": "ok",
+    "notes": "нет CORS на сегментах",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": true,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "suspilne",
+   "slug": "suspilne-live",
+   "group": "📺 Суспільне та громадські",
+   "name": "Суспільне Київ",
+   "desc": "Суспільне мовлення",
+   "icon": "СУС",
+   "color": "#2e7d32",
+   "iconBg": "#081208",
+   "tags": [
+    "суспільний"
+   ],
+   "source": {
+    "url": "https://live-nstu.cdn-03.cosmonova.net.ua/mobile-app/main/nstu-kyiv/master.m3u8",
+    "status": "recheck",
+    "notes": "TLS-таймаут с моего IP (гео?) — проверить из воркера/UA IP; нет CORS",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": false,
+    "test": "FAIL"
+   }
+  },
+  {
+   "id": "irt",
+   "slug": "irt-live",
+   "group": "📺 Суспільне та громадські",
+   "name": "IRT",
+   "desc": "Громадський канал",
+   "icon": "IRT",
+   "color": "#00838f",
+   "iconBg": "#081214",
+   "tags": [
+    "громадський"
+   ],
+   "source": {
+    "url": "https://stream.irt.ua/memfs/8fac7cbb-3356-4a03-bb77-4439b727ebd2.m3u8",
+    "status": "cors_restricted",
+    "notes": "CORS только для https://irt.ua — нужен прокси или замена",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "https://irt.ua",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "rai",
+   "slug": "rai-live",
+   "group": "🏙️ Регіональні",
+   "name": "RAI",
+   "desc": "Розваги та музика",
+   "icon": "RAI",
+   "color": "#ad1457",
+   "iconBg": "#180810",
+   "tags": [
+    "регіональний"
+   ],
+   "source": {
+    "url": "https://stream.rai.ua/rai/stream.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "tva",
+   "slug": "tva-live",
+   "group": "🏙️ Регіональні",
+   "name": "TVA",
+   "desc": "Регіональне ТВ",
+   "icon": "TVA",
+   "color": "#37474f",
+   "iconBg": "#0a0f12",
+   "tags": [
+    "регіональний"
+   ],
+   "source": {
+    "url": "https://hls.cdn.ua/tva.ua_live/livestream/chunklist_.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "ntk",
+   "slug": "ntk-tv-live",
+   "group": "🏙️ Регіональні",
+   "name": "NTK TV",
+   "desc": "Телеканал Кременчука",
+   "icon": "NTK",
+   "color": "#0277bd",
+   "iconBg": "#081218",
+   "tags": [
+    "регіональний",
+    "Кременчук"
+   ],
+   "source": {
+    "url": "https://stream.ntktv.ua/s/ntk/ntk.m3u8",
+    "status": "ok",
+    "notes": "https-версия вместо http",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "WARN"
+   }
+  },
+  {
+   "id": "dnipro",
+   "slug": "dnipro-tv-live",
+   "group": "🏙️ Регіональні",
+   "name": "Дніпро TV",
+   "desc": "Регіональний Дніпро",
+   "icon": "ДНП",
+   "color": "#1565c0",
+   "iconBg": "#0a0f1a",
+   "tags": [
+    "регіональний",
+    "Дніпро"
+   ],
+   "source": {
+    "url": "http://vcdn1.produck.company:1935/out/dtv/playlist.m3u8",
+    "status": "http_only",
+    "notes": "только http (mixed content на https-сайте), https даёт TLS-таймаут",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "ch7",
+   "slug": "7kanal-live",
+   "group": "🏙️ Регіональні",
+   "name": "7 Канал",
+   "desc": "Регіональний Одеса",
+   "icon": "7К",
+   "color": "#00838f",
+   "iconBg": "#081214",
+   "tags": [
+    "регіональний",
+    "Одеса"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/7tvod-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "rivne1",
+   "slug": "rivne1-live",
+   "group": "🏙️ Регіональні",
+   "name": "Рівне 1",
+   "desc": "Регіональне Рівне",
+   "icon": "РВ1",
+   "color": "#558b2f",
+   "iconBg": "#0a1408",
+   "tags": [
+    "регіональний",
+    "Рівне"
+   ],
+   "source": {
+    "url": "https://cdn1.live-tv.cloud/rivne1/rivne1-abr/playlist.m3u8",
+    "status": "recheck",
+    "notes": "плейлист ок, сегменты 403 с моего IP (referer/гео?) — проверить из воркера",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": false,
+    "test": "FAIL"
+   }
+  },
+  {
+   "id": "itv",
+   "slug": "itv-live",
+   "group": "🏙️ Регіональні",
+   "name": "ITV",
+   "desc": "Регіональне ТВ",
+   "icon": "ITV",
+   "color": "#f57f17",
+   "iconBg": "#181000",
+   "tags": [
+    "регіональний"
+   ],
+   "source": {
+    "url": "https://cdn10.live-tv.cloud/itvrv/abr-lq/playlist.m3u8",
+    "status": "recheck",
+    "notes": "сегменты 403 с моего IP; старый http:8081 тоже 403",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": null,
+    "needs_segment_proxy": false,
+    "test": "FAIL"
+   }
+  },
+  {
+   "id": "muzvar",
+   "slug": "muzvar-live",
+   "group": "🎵 Музика",
+   "name": "Мюзвар",
+   "desc": "Українська музика 24/7",
+   "icon": "МЗВ",
+   "color": "#FFD500",
+   "iconBg": "#1a1400",
+   "tags": [
+    "музика",
+    "українська"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/muzvar-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "nashemus",
+   "slug": "nashe-music-live",
+   "group": "🎵 Музика",
+   "name": "NASHE Music",
+   "desc": "Українська музика",
+   "icon": "НШМ",
+   "color": "#005BBB",
+   "iconBg": "#08101a",
+   "tags": [
+    "музика",
+    "українська"
+   ],
+   "source": {
+    "url": "https://cdn15.live-tv.cloud/ua_infinitas_tv/nashemus-abr/playlist.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "m1",
+   "slug": "m1-live",
+   "group": "🎵 Музика",
+   "name": "М1",
+   "desc": "Музика та кліпи",
+   "icon": "М1",
+   "color": "#8e24aa",
+   "iconBg": "#140a18",
+   "tags": [
+    "музика"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch122/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "music4ever",
+   "slug": "4ever-music-live",
+   "group": "🎵 Музика",
+   "name": "4ever Music",
+   "desc": "Музика без зупинок 24/7",
+   "icon": "4MUS",
+   "color": "#fb8c00",
+   "iconBg": "#1a1200",
+   "tags": [
+    "музика"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch132/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "uamusic",
+   "slug": "ua-music-live",
+   "group": "🎵 Музика",
+   "name": "UA Music",
+   "desc": "Українська музика — підтримуємо своїх",
+   "icon": "UAM",
+   "color": "#43a047",
+   "iconBg": "#0a1408",
+   "tags": [
+    "музика",
+    "українська"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch133/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "nikikids",
+   "slug": "niki-kids-live",
+   "group": "👶 Дитячі",
+   "name": "Niki Kids",
+   "desc": "Мультфільми та шоу для дітей",
+   "icon": "NIK",
+   "color": "#29b6f6",
+   "iconBg": "#081418",
+   "tags": [
+    "діти",
+    "мультфільми"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch71/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "nikijunior",
+   "slug": "niki-junior-live",
+   "group": "👶 Дитячі",
+   "name": "Niki Junior",
+   "desc": "Для найменших — розвивальний контент",
+   "icon": "NIKJ",
+   "color": "#ec407a",
+   "iconBg": "#180810",
+   "tags": [
+    "діти",
+    "розвиток"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch72/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "rybalka",
+   "slug": "rybalka-tv-live",
+   "group": "🎯 Тематичні",
+   "name": "Rybalka TV",
+   "desc": "Риболовля та природа",
+   "icon": "РИБ",
+   "color": "#0277bd",
+   "iconBg": "#081218",
+   "tags": [
+    "риболовля",
+    "природа"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch88/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "uafashion",
+   "slug": "ua-fashion-tv-live",
+   "group": "🎯 Тематичні",
+   "name": "UA Fashion TV",
+   "desc": "Мода, стиль та краса",
+   "icon": "МОД",
+   "color": "#d81b60",
+   "iconBg": "#1a0812",
+   "tags": [
+    "мода",
+    "стиль"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch216/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "svarozhychy",
+   "slug": "svarozhychy-live",
+   "group": "🎯 Тематичні",
+   "name": "Svarozhychy",
+   "desc": "Традиції, культура та спадщина",
+   "icon": "СВР",
+   "color": "#6d4c41",
+   "iconBg": "#140e0a",
+   "tags": [
+    "культура",
+    "традиції"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch168/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  },
+  {
+   "id": "equalympic",
+   "slug": "equalympic-live",
+   "group": "🎯 Тематичні",
+   "name": "Equalympic",
+   "desc": "Спорт для всіх — адаптивний спорт",
+   "icon": "EQL",
+   "color": "#1e88e5",
+   "iconBg": "#0a1220",
+   "tags": [
+    "спорт"
+   ],
+   "source": {
+    "url": "https://iptv.prosto.tv/ch215/index.m3u8",
+    "status": "ok",
+    "notes": "",
+    "checked": "2026-10-25 (прямой запрос, не через CF)",
+    "segment_cors": "*",
+    "needs_segment_proxy": false,
+    "test": "OK"
+   }
+  }
+ ]
+}
