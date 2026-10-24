@@ -263,25 +263,6 @@
    }
   },
   {
-   "id": "interplus",
-   "slug": "inter-plus-live",
-   "group": "🎬 Розваги та кіно",
-   "name": "Інтер+",
-   "desc": "Серіали та кіно",
-   "icon": "INT+",
-   "color": "#7b1fa2",
-   "iconBg": "#140a18",
-   "tags": [
-    "серіали",
-    "кіно"
-   ],
-   "source": {
-    "url": null,
-    "status": "no_source",
-    "notes": "в воркере был тот же URL, что у Інтер; отдельный источник не найден — скрыть до замены"
-   }
-  },
-  {
    "id": "mega",
    "slug": "mega-live",
    "group": "🎬 Розваги та кіно",
@@ -418,28 +399,6 @@
    }
   },
   {
-   "id": "suspilne",
-   "slug": "suspilne-live",
-   "group": "📺 Суспільне та громадські",
-   "name": "Суспільне Київ",
-   "desc": "Суспільне мовлення",
-   "icon": "СУС",
-   "color": "#2e7d32",
-   "iconBg": "#081208",
-   "tags": [
-    "суспільний"
-   ],
-   "source": {
-    "url": "https://live-nstu.cdn-03.cosmonova.net.ua/mobile-app/main/nstu-kyiv/master.m3u8",
-    "status": "broken_on_cf",
-    "notes": "Проверено через Cloudflare 2026-10-25: источник отвечает 522 (недоступен из CF). Нужен другой источник/зеркало.",
-    "checked": "2026-10-25 (прямой запрос, не через CF)",
-    "segment_cors": null,
-    "needs_segment_proxy": false,
-    "test": "FAIL"
-   }
-  },
-  {
    "id": "irt",
    "slug": "irt-live",
    "group": "📺 Суспільне та громадські",
@@ -529,29 +488,6 @@
    }
   },
   {
-   "id": "dnipro",
-   "slug": "dnipro-tv-live",
-   "group": "🏙️ Регіональні",
-   "name": "Дніпро TV",
-   "desc": "Регіональний Дніпро",
-   "icon": "ДНП",
-   "color": "#1565c0",
-   "iconBg": "#0a0f1a",
-   "tags": [
-    "регіональний",
-    "Дніпро"
-   ],
-   "source": {
-    "url": "http://vcdn1.produck.company:1935/out/dtv/playlist.m3u8",
-    "status": "http_only",
-    "notes": "только http (mixed content на https-сайте), https даёт TLS-таймаут",
-    "checked": "2026-10-25 (прямой запрос, не через CF)",
-    "segment_cors": "*",
-    "needs_segment_proxy": false,
-    "test": "OK"
-   }
-  },
-  {
    "id": "ch7",
    "slug": "7kanal-live",
    "group": "🏙️ Регіональні",
@@ -572,51 +508,6 @@
     "segment_cors": "*",
     "needs_segment_proxy": false,
     "test": "OK"
-   }
-  },
-  {
-   "id": "rivne1",
-   "slug": "rivne1-live",
-   "group": "🏙️ Регіональні",
-   "name": "Рівне 1",
-   "desc": "Регіональне Рівне",
-   "icon": "РВ1",
-   "color": "#558b2f",
-   "iconBg": "#0a1408",
-   "tags": [
-    "регіональний",
-    "Рівне"
-   ],
-   "source": {
-    "url": "https://cdn1.live-tv.cloud/rivne1/rivne1-abr/playlist.m3u8",
-    "status": "broken_on_cf",
-    "notes": "Проверено через Cloudflare 2026-10-25: главный плейлист ок, вложенный плейлист 403 (ссылка, вероятно, привязана к IP). Нужен другой источник.",
-    "checked": "2026-10-25 (прямой запрос, не через CF)",
-    "segment_cors": null,
-    "needs_segment_proxy": false,
-    "test": "FAIL"
-   }
-  },
-  {
-   "id": "itv",
-   "slug": "itv-live",
-   "group": "🏙️ Регіональні",
-   "name": "ITV",
-   "desc": "Регіональне ТВ",
-   "icon": "ITV",
-   "color": "#f57f17",
-   "iconBg": "#181000",
-   "tags": [
-    "регіональний"
-   ],
-   "source": {
-    "url": "https://cdn10.live-tv.cloud/itvrv/abr-lq/playlist.m3u8",
-    "status": "broken_on_cf",
-    "notes": "Проверено через Cloudflare 2026-10-25: главный плейлист ок, вложенный плейлист 403 (как у rivne1). Нужен другой источник.",
-    "checked": "2026-10-25 (прямой запрос, не через CF)",
-    "segment_cors": null,
-    "needs_segment_proxy": false,
-    "test": "FAIL"
    }
   },
   {
@@ -868,6 +759,48 @@
     "needs_segment_proxy": false,
     "test": "OK"
    }
+  }
+ ],
+ "removed": [
+  {
+   "id": "interplus",
+   "slug": "inter-plus-live",
+   "name": "Інтер+",
+   "reason": "нет отдельного источника (раньше играл поток Інтер)",
+   "removed": "2026-10-25",
+   "last_source": null
+  },
+  {
+   "id": "suspilne",
+   "slug": "suspilne-live",
+   "name": "Суспільне Київ",
+   "reason": "источник недоступен из Cloudflare (522)",
+   "removed": "2026-10-25",
+   "last_source": "https://live-nstu.cdn-03.cosmonova.net.ua/mobile-app/main/nstu-kyiv/master.m3u8"
+  },
+  {
+   "id": "dnipro",
+   "slug": "dnipro-tv-live",
+   "name": "Дніпро TV",
+   "reason": "источник только http — блокируется на https-сайте",
+   "removed": "2026-10-25",
+   "last_source": "http://vcdn1.produck.company:1935/out/dtv/playlist.m3u8"
+  },
+  {
+   "id": "rivne1",
+   "slug": "rivne1-live",
+   "name": "Рівне 1",
+   "reason": "вложенный плейлист 403 из Cloudflare",
+   "removed": "2026-10-25",
+   "last_source": "https://cdn1.live-tv.cloud/rivne1/rivne1-abr/playlist.m3u8"
+  },
+  {
+   "id": "itv",
+   "slug": "itv-live",
+   "name": "ITV",
+   "reason": "вложенный плейлист 403 из Cloudflare",
+   "removed": "2026-10-25",
+   "last_source": "https://cdn10.live-tv.cloud/itvrv/abr-lq/playlist.m3u8"
   }
  ]
 }
