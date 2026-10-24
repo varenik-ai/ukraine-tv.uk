@@ -34,3 +34,7 @@
 - `channel5`: зеркало только по http (`stream.mcquack.net/291`), CORS есть, но mixed content.
 - `pershyi`, `armytv`, `kyiv24`: зеркал с https+CORS в iptv-org / Free-TV не найдено, остаётся ipnet.ua.
 - Итого без CORS на сегментах: 4 канала ipnet.ua + suspilne.
+
+## Проверка через развёрнутый воркер (Cloudflare, 2026-10-25)
+33 из 36 каналов проходят цепочку плейлист → сегмент (5 из них через `/seg`).
+Не проходят: `suspilne` (522), `rivne1`, `itv` (вложенный плейлист 403). Статус в реестре: `broken_on_cf`.

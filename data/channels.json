@@ -431,8 +431,8 @@
    ],
    "source": {
     "url": "https://live-nstu.cdn-03.cosmonova.net.ua/mobile-app/main/nstu-kyiv/master.m3u8",
-    "status": "recheck",
-    "notes": "TLS-таймаут с моего IP (гео?) — проверить из воркера/UA IP; нет CORS",
+    "status": "broken_on_cf",
+    "notes": "Проверено через Cloudflare 2026-10-25: источник отвечает 522 (недоступен из CF). Нужен другой источник/зеркало.",
     "checked": "2026-10-25 (прямой запрос, не через CF)",
     "segment_cors": null,
     "needs_segment_proxy": false,
@@ -589,8 +589,8 @@
    ],
    "source": {
     "url": "https://cdn1.live-tv.cloud/rivne1/rivne1-abr/playlist.m3u8",
-    "status": "recheck",
-    "notes": "плейлист ок, сегменты 403 с моего IP (referer/гео?) — проверить из воркера",
+    "status": "broken_on_cf",
+    "notes": "Проверено через Cloudflare 2026-10-25: главный плейлист ок, вложенный плейлист 403 (ссылка, вероятно, привязана к IP). Нужен другой источник.",
     "checked": "2026-10-25 (прямой запрос, не через CF)",
     "segment_cors": null,
     "needs_segment_proxy": false,
@@ -611,8 +611,8 @@
    ],
    "source": {
     "url": "https://cdn10.live-tv.cloud/itvrv/abr-lq/playlist.m3u8",
-    "status": "recheck",
-    "notes": "сегменты 403 с моего IP; старый http:8081 тоже 403",
+    "status": "broken_on_cf",
+    "notes": "Проверено через Cloudflare 2026-10-25: главный плейлист ок, вложенный плейлист 403 (как у rivne1). Нужен другой источник.",
     "checked": "2026-10-25 (прямой запрос, не через CF)",
     "segment_cors": null,
     "needs_segment_proxy": false,
