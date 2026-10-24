@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><clipPath id="c"><rect width="64" height="64" rx="14"/></clipPath></defs><g clip-path="url(#c)"><rect width="64" height="32" fill="#005BBB"/><rect y="32" width="64" height="32" fill="#FFD500"/></g><path d="M25 20l22 12-22 12z" fill="#fff" stroke="#003a7a" stroke-width="2" stroke-linejoin="round"/></svg>

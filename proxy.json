@@ -1,1 +1,7 @@
-{"urls":["https://oak-stream.varenik-tab.workers.dev","https://pine-stream.varenik-tab.workers.dev","https://stream.ukraine-tv.uk"]}
+{
+  "urls": [
+    "https://ukraine-stream-a.dyaltd.workers.dev",
+    "https://ukraine-stream-b.dyaltd.workers.dev",
+    "https://ukraine-stream-c.dyaltd.workers.dev"
+  ]
+}
