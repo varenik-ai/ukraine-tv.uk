@@ -454,10 +454,10 @@
    "source": {
     "url": "https://stream.irt.ua/memfs/8fac7cbb-3356-4a03-bb77-4439b727ebd2.m3u8",
     "status": "cors_restricted",
-    "notes": "CORS только для https://irt.ua — нужен прокси или замена",
+    "notes": "CORS только для https://irt.ua — нужен прокси или замена (ACAO=https://irt.ua → сегменты через /seg)",
     "checked": "2026-10-25 (прямой запрос, не через CF)",
     "segment_cors": "https://irt.ua",
-    "needs_segment_proxy": false,
+    "needs_segment_proxy": true,
     "test": "OK"
    }
   },
