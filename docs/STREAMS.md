@@ -22,9 +22,15 @@
 - `filmua_drama`: источника нет (кандидат `http://88.99.215.227/FilmUADrama/index.m3u8` только по http).
 
 ## Главная находка: каналы без CORS на сегментах
-`pershyi`, `channel5`, `espreso`, `armytv`, `kyiv24` (все `api-tv.ipnet.ua`) и `suspilne` не отдают CORS-заголовки на сегментах.
+`pershyi`, `channel5`, `armytv`, `kyiv24` (все `api-tv.ipnet.ua`) и `suspilne` не отдают CORS-заголовки на сегментах.
 Воркер в режиме «только плейлисты» (как у russia-worker) их не вытянет: браузер заблокирует сегменты.
 Варианты: (а) найти зеркала с CORS, как сделано для Рада ТВ; (б) оставить для них узкий прокси сегментов с allowlist (нарушает ToS Cloudflare при большом трафике, использовать осторожно); (в) временно скрыть.
 
 ## Ложные предупреждения теста
 `kvartal`, `ntk`: сегменты 10 с и длинное окно плейлиста, за 7 с проверки номер последовательности не меняется. Каналы рабочие.
+
+## Поиск зеркал (2026-10-25)
+- `espreso`: найдено зеркало `cdn15.live-tv.cloud/ua_infinitas_tv/espreso-abr` с CORS, переведён.
+- `channel5`: зеркало только по http (`stream.mcquack.net/291`), CORS есть, но mixed content.
+- `pershyi`, `armytv`, `kyiv24`: зеркал с https+CORS в iptv-org / Free-TV не найдено, остаётся ipnet.ua.
+- Итого без CORS на сегментах: 4 канала ipnet.ua + suspilne.
