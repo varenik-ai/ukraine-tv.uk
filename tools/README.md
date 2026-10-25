@@ -25,3 +25,9 @@ python3 tools/build.py        # идемпотентно: без изменен�
 
 ## Локальная проверка
 В `ukraine-tv-hub`: `node tools/dev_server.mjs ../ukraine-tv.uk` — сайт на :8765 вместе с локальным воркером.
+
+## Страницы стран
+Данные и тексты — `tools/countries.py` (15 стран × uk/en/ru + три хаба «за кордоном»). Адреса прежние: en — в корне (`/ukrainian-tv-in-germany/`), uk — в корне, ru — под `/ru/`. У этих страниц `x-default` = en.
+
+## EPG (программа передач)
+`scripts/update_epg.py` собирает `epg.json` из двух XMLTV-фидов (iptv-epg.org и epgshare01.online); workflow-файл лежит в `scripts/update-epg.workflow.yml` (его нужно скопировать в `.github/workflows/update-epg.yml` — токену git для пуша нужен scope `workflow`, поэтому добавляется через веб-интерфейс GitHub или после обновления токена); он запускает скрипт 4 раза в сутки и коммитит изменения. Соответствие «канал сайта → id в фиде» — `CHANNEL_MAP` в скрипте (сейчас 20 из 33 каналов; для остальных блок скрыт). Страница прячет блок, если гид старше 36 часов. Ручной запуск: `python3 scripts/update_epg.py`.

@@ -42,6 +42,7 @@
     }
     fetch('/epg.json').then(function (r) { return r.json(); }).then(function (d) {
       data = d; if (!d.channels || !d.channels[CH_ID]) return;
+      if (d.generated_at && Date.now() - new Date(d.generated_at).getTime() > 36 * 3600 * 1000) return; // устаревший гид не показываем
       if (d.generated_at && $('epg-updated')) $('epg-updated').textContent = T.epg_upd + fmt(d.generated_at);
       render(); setInterval(render, 30000);
     }).catch(function () {});

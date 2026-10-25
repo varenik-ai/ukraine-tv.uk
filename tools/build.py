@@ -6,6 +6,7 @@ import json, os, re, sys, html, hashlib, datetime
 sys.path.insert(0, os.path.dirname(__file__))
 from i18n import *            # noqa
 import texts
+import countries as CO
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOMAIN = 'https://ukraine-tv.uk'
@@ -16,7 +17,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '1'
+ASSET_V = '2'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap
@@ -57,12 +58,12 @@ def jld(obj):
 
 
 # ───────────────────────── общие блоки ─────────────────────────
-def head(lang, title, desc, alts, extra='', robots='index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1', og_type='website'):
+def head(lang, title, desc, alts, extra='', xdefault='uk', robots='index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1', og_type='website'):
     s = S[lang]
     canon = alts[lang]
     hl = ''.join('<link rel="alternate" hreflang="%s" href="%s"/>\n  ' % (l, ab(alts[l])) for l in LANGS if l in alts)
-    if 'uk' in alts:
-        hl += '<link rel="alternate" hreflang="x-default" href="%s"/>' % ab(alts['uk'])
+    if xdefault in alts:
+        hl += '<link rel="alternate" hreflang="x-default" href="%s"/>' % ab(alts[xdefault])
     return f'''<!DOCTYPE html>
 <html lang="{HTML_LANG[lang]}" prefix="og: https://ogp.me/ns#">
 <head>
@@ -122,6 +123,7 @@ def footer(lang):
     </div>
     <div class="footer-links">
       <a href="{p(lang)}">{s['f_all']}</a>
+      <a href="{CO.HUB[lang]}">{CO.C[lang]['breadcrumb_hub']}</a>
       <a href="{p(lang, 'about')}">{s['f_about']}</a>
       <a href="{p(lang, 'privacy')}">{s['f_priv']}</a>
     </div>
@@ -435,6 +437,98 @@ def redirect_stub(target):
 '''
 
 
+
+# ───────────────────────── страницы стран ─────────────────────────
+COUNTRY_CHANNELS = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso', 'ntn', 'marafon', 'nikikids', 'muzvar']
+
+
+def cname(lang, co):
+    return co['en'].replace('the ', '', 1) if lang == 'en' else co[lang]
+
+
+def country_path(lang, co):
+    return '/%s/' % co['slug_en'] if lang == 'en' else '/%s/' % co['slug_uk'] if lang == 'uk' else '/ru/%s/' % co['slug_ru']
+
+
+def country_alts(co):
+    return {l: country_path(l, co) for l in LANGS}
+
+
+def kw(lang, co=None):
+    c = {'cn': cn(lang, N), 'n': len(CO.COUNTRIES), 'site': S[lang]['site']}
+    if co:
+        c.update(country=co[lang], in_=co.get(lang + '_in', 'in ' + co['en']), tz=CO.TZ[co['tz']][lang])
+    return c
+
+
+def country_page(lang, co):
+    s, c = S[lang], CO.C[lang]
+    k = kw(lang, co)
+    alts = country_alts(co)
+    title = c['title'].format(**k) + ' | Ukraine-TV.uk'
+    desc = c['desc'].format(**k)
+    faq = [(q.format(**k), a.format(**k)) for q, a in c['faq']]
+    chans = [BY_ID[i] for i in COUNTRY_CHANNELS if i in BY_ID][:8]
+    others = ''.join('<a href="%s">%s</a>' % (country_path(lang, o), esc(cname(lang, o))) for o in CO.COUNTRIES if o['id'] != co['id'])
+    graph = [
+        {'@type': 'WebPage', '@id': ab(alts[lang]), 'url': ab(alts[lang]), 'name': title, 'description': desc, 'inLanguage': IN_LANG[lang], 'isPartOf': {'@id': DOMAIN + '/#website'}},
+        {'@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': 1, 'name': s['home'], 'item': ab(p(lang))},
+            {'@type': 'ListItem', 'position': 2, 'name': c['breadcrumb_hub'], 'item': ab(CO.HUB[lang])},
+            {'@type': 'ListItem', 'position': 3, 'name': cname(lang, co), 'item': ab(alts[lang])}]},
+        {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in faq]},
+    ]
+    steps = ''.join('<li>%s</li>' % esc(t.format(**k)) for t in c['steps'])
+    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n' % (esc(q), esc(a)) for q, a in faq)
+    cats = ' '.join('<a href="%s">%s %s</a>' % (p(lang, CATS[x][lang][1]), CAT_EMOJI[x], esc(CATS[x][lang][0])) for x in CAT_ORDER if any(ch['cat'] == x for ch in CH))
+    body = f'''<body>
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><a href="{CO.HUB[lang]}">{esc(c['breadcrumb_hub'])}</a><span>›</span><span>{esc(cname(lang, co))}</span></div>
+<div class="hero"><h1>{esc(c['h1'].format(**k))}</h1><p class="lead">{esc(c['lead'].format(**k))}</p></div>
+<h2 class="cat-h">{esc(c['popular_h'].format(**k))}</h2>
+<div class="grid">
+{cards(lang, chans)}
+</div>
+<div class="tabs" style="padding-top:4px"><a href="{p(lang)}" class="on">{esc(c['all_cats'])}: {s['all_tab']}</a>{cats}</div>
+<div class="home-box"><h2>{esc(c['how_h'].format(**k))}</h2><ol class="steps">{steps}</ol></div>
+<div class="home-box"><h2>{esc(c['tz_h'])}</h2><p>{esc(c['tz_p'].format(**k))}</p></div>
+<div class="faq-box home-box" id="faq"><h2>{esc(c['faq_h'])}</h2>
+{faq_html}</div>
+<div class="home-box"><h2>{esc(c['others_h'])}</h2><div class="others">{others}</div></div>
+<br/>
+{footer(lang)}
+</body>
+</html>
+'''
+    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
+
+
+def hub_page(lang):
+    s, c = S[lang], CO.C[lang]
+    k = kw(lang)
+    alts = dict(CO.HUB)
+    title = c['hub_title'].format(**k) + ' | Ukraine-TV.uk'
+    desc = c['hub_desc']
+    graph = [
+        {'@type': 'CollectionPage', 'url': ab(alts[lang]), 'name': title, 'description': desc, 'inLanguage': IN_LANG[lang], 'isPartOf': {'@id': DOMAIN + '/#website'}},
+        {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': s['home'], 'item': ab(p(lang))}, {'@type': 'ListItem', 'position': 2, 'name': c['breadcrumb_hub'], 'item': ab(alts[lang])}]},
+        {'@type': 'ItemList', 'numberOfItems': len(CO.COUNTRIES), 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': cname(lang, o), 'url': ab(country_path(lang, o))} for i, o in enumerate(CO.COUNTRIES)]},
+    ]
+    kk = lambda o: dict(kw(lang, o))
+    cards_html = ''.join('<a class="hub-card" href="%s"><b>%s %s</b><span>%s</span></a>' % (country_path(lang, o), '', esc(cname(lang, o)), esc(c['card_p'].format(**kk(o)))) for o in CO.COUNTRIES)
+    body = f'''<body>
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><span>{esc(c['breadcrumb_hub'])}</span></div>
+<div class="hero"><h1>{esc(c['hub_h1'])}</h1><p class="lead">{esc(c['hub_lead'])}</p></div>
+<div class="hub-grid">{cards_html}</div>
+<br/>
+{footer(lang)}
+</body>
+</html>
+'''
+    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
+
+
 # ───────────────────────── сборка ─────────────────────────
 def main():
     for lang in LANGS:
@@ -446,6 +540,11 @@ def main():
                 put(p(lang, CATS[cat][lang][1]) + 'index.html', category_page(lang, cat))
         for key in STATIC:
             put(p(lang, key) + 'index.html', static_page(lang, key))
+    for co in CO.COUNTRIES:
+        for lang in LANGS:
+            put(country_path(lang, co) + 'index.html', country_page(lang, co))
+    for lang in LANGS:
+        put(CO.HUB[lang] + 'index.html', hub_page(lang))
     put('/404.html', not_found())
 
     # редиректы: удалённые каналы и старые англ. категории
@@ -481,10 +580,12 @@ def main():
         if not e or e['hash'] != h:
             cache[path] = e = {'hash': h, 'date': TODAY}
         return e['date']
-    keys = [('', None)] + [(c['slug'], c) for c in CH] + [(CATS[cat]['uk'][1], cat) for cat in CAT_ORDER if any(c['cat'] == cat for c in CH)] + [(k, None) for k in STATIC]
+    keys = [(None, {'alts': dict(CO.HUB), 'xdef': 'en'})] + [(None, {'alts': country_alts(co), 'xdef': 'en'}) for co in CO.COUNTRIES] + [('', None)] + [(c['slug'], c) for c in CH] + [(CATS[cat]['uk'][1], cat) for cat in CAT_ORDER if any(c['cat'] == cat for c in CH)] + [(k, None) for k in STATIC]
     urls = []
     def alt_paths(entry):
         slug, obj = entry
+        if isinstance(obj, dict) and 'alts' in obj:
+            return obj['alts']
         if isinstance(obj, str):                       # категория
             return {l: p(l, CATS[obj][l][1]) for l in LANGS}
         return {l: p(l, slug) for l in LANGS}
@@ -492,7 +593,7 @@ def main():
         alts = alt_paths(entry)
         for l in LANGS:
             path = alts[l]
-            urls.append((path, alts, lm(path, written[path + 'index.html'])))
+            urls.append((path, alts, lm(path, written[path + 'index.html']), (entry[1] or {}).get('xdef', 'uk') if isinstance(entry[1], dict) else 'uk'))
     # прежние страницы вне генератора (страны и т.п.), если файл существует
     old = os.path.join(ROOT, 'sitemap.xml')
     gen = {u[0] for u in urls}
@@ -506,11 +607,11 @@ def main():
             if os.path.exists(os.path.join(ROOT, path.strip('/'), 'index.html')) and ('-tv-' in path or 'tv-' in path):
                 extra.append(path)
     out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
-    for path, alts, date in urls:
+    for path, alts, date, xdef in urls:
         out.append('  <url><loc>%s</loc><lastmod>%s</lastmod>' % (ab(path), date))
         for l in LANGS:
             out.append('    <xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (l, ab(alts[l])))
-        out.append('    <xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % ab(alts['uk']))
+        out.append('    <xhtml:link rel="alternate" hreflang="x-default" href="%s"/>' % ab(alts[xdef]))
         out.append('  </url>')
     for path in sorted(set(extra)):
         out.append('  <url><loc>%s</loc></url>' % ab(path))

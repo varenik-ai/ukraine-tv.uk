@@ -1,0 +1,45 @@
+name: Update EPG
+
+on:
+  schedule:
+    # 4 раза в день (UTC): 01:00, 07:00, 13:00, 19:00
+    - cron: '0 1,7,13,19 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-epg
+  cancel-in-progress: false
+
+jobs:
+  update-epg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate epg.json
+        run: python3 scripts/update_epg.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.email "epg-bot@ukraine-tv.uk"
+          git config user.name "EPG Bot"
+          git add epg.json
+          if git diff --cached --quiet -- epg.json; then
+            echo "No changes to epg.json"
+            exit 0
+          fi
+          git commit -m "chore: update epg.json [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin main && break
+            echo "Push failed, retrying ($i)..."
+            sleep 5
+          done
