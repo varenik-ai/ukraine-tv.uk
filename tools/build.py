@@ -8,6 +8,7 @@ from i18n import *            # noqa
 import texts
 import countries as CO
 import blog as BLOG
+from home_i18n import HOME, MONTH, FLAGS, BLOG_SUB, CAT as CATSEO, COUNTRY as CTRY
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOMAIN = 'https://ukraine-tv.uk'
@@ -18,7 +19,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '3'
+ASSET_V = '4'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap
@@ -306,72 +307,264 @@ def cards(lang, items):
 SEARCH_JS = '''<script>(function(){var i=document.getElementById('home-q');if(!i)return;i.addEventListener('input',function(){var q=this.value.toLowerCase();document.querySelectorAll('.card').forEach(function(c){c.style.display=(!q||c.dataset.name.toLowerCase().indexOf(q)>-1)?'':'none'});document.querySelectorAll('.grid').forEach(function(g){var h=g.previousElementSibling,any=false;g.querySelectorAll('.card').forEach(function(c){if(c.style.display!=='none')any=true});g.style.display=any?'':'none';if(h&&h.classList.contains('cat-h'))h.style.display=any?'':'none'})})})();</script>'''
 
 
+def home_data(lang):
+    """данные для assets/home.js: группы по категориям + строки интерфейса"""
+    h = HOME[lang]
+    js_t = {k: re.sub(r'^⏳ ', '', v) for k, v in JS[lang].items()}
+    js_t.update(h['js'])
+    groups = []
+    for cat in CAT_ORDER:
+        items = [c for c in CH if c['cat'] == cat]
+        if not items:
+            continue
+        label = '%s %s' % (CAT_EMOJI[cat], CATS[cat][lang][0])
+        groups.append({'label': label, 'channels': [{
+            'id': c['id'], 'name': c['name'][lang], 'desc': c['tag'][lang], 'icon': c['icon'], 'color': c['color'], 'iconBg': c['bg'],
+            'tags': [CATS[cat][lang][0].lower(), c['tag'][lang].lower()], 'slug': c['slug'], 'logo': c.get('logo') or None} for c in items]})
+    return {'groups': groups, 'popular': [x for x in POPULAR if x in BY_ID], 'locale': h['locale'], 't': js_t}
+
+
+def home_header(lang, alts):
+    s, h = S[lang], HOME[lang]
+    sw = ''.join('<a href="%s"%s>%s</a>' % (alts.get(l, p(l)), ' class="active"' if l == lang else '', LABEL[l]) for l in LANGS)
+    return f'''<header>
+  <a href="{p(lang)}" class="logo"><span class="logo-flag">🇺🇦</span><span class="logo-text"><span class="r">{s['logo'][0]}</span></span><span class="b">{s['logo'][1]}</span></a>
+  <nav>
+    <a href="#" class="active">{h['nav_ch']}</a>
+    <a href="#about">{h['nav_about']}</a>
+  </nav>
+  <div class="header-right">
+    <div class="live-count"><div class="live-dot-sm"></div>{esc(s['ch_count'].format(cn=cn(lang, N)))}</div>
+    <a href="{TG}" target="_blank" rel="noopener" class="tg-header-btn" aria-label="{s['subscribe']}"><span class="tg-icon">{TG_SVG}</span><span>{s['subscribe']}</span></a>
+    <div class="lang-switch">{sw}</div>
+  </div>
+</header>'''
+
+
 def home_page(lang):
-    s = S[lang]
+    s, h = S[lang], HOME[lang]
     alts = {l: p(l) for l in LANGS}
-    title, desc = s['home_title'].format(cn=cn(lang, N)), s['home_desc'].format(cn=cn(lang, N))
-    tabs = '<a href="#top" class="on">%s</a>' % s['all_tab'] + ''.join('<a href="#cat-%s">%s %s</a>' % (cat, CAT_EMOJI[cat], esc(CATS[cat][lang][0])) for cat in CAT_ORDER if any(c['cat'] == cat for c in CH))
-    sections = ''
+    ncn = cn(lang, N)
+    title, desc = s['home_title'].format(cn=ncn), s['home_desc'].format(cn=ncn)
+    data = home_data(lang)
+    tabs = '<button class="filter-tab active" data-cat="">%s</button>\n        ' % esc(s['all_tab'])
+    tabs += '\n        '.join('<button class="filter-tab" data-cat="%s">%s</button>' % (esc(g['label']), esc(g['label'])) for g in data['groups'])
+    # SEO-блок: ссылки на каналы по категориям
+    seo = ''
     for cat in CAT_ORDER:
         items = [c for c in CH if c['cat'] == cat]
         if items:
-            sections += '<h2 class="cat-h" id="cat-%s"><a href="%s">%s %s</a> <span>%s</span></h2>\n<div class="grid">\n%s\n</div>\n' % (cat, p(lang, CATS[cat][lang][1]), CAT_EMOJI[cat], esc(CATS[cat][lang][0]), s['ch_count'].format(cn=cn(lang, len(items))), cards(lang, items))
-    faq = [(q, a.format(cn=cn(lang, N))) for q, a in s['home_faq']]
-    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n' % (esc(q), esc(a)) for q, a in faq)
+            seo += '<p><strong>%s</strong> %s.</p>\n    ' % (esc(h['seo_cat'].format(cat=CATS[cat][lang][0])), ', '.join('<a href="%s" class="in">%s</a>' % (p(lang, c['slug']), esc(c['name'][lang])) for c in items))
+    pop = [BY_ID[x] for x in POPULAR if x in BY_ID]
+    faq = [(q, a.format(cn=ncn)) for q, a in s['home_faq']]
+    for q, a in h['faq_extra']:
+        if '{n1}' in q + a:
+            n1, n2 = pop[0], pop[1]
+            fmt = dict(n1=n1['name'][lang], u1=p(lang, n1['slug']), n2=n2['name'][lang], u2=p(lang, n2['slug']))
+            faq.append((q.format(**fmt), a.format(**fmt)))
+        elif '{n2}' in q + a:
+            fmt = dict(n1=pop[0]['name'][lang], u1=p(lang, pop[0]['slug']), n2=pop[1]['name'][lang], u2=p(lang, pop[1]['slug']))
+            faq.append((q.format(**fmt), a.format(**fmt)))
+        else:
+            faq.append((q, a))
+    faq_plain = [(q, re.sub(r'<[^>]+>', '', a)) for q, a in faq]
+    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n    ' % (esc(q), a if '<a ' in a else esc(a)) for q, a in faq)
     graph = [
         {'@type': 'WebSite', '@id': DOMAIN + '/#website', 'url': DOMAIN + '/', 'name': s['site'], 'inLanguage': IN_LANG[lang]},
         {'@type': 'Organization', '@id': DOMAIN + '/#org', 'name': s['site'], 'url': DOMAIN + '/', 'sameAs': [TG]},
         {'@type': 'CollectionPage', 'url': ab(alts[lang]), 'name': title, 'description': desc, 'inLanguage': IN_LANG[lang], 'isPartOf': {'@id': DOMAIN + '/#website'}},
         {'@type': 'ItemList', 'numberOfItems': N, 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': c['name'][lang], 'url': ab(p(lang, c['slug']))} for i, c in enumerate(CH)]},
-        {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in faq]},
+        {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in faq_plain]},
     ]
-    body = f'''<body id="top">
-{header(lang, alts, back=False)}
-<div class="hero"><h1>{esc(s['home_h1'])}</h1><p class="lead">{esc(s['home_lead'].format(cn=cn(lang, N)))}</p></div>
-<div class="tabs" role="navigation">{tabs}</div>
-<div class="home-search"><input id="home-q" type="search" placeholder="{esc(s['search'])}" aria-label="{esc(s['search'])}"/></div>
-{sections}
-<div class="home-box"><h2>{esc(s['site'])}</h2><p>{esc(s['home_intro'])}</p></div>
-<div class="faq-box home-box" id="faq"><h2>{s['faq_h_home']}</h2>
-{faq_html}</div>
-<br/>
+    cards_html = ''.join('<div class="about-card"><div class="icon">%s</div><div class="num">%s</div><div class="lbl">%s</div></div>\n    ' % (i, n.replace('{N}', str(N)), esc(l)) for i, n, l in h['cards'])
+    feats = ''.join('<div class="tg-cta-feat"><span class="feat-check">✓</span> %s</div>\n        ' % esc(f) for f in h['cta_feats'])
+    body = f'''<body class="home" style="--grid-hint:'{h['grid_hint']}'">
+{home_header(lang, alts)}
+
+<main>
+<div class="breadcrumb"><span>{h['bc']}</span></div>
+<div class="page-title-wrap">
+  <h1>{esc(h['h1'])}</h1>
+  <div class="page-meta">
+    <span class="cnt-badge">{esc(s['ch_count'].format(cn=ncn))}</span>
+    <span class="live-badge-main"><span class="live-dot-main"></span>{s['live']}</span>
+    <span>{h['meta_247']}</span>
+  </div>
+</div>
+
+<div class="main-wrap" id="channels">
+  <div class="sidebar-wrapper">
+    <aside class="channel-sidebar" id="channel-sidebar">
+      <div class="sidebar-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="{esc(s['search'])}" />
+      </div>
+    </aside>
+    <div class="custom-scroll-track" id="scroll-track">
+      <div class="custom-scroll-thumb" id="scroll-thumb"></div>
+    </div>
+  </div>
+
+  <div class="player-col">
+    <a href="{TG}" target="_blank" rel="noopener" class="tg-banner-desk"><div class="tg-banner-desk-icon">{TG_SVG}</div><div class="tg-banner-desk-text">{s['tg_banner']}</div><span class="tg-banner-desk-arrow">→</span></a>
+    <div class="player-banner" id="banner-above"></div>
+    <div class="player-wrap grid-mode" id="player-wrap">
+      <video id="video" autoplay playsinline webkit-playsinline muted></video>
+      <div class="player-empty" id="player-empty">
+        <div class="tile-grid" id="tile-grid"></div>
+      </div>
+      <div class="player-live-badge" id="live-badge"><div class="dot"></div> {s['live']}</div>
+      <div class="now-playing-bar" id="now-playing-bar">
+        <div class="np-name" id="np-name"></div>
+        <div class="np-desc" id="np-desc"></div>
+      </div>
+      <div class="player-controls">
+        <div class="ctrl-btns">
+          <button class="ctrl-btn" id="reload-btn" style="display:none">{h['js']['reload']}</button>
+          <button class="ctrl-btn" id="fullscreen-btn">{h['js']['fs']}</button>
+        </div>
+      </div>
+      <div class="unmute-banner" id="unmute-banner">
+        <button id="unmute-btn">{h['js']['unmute']}</button>
+      </div>
+    </div>
+    <a href="{TG_APP}" target="_blank" rel="noopener" class="tg-pulse-banner"><div class="tg-pulse-icon">{TG_SVG}</div><div class="tg-pulse-text">{s['tg_pulse']}</div><span class="tg-pulse-arrow">→</span></a>
+    <div class="player-status" id="player-status">{esc(h['player_status'])}</div>
+    <div class="epg-box" id="epg-box">
+      <div class="epg-head"><h3>{h['epg_h']}</h3><span class="epg-updated" id="epg-updated"></span></div>
+      <div class="epg-current" id="epg-current" style="display:none">
+        <div class="epg-current-label" id="epg-current-label"></div>
+        <div class="epg-current-title" id="epg-current-title"></div>
+        <div class="epg-progress"><div class="epg-progress-bar" id="epg-progress-bar" style="width:0%"></div></div>
+        <div class="epg-current-time"><span id="epg-time-start"></span><span id="epg-time-left"></span><span id="epg-time-stop"></span></div>
+      </div>
+      <div class="epg-list" id="epg-list"></div>
+    </div>
+    <div class="player-banner" id="banner-below"></div>
+    <div class="channel-info-card" id="channel-info-card" style="display:none">
+      <div class="ci-title" id="ci-title"></div>
+      <div class="ci-desc" id="ci-desc"></div>
+      <div class="ci-tags" id="ci-tags"></div>
+    </div>
+    <div class="filter-bar filter-bar-below">
+      <div class="filter-tabs" id="filter-tabs">
+        {tabs}
+      </div>
+    </div>
+  </div>
+
+  <div class="tg-col">
+    <div class="tg-cta-card">
+      <div class="tg-cta-live"><span class="tg-cta-live-dot"></span>{s['live']} · {s['live_247']}</div>
+      <div class="tg-cta-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="56" height="56"><circle cx="12" cy="12" r="12" fill="#2CA5E0"/><path fill="#fff" d="M5.2 11.4l12.6-4.9c.6-.2 1.1.1.9.9l-2.1 10c-.2.6-.6.8-1.1.5l-3-2.3-1.5 1.4c-.2.2-.3.3-.6.3l.2-3 5.5-5c.2-.2 0-.3-.3-.1L7.4 13.4l-2.9-.9c-.6-.2-.6-.6.7-1.1z"/></svg></div>
+      <div class="tg-cta-title">{esc(h['cta_title'])}</div>
+      <div class="tg-cta-desc">{esc(h['cta_desc'].format(cn=ncn))}</div>
+      <div class="tg-cta-features">
+        {feats}</div>
+      <a href="{TG_APP}" target="_blank" rel="noopener" class="tg-cta-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="12" fill="#fff"/><path fill="#2CA5E0" d="M5.2 11.4l12.6-4.9c.6-.2 1.1.1.9.9l-2.1 10c-.2.6-.6.8-1.1.5l-3-2.3-1.5 1.4c-.2.2-.3.3-.6.3l.2-3 5.5-5c.2-.2 0-.3-.3-.1L7.4 13.4l-2.9-.9c-.6-.2-.6-.6.7-1.1z"/></svg>{esc(h['cta_btn'])}</a>
+      <div class="tg-sub-count">@UkraineTVHub</div>
+    </div>
+  </div>
+  <aside class="right-sidebar">
+    <div class="popular-box">
+      <div class="pop-title">{s['popular']}</div>
+      <div id="pop-list"></div>
+    </div>
+    <div class="recent-box" id="recent-box" style="display:none">
+      <div class="rbox-title">{h['recent_h']}</div>
+      <div id="recent-list"></div>
+    </div>
+  </aside>
+</div>
+
+<div class="about-section" id="about">
+  <div class="about-grid">
+    {cards_html}</div>
+  <div class="seo-text">
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:12px;">{esc(h['seo_h'].format(cn=ncn))}</h2>
+    <p>{esc(s['home_intro'])}</p>
+    {seo}<p>{h['seo_tg'].format(tg='<a href="%s" target="_blank" rel="noopener" class="in">@UkraineTVHub</a>' % TG)}</p>
+  </div>
+  <div class="seo-text" style="margin-top:16px;" id="faq">
+    <h2 style="font-size:18px;font-weight:800;margin-bottom:16px;">{s['faq_h_home']}</h2>
+    {faq_html}</div>
+</div>
+</main>
+
 {footer(lang)}
-{SEARCH_JS}
+
+<script>window.UTV_HOME={json.dumps(data, ensure_ascii=False, separators=(',', ':'))};</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.15/hls.min.js"></script>
+<script defer src="/assets/quality.js?v={ASSET_V}"></script>
+<script defer src="/assets/home.js?v={ASSET_V}"></script>
+<script defer src="/assets/player-ui.js?v={ASSET_V}"></script>
+<script defer src="/assets/cast.js?v={ASSET_V}"></script>
 </body>
 </html>
 '''
-    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph})) + '\n' + body
+    extra = '<link rel="stylesheet" href="/assets/home.css?v=%s"/>\n  <link rel="preconnect" href="https://ukraine-stream-a.dyaltd.workers.dev" crossorigin/>\n  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com"/>\n  ' % ASSET_V + jld({'@context': 'https://schema.org', '@graph': graph})
+    return head(lang, title, desc, alts, extra) + '\n' + body
+
+
+def page_css(cls):
+    return '<link rel="stylesheet" href="/assets/pages.css?v=%s"/>\n  ' % ASSET_V
+
+
+def cat_card(lang, c):
+    return ('<a href="%s" class="cat-ch-card">%s<div class="cat-ch-name">%s</div><div class="cat-ch-desc">%s</div><div class="cat-ch-live"><span class="cat-live-dot"></span>LIVE</div></a>'
+            % (p(lang, c['slug']), icon_html(c, 'cat-ch-icon'), esc(c['name'][lang]), esc(c['tag'][lang])))
 
 
 def category_page(lang, cat):
-    s = S[lang]
+    s, k = S[lang], CATSEO[lang]
     name, slug = CATS[cat][lang]
     alts = {l: p(l, CATS[cat][l][1]) for l in LANGS}
     items = [c for c in CH if c['cat'] == cat]
     title, desc = s['cat_title'].format(cat=name), CAT_DESC[cat][lang]
+    faq = [(k['q1'].format(cat=name), k['a1']), (k['q2'], k['a2'])]
     graph = [
         {'@type': 'CollectionPage', 'url': ab(alts[lang]), 'name': title, 'description': desc, 'inLanguage': IN_LANG[lang], 'isPartOf': {'@id': DOMAIN + '/#website'}},
         {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': 1, 'name': s['home'], 'item': ab(p(lang))}, {'@type': 'ListItem', 'position': 2, 'name': name, 'item': ab(alts[lang])}]},
         {'@type': 'ItemList', 'numberOfItems': len(items), 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': c['name'][lang], 'url': ab(p(lang, c['slug']))} for i, c in enumerate(items)]},
+        {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in faq]},
     ]
-    others = ' '.join('<a href="%s"%s>%s %s</a>' % (p(lang, CATS[k][lang][1]), ' class="on"' if k == cat else '', CAT_EMOJI[k], esc(CATS[k][lang][0])) for k in CAT_ORDER if any(c['cat'] == k for c in CH))
-    body = f'''<body>
-{header(lang, alts)}
-<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><span>{esc(name)}</span></div>
-<div class="hero"><h1>{esc(s['cat_h1'].format(cat=name))}</h1><p class="lead">{esc(desc)}</p></div>
-<div class="tabs"><a href="{p(lang)}">{s['all_tab']}</a>{others}</div>
-<div class="grid" style="padding-top:16px">
-{cards(lang, items)}
+    nav = ''.join('<a href="%s"%s>%s %s</a>\n    ' % (p(lang, CATS[x][lang][1]), " class='cur'" if x == cat else '', CAT_EMOJI[x], esc(CATS[x][lang][0])) for x in CAT_ORDER if any(c['cat'] == x for c in CH))
+    names = ', '.join('<a href="%s" class="in">%s</a>' % (p(lang, c['slug']), esc(c['name'][lang])) for c in items)
+    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n    ' % (esc(q), esc(a)) for q, a in faq)
+    body = f'''<body class="cat">
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><a href="{p(lang)}#channels">{s['all_tab']}</a><span>›</span><span>{esc(name)}</span></div>
+<div class="wrap">
+  <div class="page-header">
+    <h1>{esc(s['cat_h1'].format(cat=name))}</h1>
+    <div class="meta"><span class="badge">{esc(s['ch_count'].format(cn=cn(lang, len(items))))}</span><span class="live-badge"><span class="live-dot"></span>{s['live']} 24/7</span></div>
+  </div>
+
+  <nav class="cat-nav" aria-label="{esc(s['all_tab'])}">
+    <a href="{p(lang)}">{s['all_tab']}</a>
+    {nav}</nav>
+
+  <div class="ch-grid">
+{chr(10).join(cat_card(lang, c) for c in items)}
+  </div>
+
+  <div class="seo-box">
+    <h2>{esc(k['h'].format(cat=name))}</h2>
+    <p>{esc(k['p1'].format(cat=name, cn=cn(lang, len(items))))}</p>
+    <p>{k['p2'].format(names=names)}</p>
+  </div>
+
+  <div class="faq-box" style="margin-top:16px">
+    <h2>{esc(k['faq_h'])}</h2>
+    {faq_html}</div>
 </div>
-<br/>
 {footer(lang)}
 </body>
 </html>
 '''
-    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph})) + '\n' + body
+    return head(lang, title, desc, alts, page_css('cat') + jld({'@context': 'https://schema.org', '@graph': graph})) + '\n' + body
 
 
-# ───────────────────────── статические страницы ─────────────────────────
 STATIC = {
  'about': {
   'uk': ('Про сайт', 'Україна ТВ — безкоштовний сервіс перегляду українських телеканалів онлайн', [
@@ -426,47 +619,71 @@ def static_page(lang, key):
     s = S[lang]
     h1, desc, blocks = STATIC[key][lang]
     alts = {l: p(l, key) for l in LANGS}
-    inner = ''.join('<%s>%s</%s>' % (t, esc(x), t.split(' ')[0]) if t != 'p' else '<p>%s</p>' % esc(x) for t, x in blocks)
+    inner, i = '', 0
+    while i < len(blocks):
+        t_, x_ = blocks[i]
+        nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+        if t_ == 'h2' and nxt and nxt[0] == 'p' and (CONTACT in nxt[1] or TG in nxt[1]):
+            inner += '<div class="contact-box"><h2 style="margin-top:0">%s</h2><p style="margin-bottom:0">%s</p></div>\n  ' % (esc(x_), esc(nxt[1]))
+            i += 2
+            continue
+        inner += ('<%s>%s</%s>\n  ' % (t_, esc(x_), t_))
+        i += 1
     inner = re.sub(r'(https://t\.me/[A-Za-z0-9_]+)', r'<a href="\1">\1</a>', inner)
     inner = inner.replace(CONTACT, '<a href="mailto:%s">%s</a>' % (CONTACT, CONTACT))
     title = '%s — %s' % (h1, s['site'])
-    body = f'''<body>
-{header(lang, alts)}
-<main class="static"><h1>{esc(h1)}</h1>{inner}</main>
+    body = f'''<body class="static">
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><span>{esc(h1)}</span></div>
+<div class="wrap">
+  <h1>{esc(h1)}</h1>
+  {inner}</div>
 {footer(lang)}
 </body>
 </html>
 '''
-    return head(lang, title, desc, alts) + '\n' + body
+    return head(lang, title, desc, alts, page_css('static')) + '\n' + body
 
 
 BLOG_LABEL = {'uk': 'Блог', 'en': 'Blog', 'ru': 'Блог'}
-
-
-def _blocks(blocks):
-    out = ''
-    for t_, x in blocks:
-        if t_ in ('ul', 'ol'):
-            out += '<%s>%s</%s>' % (t_, ''.join('<li>%s</li>' % esc(i) for i in x), t_)
-        else:
-            out += '<%s>%s</%s>' % (t_, esc(x), t_)
-    out = re.sub(r'(?<![A-Za-z0-9@])@([A-Za-z0-9_]{5,})', r'<a href="https://t.me/\1">@\1</a>', out)
-    return out.replace(CONTACT, '<a href="mailto:%s">%s</a>' % (CONTACT, CONTACT))
 
 
 def blog_index(lang):
     s = S[lang]
     h1, title, desc = BLOG.INDEX[lang]
     alts = {l: p(l, 'blog') for l in LANGS}
-    items = ''.join('<li><a href="%s">%s</a><p>%s</p></li>' % (p(lang, 'blog/' + a['slug']), esc(a['title'][lang]), esc(a['desc'][lang])) for a in BLOG.ARTICLES)
+    items = ''.join('<a href="%s" class="post-card"><div class="post-date">%s</div><div class="post-title">%s</div><div class="post-excerpt">%s</div></a>\n    '
+                    % (p(lang, 'blog/' + a['slug']), MONTH[lang], esc(a['title'][lang]), esc(a['desc'][lang])) for a in BLOG.ARTICLES)
     ld = jld({'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': title, 'url': ab(p(lang, 'blog'))})
-    return head(lang, title, desc, alts, extra=ld) + '\n' + f'''<body>
-{header(lang, alts)}
-<main class="static"><h1>{esc(h1)}</h1><ul class="blog-list">{items}</ul></main>
+    return head(lang, title, desc, alts, page_css('blog') + ld) + '\n' + f'''<body class="blog">
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><span>{BLOG_LABEL[lang]}</span></div>
+<div class="wrap">
+  <div class="page-header">
+    <h1>{esc(h1)}</h1>
+    <div class="sub">{esc(BLOG_SUB[lang])}</div>
+  </div>
+
+  <div class="post-list">
+    {items}</div>
+</div>
 {footer(lang)}
 </body>
 </html>
 '''
+
+
+def _blocks(blocks):
+    out = ''
+    for t_, x in blocks:
+        if t_ == 'ol':
+            out += '<div class="step-box"><ol>%s</ol></div>\n  ' % ''.join('<li>%s</li>' % esc(i) for i in x)
+        elif t_ == 'ul':
+            out += '<ul>%s</ul>\n  ' % ''.join('<li>%s</li>' % esc(i) for i in x)
+        else:
+            out += '<%s>%s</%s>\n  ' % (t_, esc(x), t_)
+    out = re.sub(r'(?<![A-Za-z0-9@])@([A-Za-z0-9_]{5,})', r'<a href="https://t.me/\1" target="_blank" rel="noopener">@\1</a>', out)
+    return out.replace(CONTACT, '<a href="mailto:%s">%s</a>' % (CONTACT, CONTACT))
 
 
 def blog_article(lang, a):
@@ -480,9 +697,13 @@ def blog_article(lang, a):
         {'@type': 'ListItem', 'position': 1, 'name': s['site'], 'item': ab(p(lang))},
         {'@type': 'ListItem', 'position': 2, 'name': BLOG_LABEL[lang], 'item': ab(p(lang, 'blog'))},
         {'@type': 'ListItem', 'position': 3, 'name': h1, 'item': ab(p(lang, 'blog/' + a['slug']))}]})
-    return head(lang, '%s — %s' % (h1, s['site']), a['desc'][lang], alts, extra=ld + bc, og_type='article') + '\n' + f'''<body>
-{header(lang, alts)}
-<main class="static"><p><a href="{p(lang, 'blog')}">&larr; {BLOG_LABEL[lang]}</a></p><h1>{esc(h1)}</h1>{_blocks(a['body'][lang])}</main>
+    return head(lang, '%s — %s' % (h1, s['site']), a['desc'][lang], alts, page_css('article') + ld + bc, og_type='article') + '\n' + f'''<body class="article">
+{header(lang, alts, back=False)}
+<div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><a href="{p(lang, 'blog')}">{BLOG_LABEL[lang]}</a><span>›</span><span>{esc(h1)}</span></div>
+<div class="wrap">
+  <div class="meta"><span>📅 {MONTH[lang]}</span></div>
+  <h1>{esc(h1)}</h1>
+  {_blocks(a['body'][lang])}</div>
 {footer(lang)}
 </body>
 </html>
@@ -537,14 +758,15 @@ def kw(lang, co=None):
 
 
 def country_page(lang, co):
-    s, c = S[lang], CO.C[lang]
+    s, c, x = S[lang], CO.C[lang], CTRY[lang]
     k = kw(lang, co)
     alts = country_alts(co)
     title = c['title'].format(**k) + ' | Ukraine-TV.uk'
     desc = c['desc'].format(**k)
     faq = [(q.format(**k), a.format(**k)) for q, a in c['faq']]
     chans = [BY_ID[i] for i in COUNTRY_CHANNELS if i in BY_ID][:8]
-    others = ''.join('<a href="%s">%s</a>' % (country_path(lang, o), esc(cname(lang, o))) for o in CO.COUNTRIES if o['id'] != co['id'])
+    flag = FLAGS.get(co['id'], '🌍')
+    others = ''.join('<a href="%s">%s %s</a>\n      ' % (country_path(lang, o), FLAGS.get(o['id'], '🌍'), esc(cname(lang, o))) for o in CO.COUNTRIES if o['id'] != co['id'])
     graph = [
         {'@type': 'WebPage', '@id': ab(alts[lang]), 'url': ab(alts[lang]), 'name': title, 'description': desc, 'inLanguage': IN_LANG[lang], 'isPartOf': {'@id': DOMAIN + '/#website'}},
         {'@type': 'BreadcrumbList', 'itemListElement': [
@@ -554,32 +776,60 @@ def country_page(lang, co):
         {'@type': 'FAQPage', 'mainEntity': [{'@type': 'Question', 'name': q, 'acceptedAnswer': {'@type': 'Answer', 'text': a}} for q, a in faq]},
     ]
     steps = ''.join('<li>%s</li>' % esc(t.format(**k)) for t in c['steps'])
-    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n' % (esc(q), esc(a)) for q, a in faq)
-    cats = ' '.join('<a href="%s">%s %s</a>' % (p(lang, CATS[x][lang][1]), CAT_EMOJI[x], esc(CATS[x][lang][0])) for x in CAT_ORDER if any(ch['cat'] == x for ch in CH))
-    body = f'''<body>
+    faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n    ' % (esc(q), esc(a)) for q, a in faq)
+    badges = ''.join('<span class="badge">%s</span>\n    ' % esc(b.format(cn=cn(lang, N))) for b in x['badges'])
+    info = ''.join('<div class="info-card"><div class="info-icon">%s</div><div class="info-val">%s</div><div class="info-lbl">%s</div></div>\n    ' % (i, esc(v.replace('{N}', str(N))), esc(l.format(**k))) for i, v, l in x['info'])
+    cards_html = ''.join('<a href="%s" class="ch-card">%s<div class="ch-name">%s</div><div class="ch-desc">%s</div><div class="ch-live"><span class="live-dot"></span>LIVE</div></a>\n    '
+                         % (p(lang, ch['slug']), icon_html(ch, 'ch-icon'), esc(ch['name'][lang]), esc(ch['tag'][lang])) for ch in chans)
+    body = f'''<body class="country">
 {header(lang, alts, back=False)}
+
 <div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><a href="{CO.HUB[lang]}">{esc(c['breadcrumb_hub'])}</a><span>›</span><span>{esc(cname(lang, co))}</span></div>
-<div class="hero"><h1>{esc(c['h1'].format(**k))}</h1><p class="lead">{esc(c['lead'].format(**k))}</p></div>
-<h2 class="cat-h">{esc(c['popular_h'].format(**k))}</h2>
-<div class="grid">
-{cards(lang, chans)}
+
+<div class="hero">
+  <div class="hero-flag">{flag}</div>
+  <h1>{esc(c['h1'].format(**k))}</h1>
+  <p>{esc(c['lead'].format(**k))}</p>
+  <div class="hero-badges">
+    {badges}</div>
+  <a href="{p(lang)}" class="hero-cta">{esc(x['cta'])}</a>
 </div>
-<div class="tabs" style="padding-top:4px"><a href="{p(lang)}" class="on">{esc(c['all_cats'])}: {s['all_tab']}</a>{cats}</div>
-<div class="home-box"><h2>{esc(c['how_h'].format(**k))}</h2><ol class="steps">{steps}</ol></div>
-<div class="home-box"><h2>{esc(c['tz_h'])}</h2><p>{esc(c['tz_p'].format(**k))}</p></div>
-<div class="faq-box home-box" id="faq"><h2>{esc(c['faq_h'])}</h2>
-{faq_html}</div>
-<div class="home-box"><h2>{esc(c['others_h'])}</h2><div class="others">{others}</div></div>
-<br/>
+
+<div class="wrap">
+  <div class="info-grid">
+    {info}</div>
+
+  <h2>{esc(c['popular_h'].format(**k))}</h2>
+  <div class="ch-grid">
+    {cards_html}</div>
+
+  <div class="seo-box">
+    <h2>{esc(x['seo_h'].format(**k))}</h2>
+    <h3 style="margin:14px 0 6px;font-size:15px">{esc(c['how_h'].format(**k))}</h3>
+    <ol class="steps">{steps}</ol>
+    <h3 style="margin:14px 0 6px;font-size:15px">{esc(c['tz_h'])}</h3>
+    <p>{esc(c['tz_p'].format(**k))}</p>
+  </div>
+
+  <div class="faq-box" id="faq">
+    <h2>{esc(c['faq_h'])}</h2>
+    {faq_html}</div>
+
+  <div class="other-countries">
+    <h2>{esc(c['others_h'])}</h2>
+    <div class="country-links">
+      {others}</div>
+  </div>
+</div>
 {footer(lang)}
 </body>
 </html>
 '''
-    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
+    return head(lang, title, desc, alts, page_css('country') + jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
 
 
 def hub_page(lang):
-    s, c = S[lang], CO.C[lang]
+    s, c, x = S[lang], CO.C[lang], CTRY[lang]
     k = kw(lang)
     alts = dict(CO.HUB)
     title = c['hub_title'].format(**k) + ' | Ukraine-TV.uk'
@@ -590,18 +840,29 @@ def hub_page(lang):
         {'@type': 'ItemList', 'numberOfItems': len(CO.COUNTRIES), 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': cname(lang, o), 'url': ab(country_path(lang, o))} for i, o in enumerate(CO.COUNTRIES)]},
     ]
     kk = lambda o: dict(kw(lang, o))
-    cards_html = ''.join('<a class="hub-card" href="%s"><b>%s %s</b><span>%s</span></a>' % (country_path(lang, o), '', esc(cname(lang, o)), esc(c['card_p'].format(**kk(o)))) for o in CO.COUNTRIES)
-    body = f'''<body>
+    cards_html = ''.join('<a href="%s" class="c-card"><div class="c-flag">%s</div><div class="c-name">%s</div><div class="c-pop">%s</div></a>\n    '
+                         % (country_path(lang, o), FLAGS.get(o['id'], '🌍'), esc(cname(lang, o)), esc(c['card_p'].format(**kk(o)))) for o in CO.COUNTRIES)
+    body = f'''<body class="country">
 {header(lang, alts, back=False)}
 <div class="breadcrumb"><a href="{p(lang)}">{s['home']}</a><span>›</span><span>{esc(c['breadcrumb_hub'])}</span></div>
-<div class="hero"><h1>{esc(c['hub_h1'])}</h1><p class="lead">{esc(c['hub_lead'])}</p></div>
-<div class="hub-grid">{cards_html}</div>
-<br/>
+
+<div class="hero">
+  <div class="hero-flag">🌍</div>
+  <h1>{esc(c['hub_h1'])}</h1>
+  <p>{esc(c['hub_lead'])}</p>
+  <a href="{p(lang)}" class="hero-cta">{esc(x['cta'])}</a>
+</div>
+
+<div class="wrap">
+  <h2>{esc(c['hub_h1'])}</h2>
+  <div class="country-grid">
+    {cards_html}</div>
+</div>
 {footer(lang)}
 </body>
 </html>
 '''
-    return head(lang, title, desc, alts, jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
+    return head(lang, title, desc, alts, page_css('country') + jld({'@context': 'https://schema.org', '@graph': graph}), xdefault='en') + '\n' + body
 
 
 # ───────────────────────── сборка ─────────────────────────
