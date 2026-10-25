@@ -18,7 +18,8 @@
      "icon": "1",
      "color": "#005BBB",
      "iconBg": "#08101a",
-     "slug": "pershyi-live"
+     "slug": "pershyi-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/pershyi.png"
     },
     {
      "id": "channel5",
@@ -28,7 +29,8 @@
      "icon": "5",
      "color": "#1565c0",
      "iconBg": "#0a0f1a",
-     "slug": "channel5-live"
+     "slug": "channel5-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/channel5.png"
     },
     {
      "id": "espreso",
@@ -38,7 +40,8 @@
      "icon": "ЕСП",
      "color": "#005BBB",
      "iconBg": "#08101a",
-     "slug": "espreso-live"
+     "slug": "espreso-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/espreso.png"
     },
     {
      "id": "kyiv24",
@@ -48,7 +51,8 @@
      "icon": "К24",
      "color": "#0277bd",
      "iconBg": "#081218",
-     "slug": "kyiv24-live"
+     "slug": "kyiv24-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/kyiv24.png"
     },
     {
      "id": "news24",
@@ -58,7 +62,8 @@
      "icon": "24",
      "color": "#c62828",
      "iconBg": "#180808",
-     "slug": "24kanal-live"
+     "slug": "24kanal-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/news24.png"
     },
     {
      "id": "rada",
@@ -68,7 +73,8 @@
      "icon": "РД",
      "color": "#2e7d32",
      "iconBg": "#081208",
-     "slug": "rada-tv-live"
+     "slug": "rada-tv-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/rada.png"
     },
     {
      "id": "marafon",
@@ -78,7 +84,8 @@
      "icon": "МАР",
      "color": "#FFD500",
      "iconBg": "#1a1400",
-     "slug": "marafon-live"
+     "slug": "marafon-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/marafon.png"
     }
    ]
   },
@@ -99,7 +106,8 @@
      "icon": "НТН",
      "color": "#e53935",
      "iconBg": "#1a0808",
-     "slug": "ntn-live"
+     "slug": "ntn-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/ntn.png"
     },
     {
      "id": "inter",
@@ -109,7 +117,8 @@
      "icon": "ІНТ",
      "color": "#00897b",
      "iconBg": "#081412",
-     "slug": "inter-live"
+     "slug": "inter-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/inter.png"
     },
     {
      "id": "oneplusone",
@@ -119,7 +128,8 @@
      "icon": "1+1",
      "color": "#FFD500",
      "iconBg": "#1a1400",
-     "slug": "1plus1-live"
+     "slug": "1plus1-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/oneplusone.png"
     },
     {
      "id": "kvartal",
@@ -129,7 +139,8 @@
      "icon": "КВ",
      "color": "#ff6d00",
      "iconBg": "#1a1000",
-     "slug": "kvartal-tv-live"
+     "slug": "kvartal-tv-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/kvartal.png"
     },
     {
      "id": "mega",
@@ -139,7 +150,8 @@
      "icon": "МГ",
      "color": "#d81b60",
      "iconBg": "#180810",
-     "slug": "mega-live"
+     "slug": "mega-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/mega.png"
     },
     {
      "id": "k2",
@@ -149,7 +161,8 @@
      "icon": "К2",
      "color": "#6a1b9a",
      "iconBg": "#130a18",
-     "slug": "k2-live"
+     "slug": "k2-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/k2.png"
     },
     {
      "id": "filmualive",
@@ -159,7 +172,8 @@
      "icon": "FUA",
      "color": "#e65100",
      "iconBg": "#1a0e00",
-     "slug": "filmua-live"
+     "slug": "filmua-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/filmualive.png"
     },
     {
      "id": "cinema4ever",
@@ -169,7 +183,8 @@
      "icon": "4CIN",
      "color": "#e65100",
      "iconBg": "#1a0e00",
-     "slug": "4ever-cinema-live"
+     "slug": "4ever-cinema-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/cinema4ever.png"
     },
     {
      "id": "drama4ever",
@@ -179,7 +194,8 @@
      "icon": "4DR",
      "color": "#4a148c",
      "iconBg": "#0e0a18",
-     "slug": "4ever-drama-live"
+     "slug": "4ever-drama-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/drama4ever.png"
     }
    ]
   },
@@ -200,7 +216,8 @@
      "icon": "АРМ",
      "color": "#33691e",
      "iconBg": "#0a1408",
-     "slug": "armiya-tv-live"
+     "slug": "armiya-tv-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/armytv.png"
     },
     {
      "id": "irt",
@@ -210,7 +227,8 @@
      "icon": "IRT",
      "color": "#00838f",
      "iconBg": "#081214",
-     "slug": "irt-live"
+     "slug": "irt-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/irt.png"
     }
    ]
   },
@@ -231,7 +249,8 @@
      "icon": "RAI",
      "color": "#ad1457",
      "iconBg": "#180810",
-     "slug": "rai-live"
+     "slug": "rai-live",
+     "logo": null
     },
     {
      "id": "tva",
@@ -241,7 +260,8 @@
      "icon": "TVA",
      "color": "#37474f",
      "iconBg": "#0a0f12",
-     "slug": "tva-live"
+     "slug": "tva-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/tva.png"
     },
     {
      "id": "ntk",
@@ -251,7 +271,8 @@
      "icon": "NTK",
      "color": "#0277bd",
      "iconBg": "#081218",
-     "slug": "ntk-tv-live"
+     "slug": "ntk-tv-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/ntk.png"
     },
     {
      "id": "ch7",
@@ -261,7 +282,8 @@
      "icon": "7К",
      "color": "#00838f",
      "iconBg": "#081214",
-     "slug": "7kanal-live"
+     "slug": "7kanal-live",
+     "logo": null
     }
    ]
   },
@@ -282,7 +304,8 @@
      "icon": "МЗВ",
      "color": "#FFD500",
      "iconBg": "#1a1400",
-     "slug": "muzvar-live"
+     "slug": "muzvar-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/muzvar.png"
     },
     {
      "id": "nashemus",
@@ -292,7 +315,8 @@
      "icon": "НШМ",
      "color": "#005BBB",
      "iconBg": "#08101a",
-     "slug": "nashe-music-live"
+     "slug": "nashe-music-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/nashemus.png"
     },
     {
      "id": "m1",
@@ -302,7 +326,8 @@
      "icon": "М1",
      "color": "#8e24aa",
      "iconBg": "#140a18",
-     "slug": "m1-live"
+     "slug": "m1-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/m1.png"
     },
     {
      "id": "music4ever",
@@ -312,7 +337,8 @@
      "icon": "4MUS",
      "color": "#fb8c00",
      "iconBg": "#1a1200",
-     "slug": "4ever-music-live"
+     "slug": "4ever-music-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/music4ever.png"
     },
     {
      "id": "uamusic",
@@ -322,7 +348,8 @@
      "icon": "UAM",
      "color": "#43a047",
      "iconBg": "#0a1408",
-     "slug": "ua-music-live"
+     "slug": "ua-music-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/uamusic.png"
     }
    ]
   },
@@ -343,7 +370,8 @@
      "icon": "NIK",
      "color": "#29b6f6",
      "iconBg": "#081418",
-     "slug": "niki-kids-live"
+     "slug": "niki-kids-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/nikikids.png"
     },
     {
      "id": "nikijunior",
@@ -353,7 +381,8 @@
      "icon": "NIKJ",
      "color": "#ec407a",
      "iconBg": "#180810",
-     "slug": "niki-junior-live"
+     "slug": "niki-junior-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/nikijunior.png"
     }
    ]
   },
@@ -374,7 +403,8 @@
      "icon": "РИБ",
      "color": "#0277bd",
      "iconBg": "#081218",
-     "slug": "rybalka-tv-live"
+     "slug": "rybalka-tv-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/rybalka.png"
     },
     {
      "id": "uafashion",
@@ -384,7 +414,8 @@
      "icon": "МОД",
      "color": "#d81b60",
      "iconBg": "#1a0812",
-     "slug": "ua-fashion-tv-live"
+     "slug": "ua-fashion-tv-live",
+     "logo": null
     },
     {
      "id": "svarozhychy",
@@ -394,7 +425,8 @@
      "icon": "СВР",
      "color": "#6d4c41",
      "iconBg": "#140e0a",
-     "slug": "svarozhychy-live"
+     "slug": "svarozhychy-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/svarozhychy.png"
     },
     {
      "id": "equalympic",
@@ -404,7 +436,8 @@
      "icon": "EQL",
      "color": "#1e88e5",
      "iconBg": "#0a1220",
-     "slug": "equalympic-live"
+     "slug": "equalympic-live",
+     "logo": "https://ukraine-tv.uk/assets/logos/equalympic.png"
     }
    ]
   }

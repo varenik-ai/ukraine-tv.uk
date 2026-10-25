@@ -7,6 +7,7 @@
   // список прокси можно менять без передеплоя сайта — /proxy.json
   fetch('/proxy.json').then(function (r) { return r.json(); }).then(function (d) { if (d && d.urls && d.urls.length) PROXIES = d.urls; }).catch(function () {});
   function _currentProxy() { return PROXIES[_proxyIdx % PROXIES.length]; }
+  window._currentProxy = _currentProxy; // для cast.js (ТВ берёт поток по ссылке воркера)
   function _markProxyFailed() { _proxyFailedAt[_proxyIdx % PROXIES.length] = Date.now(); }
   // ротация пропускает прокси, упавшие меньше 90 с назад
   function _advanceProxy() {

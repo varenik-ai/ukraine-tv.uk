@@ -31,8 +31,8 @@
   
   <link rel="preload" href="/assets/fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin/>
   <style>@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}</style>
-  <link rel="stylesheet" href="/assets/site.css?v=2"/>
-  <script defer src="/assets/analytics.js?v=2"></script>
+  <link rel="stylesheet" href="/assets/site.css?v=3"/>
+  <script defer src="/assets/consent.js?v=3"></script>
 </head>
 <body>
 <header>
@@ -43,7 +43,7 @@
     <div class="lang-switch"><a href="/privacy/" class="active">UA</a><a href="/en/privacy/">EN</a><a href="/ru/privacy/">RU</a></div>
   </div>
 </header>
-<main class="static"><h1>Конфіденційність</h1><h2>Які дані ми обробляємо</h2><p>Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) за допомогою файлів cookie.</p><h2>Третя сторона</h2><p>Потоки каналів надають треті сторони; під час перегляду ваш браузер звертається до їхніх серверів і серверів Cloudflare, через які ми віддаємо плейлисти.</p><h2>Cookie</h2><p>Ви можете вимкнути або видалити cookie в налаштуваннях браузера; сайт продовжить працювати.</p><h2 id="rightsholders">Правовласникам</h2><p>Посилання на трансляції взято з відкритих джерел; сайт не зберігає відео. Якщо ви правовласник і вважаєте, що трансляцію не слід показувати на сайті, надішліть звернення на <a href="mailto:dyaltd@gmail.com">dyaltd@gmail.com</a> із підтвердженням прав і вказівкою адреси сторінки — ми розглянемо його і за потреби приберемо канал.</p></main>
+<main class="static"><h1>Конфіденційність</h1><h2>Які дані ми обробляємо</h2><p>Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) за допомогою файлів cookie. Вони вмикаються лише після вашої згоди; змінити вибір можна за посиланням «Налаштування cookie» внизу сторінки.</p><h2>Третя сторона</h2><p>Потоки каналів надають треті сторони; під час перегляду ваш браузер звертається до їхніх серверів і серверів Cloudflare, через які ми віддаємо плейлисти.</p><h2>Cookie</h2><p>Ви можете вимкнути або видалити cookie в налаштуваннях браузера; сайт продовжить працювати.</p><h2 id="rightsholders">Правовласникам</h2><p>Посилання на трансляції взято з відкритих джерел; сайт не зберігає відео. Якщо ви правовласник і вважаєте, що трансляцію не слід показувати на сайті, надішліть звернення на <a href="mailto:dyaltd@gmail.com">dyaltd@gmail.com</a> із підтвердженням прав і вказівкою адреси сторінки — ми розглянемо його і за потреби приберемо канал.</p></main>
 <footer>
   <div class="footer-inner">
     <div>
@@ -55,6 +55,9 @@
       <a href="/ukrainske-tv-za-kordonom/">Українське ТБ за кордоном</a>
       <a href="/about/">Про сайт</a>
       <a href="/privacy/">Конфіденційність</a>
+      <a href="/advertising/">Реклама</a>
+      <a href="/blog/">Блог</a>
+      <a href="#" data-cookie-settings>Налаштування cookie</a>
     </div>
     <div class="footer-tg"><a href="https://t.me/UkraineTVHub" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg> Підписатися @UkraineTVHub</a></div>
   </div>

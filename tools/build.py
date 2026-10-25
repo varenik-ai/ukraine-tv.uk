@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from i18n import *            # noqa
 import texts
 import countries as CO
+import blog as BLOG
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOMAIN = 'https://ukraine-tv.uk'
@@ -17,7 +18,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '2'
+ASSET_V = '3'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap
@@ -31,7 +32,8 @@ for c in reg['channels']:
     if c['id'] == 'marafon':
         cat = 'news'
     nm, tg, ab = texts.NAMES[c['id']], texts.TAGLINE[c['id']], texts.ABOUT[c['id']]
-    CH.append(dict(id=c['id'], slug=c['slug'], cat=cat, icon=c['icon'], color=c['color'], bg=c['iconBg'],
+    logo = '/assets/logos/%s.png' % c['id'] if os.path.exists(os.path.join(ROOT, 'assets/logos/%s.png' % c['id'])) else None
+    CH.append(dict(id=c['id'], slug=c['slug'], logo=logo, cat=cat, icon=c['icon'], color=c['color'], bg=c['iconBg'],
                    name=dict(zip(LANGS, nm)), tag=dict(zip(LANGS, tg)), about=dict(zip(LANGS, ab))))
 CAT_ORDER = list(CATS)
 CH.sort(key=lambda c: CAT_ORDER.index(c['cat']))   # стабильная сортировка сохраняет порядок внутри категории
@@ -58,7 +60,7 @@ def jld(obj):
 
 
 # ───────────────────────── общие блоки ─────────────────────────
-def head(lang, title, desc, alts, extra='', xdefault='uk', robots='index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1', og_type='website'):
+def head(lang, title, desc, alts, extra='', xdefault='uk', og=None, robots='index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1', og_type='website'):
     s = S[lang]
     canon = alts[lang]
     hl = ''.join('<link rel="alternate" hreflang="%s" href="%s"/>\n  ' % (l, ab(alts[l])) for l in LANGS if l in alts)
@@ -84,18 +86,18 @@ def head(lang, title, desc, alts, extra='', xdefault='uk', robots='index, follow
   <meta property="og:description" content="{esc(desc)}"/>
   <meta property="og:url" content="{ab(canon)}"/>
   <meta property="og:locale" content="{OG_LOCALE[lang]}"/>
-  <meta property="og:image" content="{OG_IMAGE}"/>
+  <meta property="og:image" content="{og or OG_IMAGE}"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="{esc(title)}"/>
   <meta name="twitter:description" content="{esc(desc)}"/>
-  <meta name="twitter:image" content="{OG_IMAGE}"/>
+  <meta name="twitter:image" content="{og or OG_IMAGE}"/>
   {extra}
   <link rel="preload" href="/assets/fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin/>
   <style>@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}}</style>
   <link rel="stylesheet" href="/assets/site.css?v={ASSET_V}"/>
-  <script defer src="/assets/analytics.js?v={ASSET_V}"></script>
+  <script defer src="/assets/consent.js?v={ASSET_V}"></script>
 </head>'''
 
 
@@ -126,6 +128,9 @@ def footer(lang):
       <a href="{CO.HUB[lang]}">{CO.C[lang]['breadcrumb_hub']}</a>
       <a href="{p(lang, 'about')}">{s['f_about']}</a>
       <a href="{p(lang, 'privacy')}">{s['f_priv']}</a>
+      <a href="{p(lang, 'advertising')}">{s['f_adv']}</a>
+      <a href="{p(lang, 'blog')}">{BLOG_LABEL[lang]}</a>
+      <a href="#" data-cookie-settings>{s['f_cookie']}</a>
     </div>
     <div class="footer-tg"><a href="{TG}" target="_blank" rel="noopener">{TG_SVG} {s['subscribe']} @UkraineTVHub</a></div>
   </div>
@@ -135,6 +140,9 @@ def footer(lang):
 
 
 def icon_html(c, cls):
+    if c.get('logo'):  # логотип на светлой плитке; при ошибке загрузки — текстовая иконка
+        return ('<div class="%s lg"><img src="%s?v=%s" alt="" loading="lazy" decoding="async" onerror="var d=this.parentNode;d.className=d.className.replace(\' lg\',\'\');d.style.cssText=\'background:%s;color:%s\';d.textContent=\'%s\'"></div>'
+                % (cls, c['logo'], ASSET_V, c['bg'], c['color'], esc(c['icon']).replace("'", '')))
     return '<div class="%s" style="background:%s;color:%s">%s</div>' % (cls, c['bg'], c['color'], esc(c['icon']))
 
 
@@ -182,7 +190,7 @@ def channel_page(lang, c):
     pop = ''.join('<a href="%s" class="pop-item">%s<span class="pop-name">%s</span><span class="pop-live">LIVE</span></a>\n      '
                   % (p(lang, BY_ID[x]['slug']), icon_html(BY_ID[x], 'pop-icon'), esc(BY_ID[x]['name'][lang])) for x in POPULAR if x in BY_ID)
     faq_html = ''.join('<details><summary>%s <span>▾</span></summary><p>%s</p></details>\n      ' % (esc(q), esc(a)) for q, a in faq)
-    cfg = json.dumps({'id': c['id'], 'lang': lang, 't': js}, ensure_ascii=False)
+    cfg = json.dumps({'id': c['id'], 'name': name, 'slug': c['slug'], 'lang': lang, 't': js}, ensure_ascii=False)
     body = f'''<body>
 {header(lang, alts)}
 
@@ -221,6 +229,7 @@ def channel_page(lang, c):
     <div class="player-wrap" id="player-wrap">
       <video id="video" playsinline webkit-playsinline></video>
       <div class="player-overlay" id="overlay">
+        {('<img class="ov-logo" src="%s?v=%s" alt="" width="120" height="60">' % (c['logo'], ASSET_V)) if c.get('logo') else ''}
         <div class="play-btn">▶</div>
         <div style="color:var(--muted);font-size:14px">{esc(s['watch_prompt'].format(name=name))}</div>
       </div>
@@ -279,11 +288,13 @@ def channel_page(lang, c):
 <script defer src="/assets/player.js?v={ASSET_V}"></script>
 <script defer src="/assets/site-ux.js?v={ASSET_V}"></script>
 <script defer src="/assets/player-ui.js?v={ASSET_V}"></script>
+<script defer src="/assets/cast.js?v={ASSET_V}"></script>
 </body>
 </html>
 '''
     extra = '<link rel="preconnect" href="https://ukraine-stream-a.dyaltd.workers.dev" crossorigin/>\n  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com"/>\n  ' + jld({'@context': 'https://schema.org', '@graph': graph})
-    return head(lang, title, desc, alts, extra) + '\n' + body
+    og = DOMAIN + '/assets/og/' + ('' if lang == 'uk' else lang + '/') + c['slug'] + '.jpg'
+    return head(lang, title, desc, alts, extra, og=og if os.path.exists(os.path.join(ROOT, og.replace(DOMAIN, '').lstrip('/'))) else None) + '\n' + body
 
 
 # ───────────────────────── главная и категории ─────────────────────────
@@ -378,21 +389,36 @@ STATIC = {
  },
  'privacy': {
   'uk': ('Конфіденційність', 'Політика конфіденційності — Україна ТВ', [
-      ('h2', 'Які дані ми обробляємо'), ('p', 'Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) за допомогою файлів cookie.'),
+      ('h2', 'Які дані ми обробляємо'), ('p', 'Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) за допомогою файлів cookie. Вони вмикаються лише після вашої згоди; змінити вибір можна за посиланням «Налаштування cookie» внизу сторінки.'),
       ('h2', 'Третя сторона'), ('p', 'Потоки каналів надають треті сторони; під час перегляду ваш браузер звертається до їхніх серверів і серверів Cloudflare, через які ми віддаємо плейлисти.'),
       ('h2', 'Cookie'), ('p', 'Ви можете вимкнути або видалити cookie в налаштуваннях браузера; сайт продовжить працювати.'),
       ('h2 id="rightsholders"', 'Правовласникам'), ('p', 'Посилання на трансляції взято з відкритих джерел; сайт не зберігає відео. Якщо ви правовласник і вважаєте, що трансляцію не слід показувати на сайті, надішліть звернення на ' + CONTACT + ' із підтвердженням прав і вказівкою адреси сторінки — ми розглянемо його і за потреби приберемо канал.')]),
   'en': ('Privacy', 'Privacy policy — Ukraine TV', [
-      ('h2', 'What data we process'), ('p', 'The site requires no registration and does not directly collect personal data. For analytics we use Google Analytics (GA4) and Microsoft Clarity, which may record technical visit data (pages, device type, approximate country) using cookies.'),
+      ('h2', 'What data we process'), ('p', 'The site requires no registration and does not directly collect personal data. For analytics we use Google Analytics (GA4) and Microsoft Clarity, which may record technical visit data (pages, device type, approximate country) using cookies. They are enabled only after you consent; you can change your choice with the "Cookie settings" link at the bottom of the page.'),
       ('h2', 'Third parties'), ('p', 'Channel streams are provided by third parties; while you watch, your browser contacts their servers and the Cloudflare servers through which we serve playlists.'),
       ('h2', 'Cookies'), ('p', 'You can disable or delete cookies in your browser settings; the site keeps working.'),
       ('h2 id="rightsholders"', 'Rights holders'), ('p', 'Stream links are taken from open sources; the site does not store video. If you are a rights holder and believe a stream should not be shown on the site, send a request to ' + CONTACT + ' with proof of ownership and the page address — we will review it and remove the channel if needed.')]),
   'ru': ('Конфиденциальность', 'Политика конфиденциальности — Украина ТВ', [
-      ('h2', 'Какие данные мы обрабатываем'), ('p', 'Сайт не требует регистрации и не собирает персональные данные напрямую. Для аналитики используются Google Analytics (GA4) и Microsoft Clarity: они могут записывать технические данные визита (страницы, тип устройства, примерную страну) с помощью файлов cookie.'),
+      ('h2', 'Какие данные мы обрабатываем'), ('p', 'Сайт не требует регистрации и не собирает персональные данные напрямую. Для аналитики используются Google Analytics (GA4) и Microsoft Clarity: они могут записывать технические данные визита (страницы, тип устройства, примерную страну) с помощью файлов cookie. Они включаются только после вашего согласия; изменить выбор можно по ссылке «Настройки cookie» внизу страницы.'),
       ('h2', 'Третьи стороны'), ('p', 'Потоки каналов предоставляют третьи стороны; при просмотре ваш браузер обращается к их серверам и к серверам Cloudflare, через которые мы отдаём плейлисты.'),
       ('h2', 'Cookie'), ('p', 'Вы можете отключить или удалить cookie в настройках браузера; сайт продолжит работать.'),
       ('h2 id="rightsholders"', 'Правообладателям'), ('p', 'Ссылки на трансляции взяты из открытых источников; сайт не хранит видео. Если вы правообладатель и считаете, что трансляцию не следует показывать на сайте, отправьте обращение на ' + CONTACT + ' с подтверждением прав и адресом страницы — мы рассмотрим его и при необходимости уберём канал.')]),
  },
+}
+
+STATIC['advertising'] = {
+  'uk': ('Реклама на сайті', 'Реклама на Україна ТВ — співпраця та розміщення', [
+      ('h2', 'Аудиторія'), ('p', 'Україна ТВ — безкоштовний сайт і Telegram-застосунок для перегляду українських телеканалів онлайн. Аудиторія — українці в Україні та за кордоном, яких цікавлять новини, кіно, музика та дитячий контент.'),
+      ('h2', 'Формати'), ('p', 'Банери на сторінках каналів і головній, нативні згадки в Telegram-каналі @UkraineTVHub, спонсорство тематичних добірок. Конкретні формати та ціни узгоджуємо індивідуально.'),
+      ('h2', 'Як зв\'язатися'), ('p', 'Напишіть на ' + CONTACT + ' або в Telegram ' + TG + ' — вкажіть компанію, формат і бажаний період.')]),
+  'en': ('Advertising', 'Advertise on Ukraine TV — partnerships and placements', [
+      ('h2', 'Audience'), ('p', 'Ukraine TV is a free website and Telegram app for watching Ukrainian TV channels online. Our audience is Ukrainians at home and abroad interested in news, movies, music and kids\' content.'),
+      ('h2', 'Formats'), ('p', 'Banners on channel pages and the home page, native mentions in the Telegram channel @UkraineTVHub and sponsorship of themed selections. Specific formats and prices are agreed individually.'),
+      ('h2', 'Contact'), ('p', 'Write to ' + CONTACT + ' or on Telegram ' + TG + ' — include your company, the format and the preferred period.')]),
+  'ru': ('Реклама на сайте', 'Реклама на Украина ТВ — сотрудничество и размещение', [
+      ('h2', 'Аудитория'), ('p', 'Украина ТВ — бесплатный сайт и Telegram-приложение для просмотра украинских телеканалов онлайн. Аудитория — украинцы в Украине и за рубежом, которых интересуют новости, кино, музыка и детский контент.'),
+      ('h2', 'Форматы'), ('p', 'Баннеры на страницах каналов и главной, нативные упоминания в Telegram-канале @UkraineTVHub, спонсорство тематических подборок. Конкретные форматы и цены согласуем индивидуально.'),
+      ('h2', 'Как связаться'), ('p', 'Напишите на ' + CONTACT + ' или в Telegram ' + TG + ' — укажите компанию, формат и желаемый период.')]),
 }
 
 
@@ -412,6 +438,55 @@ def static_page(lang, key):
 </html>
 '''
     return head(lang, title, desc, alts) + '\n' + body
+
+
+BLOG_LABEL = {'uk': 'Блог', 'en': 'Blog', 'ru': 'Блог'}
+
+
+def _blocks(blocks):
+    out = ''
+    for t_, x in blocks:
+        if t_ in ('ul', 'ol'):
+            out += '<%s>%s</%s>' % (t_, ''.join('<li>%s</li>' % esc(i) for i in x), t_)
+        else:
+            out += '<%s>%s</%s>' % (t_, esc(x), t_)
+    out = re.sub(r'(?<![A-Za-z0-9@])@([A-Za-z0-9_]{5,})', r'<a href="https://t.me/\1">@\1</a>', out)
+    return out.replace(CONTACT, '<a href="mailto:%s">%s</a>' % (CONTACT, CONTACT))
+
+
+def blog_index(lang):
+    s = S[lang]
+    h1, title, desc = BLOG.INDEX[lang]
+    alts = {l: p(l, 'blog') for l in LANGS}
+    items = ''.join('<li><a href="%s">%s</a><p>%s</p></li>' % (p(lang, 'blog/' + a['slug']), esc(a['title'][lang]), esc(a['desc'][lang])) for a in BLOG.ARTICLES)
+    ld = jld({'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': title, 'url': ab(p(lang, 'blog'))})
+    return head(lang, title, desc, alts, extra=ld) + '\n' + f'''<body>
+{header(lang, alts)}
+<main class="static"><h1>{esc(h1)}</h1><ul class="blog-list">{items}</ul></main>
+{footer(lang)}
+</body>
+</html>
+'''
+
+
+def blog_article(lang, a):
+    s = S[lang]
+    alts = {l: p(l, 'blog/' + a['slug']) for l in LANGS}
+    h1 = a['title'][lang]
+    ld = jld({'@context': 'https://schema.org', '@type': 'Article', 'headline': h1, 'description': a['desc'][lang], 'inLanguage': lang,
+              'datePublished': BLOG.DATE, 'dateModified': BLOG.DATE, 'mainEntityOfPage': ab(p(lang, 'blog/' + a['slug'])),
+              'author': {'@type': 'Organization', 'name': s['site']}, 'publisher': {'@type': 'Organization', 'name': s['site'], 'url': DOMAIN + '/'}})
+    bc = jld({'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
+        {'@type': 'ListItem', 'position': 1, 'name': s['site'], 'item': ab(p(lang))},
+        {'@type': 'ListItem', 'position': 2, 'name': BLOG_LABEL[lang], 'item': ab(p(lang, 'blog'))},
+        {'@type': 'ListItem', 'position': 3, 'name': h1, 'item': ab(p(lang, 'blog/' + a['slug']))}]})
+    return head(lang, '%s — %s' % (h1, s['site']), a['desc'][lang], alts, extra=ld + bc, og_type='article') + '\n' + f'''<body>
+{header(lang, alts)}
+<main class="static"><p><a href="{p(lang, 'blog')}">&larr; {BLOG_LABEL[lang]}</a></p><h1>{esc(h1)}</h1>{_blocks(a['body'][lang])}</main>
+{footer(lang)}
+</body>
+</html>
+'''
 
 
 def not_found():
@@ -540,6 +615,9 @@ def main():
                 put(p(lang, CATS[cat][lang][1]) + 'index.html', category_page(lang, cat))
         for key in STATIC:
             put(p(lang, key) + 'index.html', static_page(lang, key))
+        put(p(lang, 'blog') + 'index.html', blog_index(lang))
+        for a in BLOG.ARTICLES:
+            put(p(lang, 'blog/' + a['slug']) + 'index.html', blog_article(lang, a))
     for co in CO.COUNTRIES:
         for lang in LANGS:
             put(country_path(lang, co) + 'index.html', country_page(lang, co))
@@ -563,7 +641,7 @@ def main():
         if items:
             app['groups'].append({'cat': cat, 'emoji': CAT_EMOJI[cat], 'labels': {l: CATS[cat][l][0] for l in LANGS},
                                   'channels': [{'id': c['id'], 'name': c['name']['uk'], 'nameEn': c['name']['en'], 'nameRu': c['name']['ru'], 'icon': c['icon'],
-                                                'color': c['color'], 'iconBg': c['bg'], 'slug': c['slug']} for c in items]})
+                                                'color': c['color'], 'iconBg': c['bg'], 'slug': c['slug'], 'logo': (DOMAIN + c['logo']) if c.get('logo') else None} for c in items]})
     put('/data/app-channels.json', json.dumps(app, ensure_ascii=False, indent=1) + '\n')
 
     # proxy.json
@@ -580,7 +658,7 @@ def main():
         if not e or e['hash'] != h:
             cache[path] = e = {'hash': h, 'date': TODAY}
         return e['date']
-    keys = [(None, {'alts': dict(CO.HUB), 'xdef': 'en'})] + [(None, {'alts': country_alts(co), 'xdef': 'en'}) for co in CO.COUNTRIES] + [('', None)] + [(c['slug'], c) for c in CH] + [(CATS[cat]['uk'][1], cat) for cat in CAT_ORDER if any(c['cat'] == cat for c in CH)] + [(k, None) for k in STATIC]
+    keys = [(None, {'alts': dict(CO.HUB), 'xdef': 'en'})] + [(None, {'alts': country_alts(co), 'xdef': 'en'}) for co in CO.COUNTRIES] + [('', None)] + [(c['slug'], c) for c in CH] + [(CATS[cat]['uk'][1], cat) for cat in CAT_ORDER if any(c['cat'] == cat for c in CH)] + [(k, None) for k in STATIC] + [('blog', None)] + [('blog/' + a['slug'], None) for a in BLOG.ARTICLES]
     urls = []
     def alt_paths(entry):
         slug, obj = entry
