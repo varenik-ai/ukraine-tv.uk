@@ -645,7 +645,7 @@ def main():
     put('/data/app-channels.json', json.dumps(app, ensure_ascii=False, indent=1) + '\n')
 
     # proxy.json
-    put('/proxy.json', json.dumps({'urls': ['https://ukraine-stream-a.dyaltd.workers.dev', 'https://ukraine-stream-b.dyaltd.workers.dev', 'https://ukraine-stream-c.dyaltd.workers.dev']}, indent=2) + '\n')
+    put('/proxy.json', json.dumps({'urls': ['https://s.ukraine-tv.uk', 'https://ukraine-stream-a.dyaltd.workers.dev', 'https://ukraine-stream-b.dyaltd.workers.dev', 'https://ukraine-stream-c.dyaltd.workers.dev']}, indent=2) + '\n')
     put('/robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n' % DOMAIN)
 
     # lastmod: меняется только если изменилось содержимое
