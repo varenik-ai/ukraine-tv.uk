@@ -8,7 +8,7 @@
 Время хранится в UTC (ISO, Z); страница переводит во время зрителя. Каналы без данных в epg.json
 отсутствуют — страница в этом случае прячет блок, а не показывает выдуманное.
 """
-import gzip, io, json, sys, urllib.request
+import gzip, io, json, re, sys, urllib.request
 from datetime import datetime, timedelta, timezone
 from xml.etree import ElementTree as ET
 
@@ -47,6 +47,10 @@ CHANNEL_MAP = {
     'svarozhychy': [('B', 'Svarozhychy.ua')],
     'equalympic': [('B', 'Equalympic.ua')],
 }
+
+
+# заглушки вместо передач («No Data» и т.п.) — не показываем
+PLACEHOLDER = re.compile(r'^(no data|no information|немає даних|нет данных|програма відсутня|программа отсутствует|n/a|-+|\?+)$', re.I)
 
 
 def parse_ts(s):
@@ -96,7 +100,7 @@ def main():
                     title = (t.text or '').strip() if t is not None else ''
                 except Exception:
                     el.clear(); continue
-                if title and sp > lo and st < hi:
+                if title and not PLACEHOLDER.match(title) and sp > lo and st < hi:
                     wanted[key].append({'title': title, 'start': st.strftime('%Y-%m-%dT%H:%M:%SZ'), 'stop': sp.strftime('%Y-%m-%dT%H:%M:%SZ')})
             el.clear()
     if ok_feeds == 0:
