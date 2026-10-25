@@ -19,7 +19,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '8'
+ASSET_V = '9'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap
@@ -61,6 +61,29 @@ def jld(obj):
 
 
 # ───────────────────────── общие блоки ─────────────────────────
+
+GATE_LOCK = {
+    'uk': ('Доступ до сайту закрито', 'Без згоди на cookie ми не можемо показувати сайт. Ви можете передумати в будь-який момент.', 'Передумав — погоджуюсь'),
+    'en': ('Access to the site is closed', 'Without cookie consent we cannot show the site. You can change your mind at any time.', 'I changed my mind — I agree'),
+    'ru': ('Доступ к сайту закрыт', 'Без согласия на cookie мы не можем показывать сайт. Вы можете передумать в любой момент.', 'Передумал — согласен'),
+}
+
+
+def gate_guard(lang):
+    """Встроенная страховка: если assets/gate.js не выполнился (заблокирован расширением по имени файла, ошибка сети),
+    а согласия нет — закрываем сайт той же заглушкой. Роботам поиска и превью ссылок заглушка не показывается."""
+    h, p_, b = GATE_LOCK[lang]
+    return ("<script>(function(){var K='utv_consent';function g(){try{return localStorage.getItem(K)}catch(e){return null}}"
+            "if(/bot|crawl|spider|slurp|bingpreview|facebookexternalhit|lighthouse|pagespeed|google-inspectiontool|yandex|duckduck|baidu|embedly|telegram|whatsapp/i.test(navigator.userAgent||''))return;"
+            "function lock(){if(window.__utvGate||g()==='granted'||document.getElementById('utv-hl'))return;"
+            "Array.prototype.forEach.call(document.querySelectorAll('video,audio'),function(m){try{m.pause();m.removeAttribute('src');m.load()}catch(e){}});"
+            "Array.prototype.slice.call(document.body.children).forEach(function(n){n.remove()});"
+            "var d=document.createElement('div');d.id='utv-hl';d.style.cssText='position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;background:#080810;color:#e2e2f0;font:14px/1.55 Inter,system-ui,sans-serif;text-align:center';"
+            "d.innerHTML='<div style=\"max-width:460px\"><h2 style=\"margin:0 0 10px;font:800 20px Inter,system-ui,sans-serif\">" + h + "</h2><p style=\"margin:0 0 16px;color:#b9b9d0\">" + p_ + "</p>"
+            "<button type=\"button\" style=\"border:0;border-radius:12px;padding:12px 18px;font:700 14px Inter,system-ui,sans-serif;cursor:pointer;background:#2f7de1;color:#fff\">" + b + "</button></div>';"
+            "d.querySelector('button').onclick=function(){try{localStorage.setItem(K,'granted')}catch(e){}location.reload()};document.body.appendChild(d)}"
+            "window.addEventListener('load',function(){setTimeout(lock,2500)})})();</script>")
+
 def head(lang, title, desc, alts, extra='', xdefault='uk', og=None, robots='index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1', og_type='website'):
     s = S[lang]
     canon = alts[lang]
@@ -98,6 +121,7 @@ def head(lang, title, desc, alts, extra='', xdefault='uk', og=None, robots='inde
   <link rel="preload" href="/assets/fonts/inter-cyrillic.woff2" as="font" type="font/woff2" crossorigin/>
   <style>@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}}</style>
   <link rel="stylesheet" href="/assets/site.css?v={ASSET_V}"/>
+  {gate_guard(lang)}
   <script defer src="/assets/gate.js?v={ASSET_V}"></script>
   <script defer src="/assets/ads.js?v={ASSET_V}"></script>
 </head>'''

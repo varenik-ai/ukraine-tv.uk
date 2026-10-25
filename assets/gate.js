@@ -2,6 +2,7 @@
    «Не согласен» — доступ к сайту закрыт (экран-заглушка, с возможностью передумать). Выбор: localStorage utv_consent (granted | denied).
    Ссылка «Налаштування cookie» в футере открывает окно снова. Поисковые роботы окно не видят. */
 (function () {
+  window.__utvGate = 1;   // сигнал встроенной страховке в <head>: скрипт выполнился
   var GA = 'G-ZPMY00Q91E', CL = 'xkacwjmx12', KEY = 'utv_consent';
   var LG = (document.documentElement.lang || 'uk').toLowerCase().slice(0, 2);
   var T = {
