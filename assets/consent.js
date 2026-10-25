@@ -28,13 +28,21 @@
   }
   var BTN = 'border-radius:12px;padding:12px 18px;font:700 14px Inter,system-ui,sans-serif;cursor:pointer;flex:1 1 150px';
   function close() { var d = document.getElementById('utv-cookie'); if (d) d.remove(); document.documentElement.style.overflow = ''; }
-  function accept() { set('granted'); close(); load(); }
+  function accept() { var wasDenied = get() === 'denied'; set('granted'); if (lock.mo) { lock.mo.disconnect(); lock.mo = null; } if (wasDenied) { location.reload(); return; } close(); load(); }
   function lock() {
     set('denied');
     var d = document.getElementById('utv-cookie'); if (!d) return;
-    d.style.background = '#080810';   // полностью закрываем страницу
+    // страница закрывается целиком: удаляем весь контент (останавливая видео/звук), остаётся только экран-заглушка
+    Array.prototype.forEach.call(document.querySelectorAll('video,audio'), function (m) { try { m.pause(); m.removeAttribute('src'); m.load(); } catch (e) {} });
+    Array.prototype.slice.call(document.body.children).forEach(function (n) { if (n !== d) n.remove(); });
+    d.style.background = '#080810'; d.style.webkitBackdropFilter = 'none'; d.style.backdropFilter = 'none';
     d.querySelector('[data-box]').innerHTML = '<h2 style="margin:0 0 10px;font:800 20px Inter,system-ui,sans-serif">' + T.lockH + '</h2><p style="margin:0 0 16px;color:#b9b9d0">' + T.lockT + '</p>' +
       '<div style="display:flex"><button type="button" data-v="granted" style="' + BTN + ';background:#2f7de1;border:0;color:#fff">' + T.back + '</button></div>';
+    // если оверлей удалили (DevTools, расширения) — возвращаем
+    if (window.MutationObserver && !lock.mo) {
+      lock.mo = new MutationObserver(function () { if (get() === 'denied' && !document.getElementById('utv-cookie')) { lock.mo.disconnect(); lock.mo = null; location.reload(); } });
+      lock.mo.observe(document.body, { childList: true });
+    }
     try { window.close(); } catch (e) {}
   }
   function banner() {
