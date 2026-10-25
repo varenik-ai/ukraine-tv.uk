@@ -937,7 +937,7 @@ def main():
 
     # proxy.json
     put('/proxy.json', json.dumps({'urls': ['https://s.ukraine-tv.uk', 'https://ukraine-stream-a.dyaltd.workers.dev', 'https://ukraine-stream-b.dyaltd.workers.dev', 'https://ukraine-stream-c.dyaltd.workers.dev']}, indent=2) + '\n')
-    put('/robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n' % DOMAIN)
+    put('/robots.txt', 'User-agent: *\nAllow: /\nDisallow: /docs/\nDisallow: /tools/\nDisallow: /scripts/\nDisallow: /README.md\nDisallow: /CLAUDE.md\n\nSitemap: %s/sitemap.xml\n' % DOMAIN)
 
     # lastmod: меняется только если изменилось содержимое
     cache_path = os.path.join(ROOT, 'data/lastmod.json')

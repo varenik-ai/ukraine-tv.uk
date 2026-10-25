@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /docs/
+Disallow: /tools/
+Disallow: /scripts/
+Disallow: /README.md
+Disallow: /CLAUDE.md
 
 Sitemap: https://ukraine-tv.uk/sitemap.xml

@@ -1,5 +1,7 @@
 # Источники потоков (результат проверки 2026-10-25)
 
+> **Актуальность.** Ниже — снимок проверки 2026-10-25 (38 каналов). После него удалено 5 неработающих каналов (`suspilne`, `rivne1`, `itv`, `interplus`, `dnipro`), сейчас в реестре **33** каналов (статусы: cors_restricted 1, ok 31, verify 1). Актуальное состояние каждого источника — в `data/channels.json` (`source.status`, `source.checked`), порядок проверки — `docs/CHANNELS.md`.
+
 Единый реестр: [`data/channels.json`](../data/channels.json). Проверка: `python3 tools/test_streams.py data/channels.json`
 (скрипт лежит в репозитории ukraine-tv-hub). Проверка делалась прямыми запросами с одного IP, не через Cloudflare.
 
