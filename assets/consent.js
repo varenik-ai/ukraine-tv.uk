@@ -1,17 +1,22 @@
-/* Согласие на аналитику: GA4 и Microsoft Clarity загружаются только после «Принять».
-   Выбор хранится в localStorage (utv_consent: granted | denied). Ссылка «Налаштування cookie» в футере открывает баннер снова. */
+/* Согласие на аналитику и рекламу: блокирующее окно по центру. «Согласен» — GA4, Clarity и реклама (assets/ads.js) загружаются;
+   «Не согласен» — доступ к сайту закрыт (экран-заглушка, с возможностью передумать). Выбор: localStorage utv_consent (granted | denied).
+   Ссылка «Налаштування cookie» в футере открывает окно снова. Поисковые роботы окно не видят. */
 (function () {
   var GA = 'G-ZPMY00Q91E', CL = 'xkacwjmx12', KEY = 'utv_consent';
   var LG = (document.documentElement.lang || 'uk').toLowerCase().slice(0, 2);
   var T = {
-    uk: { t: 'Ми використовуємо cookie для аналітики, щоб покращувати сайт. Ви можете погодитися або відмовитися.', ok: 'Прийняти', no: 'Відхилити', more: 'Детальніше' },
-    en: { t: 'We use cookies for analytics to improve the site. You can accept or decline.', ok: 'Accept', no: 'Decline', more: 'Learn more' },
-    ru: { t: 'Мы используем cookie для аналитики, чтобы улучшать сайт. Вы можете согласиться или отказаться.', ok: 'Принять', no: 'Отклонить', more: 'Подробнее' }
+    uk: { h: 'Згода на cookie', t: 'Ми використовуємо cookie для аналітики та реклами — вони допомагають підтримувати сайт безкоштовним. Для користування сайтом потрібна ваша згода.', ok: 'Погоджуюсь', no: 'Не погоджуюсь', more: 'Детальніше',
+          lockH: 'Доступ до сайту закрито', lockT: 'Без згоди на cookie ми не можемо показувати сайт. Ви можете передумати в будь-який момент.', back: 'Передумав — погоджуюсь' },
+    en: { h: 'Cookie consent', t: 'We use cookies for analytics and advertising — they help keep the site free. Your consent is required to use the site.', ok: 'I agree', no: 'I do not agree', more: 'Learn more',
+          lockH: 'Access to the site is closed', lockT: 'Without cookie consent we cannot show the site. You can change your mind at any time.', back: 'I changed my mind — I agree' },
+    ru: { h: 'Согласие на cookie', t: 'Мы используем cookie для аналитики и рекламы — они помогают поддерживать сайт бесплатным. Для использования сайта нужно ваше согласие.', ok: 'Согласен', no: 'Не согласен', more: 'Подробнее',
+          lockH: 'Доступ к сайту закрыт', lockT: 'Без согласия на cookie мы не можем показывать сайт. Вы можете передумать в любой момент.', back: 'Передумал — согласен' }
   }[LG] || null;
-  T = T || { t: '', ok: 'OK', no: 'No', more: '' };
   var PRIV = { uk: '/privacy/', en: '/en/privacy/', ru: '/ru/privacy/' }[LG] || '/privacy/';
+  var BOT = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|lighthouse|pagespeed|google-inspectiontool|yandex|duckduck|baidu|embedly|telegram|whatsapp/i.test(navigator.userAgent || '');
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  window.utvConsentGranted = function () { return get() === 'granted'; };
   var loaded = false;
   function load() {
     if (loaded) return; loaded = true;
@@ -19,23 +24,41 @@
     window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
     gtag('js', new Date()); gtag('config', GA);
     (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); }; t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, 'clarity', 'script', CL);
+    try { window.dispatchEvent(new Event('utv-consent-granted')); } catch (e) {}
+  }
+  var BTN = 'border-radius:12px;padding:12px 18px;font:700 14px Inter,system-ui,sans-serif;cursor:pointer;flex:1 1 150px';
+  function close() { var d = document.getElementById('utv-cookie'); if (d) d.remove(); document.documentElement.style.overflow = ''; }
+  function accept() { set('granted'); close(); load(); }
+  function lock() {
+    set('denied');
+    var d = document.getElementById('utv-cookie'); if (!d) return;
+    d.style.background = '#080810';   // полностью закрываем страницу
+    d.querySelector('[data-box]').innerHTML = '<h2 style="margin:0 0 10px;font:800 20px Inter,system-ui,sans-serif">' + T.lockH + '</h2><p style="margin:0 0 16px;color:#b9b9d0">' + T.lockT + '</p>' +
+      '<div style="display:flex"><button type="button" data-v="granted" style="' + BTN + ';background:#2f7de1;border:0;color:#fff">' + T.back + '</button></div>';
+    try { window.close(); } catch (e) {}
   }
   function banner() {
-    if (document.getElementById('utv-cookie')) return;
-    var d = document.createElement('div'); d.id = 'utv-cookie'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Cookie');
-    d.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;max-width:620px;margin:0 auto;background:#12121f;border:1px solid #2a2a40;border-radius:14px;padding:14px 16px;color:#e2e2f0;font:13px/1.5 Inter,system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.6)';
-    d.innerHTML = '<div style="margin-bottom:10px">' + T.t + ' <a href="' + PRIV + '" style="color:#7db4ff;text-decoration:underline">' + T.more + '</a></div>' +
-      '<div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" data-v="denied" style="background:transparent;border:1px solid #3a3a58;color:#e2e2f0;border-radius:10px;padding:8px 14px;font:600 13px inherit;cursor:pointer">' + T.no + '</button>' +
-      '<button type="button" data-v="granted" style="background:#2f7de1;border:0;color:#fff;border-radius:10px;padding:8px 16px;font:700 13px inherit;cursor:pointer">' + T.ok + '</button></div>';
+    if (document.getElementById('utv-cookie') || !T) return;
+    var d = document.createElement('div'); d.id = 'utv-cookie'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', T.h);
+    d.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,5,12,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#e2e2f0;font:14px/1.55 Inter,system-ui,sans-serif';
+    d.innerHTML = '<div data-box style="width:100%;max-width:460px;background:#12121f;border:1px solid #2a2a40;border-radius:18px;padding:24px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7);text-align:center">' +
+      '<h2 style="margin:0 0 10px;font:800 20px Inter,system-ui,sans-serif">' + T.h + '</h2>' +
+      '<p style="margin:0 0 16px;color:#b9b9d0">' + T.t + ' <a href="' + PRIV + '" style="color:#7db4ff;text-decoration:underline">' + T.more + '</a></p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" data-v="denied" style="' + BTN + ';background:transparent;border:1px solid #3a3a58;color:#e2e2f0">' + T.no + '</button>' +
+      '<button type="button" data-v="granted" style="' + BTN + ';background:#2f7de1;border:0;color:#fff">' + T.ok + '</button></div></div>';
     d.addEventListener('click', function (e) {
       var v = e.target && e.target.getAttribute && e.target.getAttribute('data-v'); if (!v) return;
-      set(v); d.remove(); if (v === 'granted') load();
+      if (v === 'granted') accept(); else lock();
     });
+    document.documentElement.style.overflow = 'hidden';
     document.body.appendChild(d);
+    var b = d.querySelector('[data-v="granted"]'); if (b) try { b.focus(); } catch (e) {}
   }
   function init() {
     var v = get();
-    if (v === 'granted') load(); else if (!v && T.t) banner();
+    if (v === 'granted') load();
+    else if (v === 'denied' && !BOT) { banner(); lock(); }
+    else if (!v && !BOT) banner();
     document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('[data-cookie-settings]'); if (a) { e.preventDefault(); banner(); } });
   }
   if (document.body) init(); else document.addEventListener('DOMContentLoaded', init);

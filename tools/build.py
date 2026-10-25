@@ -19,7 +19,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '4'
+ASSET_V = '5'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap
@@ -99,6 +99,7 @@ def head(lang, title, desc, alts, extra='', xdefault='uk', og=None, robots='inde
   <style>@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-cyrillic-ext.woff2) format("woff2");unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}}@font-face{{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url(/assets/fonts/inter-latin-ext.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}}</style>
   <link rel="stylesheet" href="/assets/site.css?v={ASSET_V}"/>
   <script defer src="/assets/consent.js?v={ASSET_V}"></script>
+  <script defer src="/assets/ads.js?v={ASSET_V}"></script>
 </head>'''
 
 
@@ -240,6 +241,7 @@ def channel_page(lang, c):
 
     <a href="{TG_APP}" target="_blank" rel="noopener" class="tg-pulse-banner"><div class="tg-pulse-icon">{TG_SVG}</div><div class="tg-pulse-text">{s['tg_pulse']}</div><span class="tg-pulse-arrow">→</span></a>
     <div class="player-status" id="status">{s['status_idle']}</div>
+    <div class="ad-slot" aria-label="Advertisement"></div>
     <div class="epg-box" id="epg-box">
       <div class="epg-head"><h3>{s['epg_h']}</h3><span class="epg-updated" id="epg-updated"></span></div>
       <div class="epg-current" id="epg-current" style="display:none">
@@ -279,6 +281,7 @@ def channel_page(lang, c):
     <div class="pop-box">
       <div class="pop-title">{s['popular']}</div>
       {pop}    </div>
+    <div class="ad-slot" aria-label="Advertisement"></div>
 </div>
 </div>
 
@@ -431,6 +434,7 @@ def home_page(lang):
     </div>
     <a href="{TG_APP}" target="_blank" rel="noopener" class="tg-pulse-banner"><div class="tg-pulse-icon">{TG_SVG}</div><div class="tg-pulse-text">{s['tg_pulse']}</div><span class="tg-pulse-arrow">→</span></a>
     <div class="player-status" id="player-status">{esc(h['player_status'])}</div>
+    <div class="ad-slot" aria-label="Advertisement"></div>
     <div class="epg-box" id="epg-box">
       <div class="epg-head"><h3>{h['epg_h']}</h3><span class="epg-updated" id="epg-updated"></span></div>
       <div class="epg-current" id="epg-current" style="display:none">
@@ -471,6 +475,7 @@ def home_page(lang):
       <div class="pop-title">{s['popular']}</div>
       <div id="pop-list"></div>
     </div>
+    <div class="ad-slot" aria-label="Advertisement"></div>
     <div class="recent-box" id="recent-box" style="display:none">
       <div class="rbox-title">{h['recent_h']}</div>
       <div id="recent-list"></div>
@@ -583,17 +588,17 @@ STATIC = {
  },
  'privacy': {
   'uk': ('Конфіденційність', 'Політика конфіденційності — Україна ТВ', [
-      ('h2', 'Які дані ми обробляємо'), ('p', 'Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) за допомогою файлів cookie. Вони вмикаються лише після вашої згоди; змінити вибір можна за посиланням «Налаштування cookie» внизу сторінки.'),
+      ('h2', 'Які дані ми обробляємо'), ('p', 'Сайт не вимагає реєстрації і не збирає персональних даних напряму. Для аналітики використовуються Google Analytics (GA4) та Microsoft Clarity, а для показу реклами — рекламні мережі Monetag та Adsterra: вони можуть записувати технічні дані візиту (сторінки, тип пристрою, приблизну країну) і використовувати cookie для показу реклами. Вони вмикаються лише після вашої згоди, без якої доступ до сайту закрито; змінити вибір можна за посиланням «Налаштування cookie» внизу сторінки.'),
       ('h2', 'Третя сторона'), ('p', 'Потоки каналів надають треті сторони; під час перегляду ваш браузер звертається до їхніх серверів і серверів Cloudflare, через які ми віддаємо плейлисти.'),
       ('h2', 'Cookie'), ('p', 'Ви можете вимкнути або видалити cookie в налаштуваннях браузера; сайт продовжить працювати.'),
       ('h2 id="rightsholders"', 'Правовласникам'), ('p', 'Посилання на трансляції взято з відкритих джерел; сайт не зберігає відео. Якщо ви правовласник і вважаєте, що трансляцію не слід показувати на сайті, надішліть звернення на ' + CONTACT + ' із підтвердженням прав і вказівкою адреси сторінки — ми розглянемо його і за потреби приберемо канал.')]),
   'en': ('Privacy', 'Privacy policy — Ukraine TV', [
-      ('h2', 'What data we process'), ('p', 'The site requires no registration and does not directly collect personal data. For analytics we use Google Analytics (GA4) and Microsoft Clarity, which may record technical visit data (pages, device type, approximate country) using cookies. They are enabled only after you consent; you can change your choice with the "Cookie settings" link at the bottom of the page.'),
+      ('h2', 'What data we process'), ('p', 'The site requires no registration and does not directly collect personal data. For analytics we use Google Analytics (GA4) and Microsoft Clarity, and to show ads we use the advertising networks Monetag and Adsterra: they may record technical visit data (pages, device type, approximate country) and use cookies to serve ads. They are enabled only after you consent, without which access to the site is closed; you can change your choice with the "Cookie settings" link at the bottom of the page.'),
       ('h2', 'Third parties'), ('p', 'Channel streams are provided by third parties; while you watch, your browser contacts their servers and the Cloudflare servers through which we serve playlists.'),
       ('h2', 'Cookies'), ('p', 'You can disable or delete cookies in your browser settings; the site keeps working.'),
       ('h2 id="rightsholders"', 'Rights holders'), ('p', 'Stream links are taken from open sources; the site does not store video. If you are a rights holder and believe a stream should not be shown on the site, send a request to ' + CONTACT + ' with proof of ownership and the page address — we will review it and remove the channel if needed.')]),
   'ru': ('Конфиденциальность', 'Политика конфиденциальности — Украина ТВ', [
-      ('h2', 'Какие данные мы обрабатываем'), ('p', 'Сайт не требует регистрации и не собирает персональные данные напрямую. Для аналитики используются Google Analytics (GA4) и Microsoft Clarity: они могут записывать технические данные визита (страницы, тип устройства, примерную страну) с помощью файлов cookie. Они включаются только после вашего согласия; изменить выбор можно по ссылке «Настройки cookie» внизу страницы.'),
+      ('h2', 'Какие данные мы обрабатываем'), ('p', 'Сайт не требует регистрации и не собирает персональные данные напрямую. Для аналитики используются Google Analytics (GA4) и Microsoft Clarity, а для показа рекламы — рекламные сети Monetag и Adsterra: они могут записывать технические данные визита (страницы, тип устройства, примерную страну) и использовать cookie для показа рекламы. Они включаются только после вашего согласия, без которого доступ к сайту закрыт; изменить выбор можно по ссылке «Настройки cookie» внизу страницы.'),
       ('h2', 'Третьи стороны'), ('p', 'Потоки каналов предоставляют третьи стороны; при просмотре ваш браузер обращается к их серверам и к серверам Cloudflare, через которые мы отдаём плейлисты.'),
       ('h2', 'Cookie'), ('p', 'Вы можете отключить или удалить cookie в настройках браузера; сайт продолжит работать.'),
       ('h2 id="rightsholders"', 'Правообладателям'), ('p', 'Ссылки на трансляции взяты из открытых источников; сайт не хранит видео. Если вы правообладатель и считаете, что трансляцию не следует показывать на сайте, отправьте обращение на ' + CONTACT + ' с подтверждением прав и адресом страницы — мы рассмотрим его и при необходимости уберём канал.')]),
