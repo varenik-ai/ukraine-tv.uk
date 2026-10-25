@@ -19,7 +19,7 @@ OG_IMAGE = DOMAIN + '/og-image.jpg'
 TODAY = datetime.date.today().isoformat()
 TG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8-1.66 7.85c-.12.53-.44.66-.89.41l-2.46-1.81-1.19 1.14c-.13.13-.24.24-.5.24l.18-2.51 4.57-4.13c.2-.17-.04-.27-.31-.1l-5.65 3.56-2.43-.76c-.62-.19-.63-.62.13-.92l8.96-3.46c.52-.19 1 .13.84.93z"/></svg>'
 POPULAR = ['pershyi', 'inter', 'oneplusone', 'kvartal', 'channel5', 'espreso']
-ASSET_V = '7'
+ASSET_V = '8'
 esc = html.escape
 written = {}       # abs path -> content (для sitemap и записи)
 pages = []         # (lang-agnostic key, {lang: path}) для sitemap

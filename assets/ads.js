@@ -3,7 +3,7 @@
    Проверка без рекламы: добавьте ?noads=1 к адресу. Аварийный выключатель: ADS_ENABLED = false. */
 (function () {
   var ADS_ENABLED = true;
-  var MONETAG = { zone: '', src: '', delayMs: 20000 };          // zone — ID зоны для ukraine-tv.uk; src — адрес тега (например https://…/tag.min.js)
+  var MONETAG = { zone: '11258077', src: 'https://nap5k.com/tag.min.js', delayMs: 20000 };  // In-Page Push «Luminous tag», сайт ukraine-tv.uk (Monetag, site 3401185)
   var ADSTERRA = { key: '', src: '', width: 300, height: 250 };  // key и src из кода баннера Adsterra (…/<key>/invoke.js)
   if (!ADS_ENABLED || /[?&]noads=1/.test(location.search)) return;
   var done = false;
