@@ -9,7 +9,7 @@
   var TT = {
     en: { cast: 'Cast to TV', air: 'AirPlay', on: 'Casting to', stop: 'Stop casting', fail: 'Could not send this channel to the TV. Try again or pick another channel.', tv: 'TV' },
     uk: { cast: 'Трансляція на ТБ', air: 'AirPlay', on: 'Транслюється на', stop: 'Зупинити трансляцію', fail: 'Не вдалося надіслати канал на ТБ. Спробуйте ще раз або оберіть інший канал.', tv: 'ТБ' },
-    ru: { cast: 'Трансляция на ТВ', air: 'AirPlay', on: 'Транслируется на', stop: 'Остановить трансляцию', fail: 'Не удалось отправить канал на ТВ. Повторите или выберите другой канал.', tv: 'ТВ' }
+    ru: { cast: 'Трансляция на ТВ', air: 'AirPlay', on: 'Транслируется на', stop: 'Остановить трансляцию', fail: 'Не удалось отправить канал на ТВ. Повторите попытку или выберите другой канал.', tv: 'ТВ' }
   };
   var T = TT[LG] || TT.uk;
   var UA = navigator.userAgent || '';

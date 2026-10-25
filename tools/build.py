@@ -175,7 +175,8 @@ def channel_page(lang, c):
     name = c['name'][lang]
     alts = {l: p(l, c['slug']) for l in LANGS}
     cat_name, cat_slug = CATS[c['cat']][lang]
-    title = s['ch_title'].format(name=name)
+    live_dup = lang == 'en' and name.lower().endswith(' live')   # «FilmUA Live Live» -> «FilmUA Live»
+    title = (s['ch_title'].replace(' Live —', ' —') if live_dup else s['ch_title']).format(name=name)
     desc = s['ch_desc'].format(name=name, tag_l=c['tag'][lang][0].lower() + c['tag'][lang][1:])
     faq = [(q.format(name=name, slug=c['slug']), a.format(name=name, slug=c['slug'])) for q, a in s['faq']]
     graph = [
@@ -202,7 +203,7 @@ def channel_page(lang, c):
 </div>
 
 <div class="page-title-wrap">
-  <h1>{esc(s['ch_h1'].format(name=name))}</h1>
+  <h1>{esc((s['ch_h1'].replace(' live —', ' —') if live_dup else s['ch_h1']).format(name=name))}</h1>
   <div class="channel-meta">
     <span class="cat-badge">{esc(cat_name)}</span>
     <span class="live-badge"><span class="live-dot"></span>{s['live']}</span>
@@ -568,7 +569,7 @@ def category_page(lang, cat):
 STATIC = {
  'about': {
   'uk': ('Про сайт', 'Україна ТВ — безкоштовний сервіс перегляду українських телеканалів онлайн', [
-      ('h2', 'Що це за сайт'), ('p', 'Україна ТВ збирає в одному місці українські телеканали, що доступні в прямому ефірі у відкритому доступі: новини, кіно, серіали, музика, дитячі, регіональні та тематичні канали. Перегляд безкоштовний, реєстрація не потрібна.'),
+      ('h2', 'Що це за сайт'), ('p', 'Україна ТВ збирає в одному місці українські телеканали, що вільно доступні в прямому ефірі: новини, кіно, серіали, музика, дитячі, регіональні та тематичні канали. Перегляд безкоштовний, реєстрація не потрібна.'),
       ('h2', 'Як це працює'), ('p', 'Сайт не зберігає і не розповсюджує відео. Плеєр підключається до відкритих потоків, які надають треті сторони. Ті самі канали доступні в Telegram-застосунку @UkraineTVHub_bot.'),
       ('h2', 'Зворотний зв\'язок'), ('p', 'Питання, пропозиції каналів, повідомлення про проблеми: ' + CONTACT + ' або Telegram ' + TG + '.')]),
   'en': ('About', 'Ukraine TV — a free service for watching Ukrainian TV channels online', [
@@ -576,7 +577,7 @@ STATIC = {
       ('h2', 'How it works'), ('p', 'The site does not store or distribute video. The player connects to open streams provided by third parties. The same channels are available in the Telegram app @UkraineTVHub_bot.'),
       ('h2', 'Contact'), ('p', 'Questions, channel suggestions, problem reports: ' + CONTACT + ' or Telegram ' + TG + '.')]),
   'ru': ('О сайте', 'Украина ТВ — бесплатный сервис просмотра украинских телеканалов онлайн', [
-      ('h2', 'Что это за сайт'), ('p', 'Украина ТВ собирает в одном месте украинские телеканалы, доступные в прямом эфире в открытом доступе: новости, кино, сериалы, музыка, детские, региональные и тематические каналы. Просмотр бесплатный, регистрация не нужна.'),
+      ('h2', 'Что это за сайт'), ('p', 'Украина ТВ собирает в одном месте украинские телеканалы, свободно доступные в прямом эфире: новости, кино, сериалы, музыка, детские, региональные и тематические каналы. Просмотр бесплатный, регистрация не нужна.'),
       ('h2', 'Как это работает'), ('p', 'Сайт не хранит и не распространяет видео. Плеер подключается к открытым потокам, которые предоставляют третьи стороны. Те же каналы доступны в Telegram-приложении @UkraineTVHub_bot.'),
       ('h2', 'Обратная связь'), ('p', 'Вопросы, предложения каналов, сообщения о проблемах: ' + CONTACT + ' или Telegram ' + TG + '.')]),
  },

@@ -42,7 +42,7 @@ TZ = {
  'il':  {'uk': 'приблизно такий самий, як у Києві', 'en': 'about the same as in Kyiv', 'ru': 'примерно такое же, как в Киеве'},
  'us':  {'uk': 'на 7–10 годин менше, ніж у Києві (залежно від штату)', 'en': '7–10 hours behind Kyiv (depending on the state)', 'ru': 'на 7–10 часов меньше, чем в Киеве (в зависимости от штата)'},
  'ca':  {'uk': 'на 7–10 годин менше, ніж у Києві (залежно від провінції)', 'en': '7–10 hours behind Kyiv (depending on the province)', 'ru': 'на 7–10 часов меньше, чем в Киеве (в зависимости от провинции)'},
- 'au':  {'uk': 'на 8–9 годин більше, ніж у Києві (залежно від міста та сезону)', 'en': '8–9 hours ahead of Kyiv (depending on the city and season)', 'ru': 'на 8–9 часов больше, чем в Киеве (в зависимости от города и сезона)'},
+ 'au':  {'uk': 'на 6–9 годин більше, ніж у Києві (залежно від міста та сезону)', 'en': '6–9 hours ahead of Kyiv (depending on the city and season)', 'ru': 'на 6–9 часов больше, чем в Киеве (в зависимости от города и сезона)'},
 }
 
 C = {
@@ -58,7 +58,7 @@ C = {
    ('Чи безкоштовне українське ТБ {in_}?', 'Так. Перегляд усіх каналів на сайті безкоштовний, підписка не потрібна.'),
    ('Чи можна дивитися на iPhone та Android?', 'Так. Відкрийте сайт у Safari (iPhone) або Chrome (Android), або скористайтеся Telegram-застосунком — трансляція запуститься одразу.'),
    ('Які канали доступні {in_}?', 'Доступно {cn}: новини, кіно та серіали, музика, дитячі, регіональні та тематичні. Повний список — на головній сторінці.'),
-   ('Яка різниця в часі між Києвом і країною: {country}?', 'Місцевий час {in_}: {tz}.')],
+   ('Яка різниця в часі з Києвом {in_}?', 'Місцевий час {in_}: {tz}.')],
   others_h='Українське ТБ в інших країнах', hub_title='Українське ТБ за кордоном — онлайн безкоштовно у {n} країнах', hub_h1='Українське ТБ за кордоном',
   hub_desc='Українські телеканали онлайн для українців за кордоном: Німеччина, Польща, Велика Британія, США, Канада та інші країни. Безкоштовно, без VPN, 24/7.',
   hub_lead='Оберіть країну — на сторінці є добірка каналів, поради щодо перегляду та різниця в часі з Києвом.', card_p='Дивитися українські канали {in_}'),
@@ -74,7 +74,7 @@ C = {
    ('Is Ukrainian TV free in {country}?', 'Yes. Watching all channels on the site is free, no subscription needed.'),
    ('Can I watch on iPhone or Android?', 'Yes. Open the site in Safari (iPhone) or Chrome (Android), or use the Telegram app — the stream starts right away.'),
    ('What channels are available in {country}?', '{cn} are available: news, movies and series, music, kids, regional and themed. The full list is on the home page.'),
-   ('What is the time difference between Kyiv and {country}?', 'Local time in {country}: {tz}.')],
+   ('What is the time difference between {country} and Kyiv?', 'Local time in {country}: {tz}.')],
   others_h='Ukrainian TV in other countries', hub_title='Ukrainian TV Abroad — Watch Free Online in {n} Countries', hub_h1='Ukrainian TV abroad',
   hub_desc='Ukrainian TV channels online for Ukrainians abroad: Germany, Poland, the UK, the USA, Canada and more. Free, no VPN, 24/7.',
   hub_lead='Pick a country — each page has a selection of channels, viewing tips and the time difference with Kyiv.', card_p='Watch Ukrainian channels in {country}'),
@@ -90,7 +90,7 @@ C = {
    ('Бесплатно ли украинское ТВ {in_}?', 'Да. Просмотр всех каналов на сайте бесплатный, подписка не нужна.'),
    ('Можно ли смотреть на iPhone и Android?', 'Да. Откройте сайт в Safari (iPhone) или Chrome (Android) либо используйте Telegram-приложение — трансляция запустится сразу.'),
    ('Какие каналы доступны {in_}?', 'Доступно {cn}: новости, кино и сериалы, музыка, детские, региональные и тематические. Полный список — на главной странице.'),
-   ('Какая разница во времени между Киевом и страной: {country}?', 'Местное время {in_}: {tz}.')],
+   ('Какая разница во времени с Киевом {in_}?', 'Местное время {in_}: {tz}.')],
   others_h='Украинское ТВ в других странах', hub_title='Украинское ТВ за рубежом — онлайн бесплатно в {n} странах', hub_h1='Украинское ТВ за рубежом',
   hub_desc='Украинские телеканалы онлайн для украинцев за рубежом: Германия, Польша, Великобритания, США, Канада и другие страны. Бесплатно, без VPN, 24/7.',
   hub_lead='Выберите страну — на странице подборка каналов, советы по просмотру и разница во времени с Киевом.', card_p='Смотреть украинские каналы {in_}'),

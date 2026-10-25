@@ -10,7 +10,7 @@ LABEL = {'uk': 'UA', 'en': 'EN', 'ru': 'RU'}
 CATS = {
  'news':          {'uk': ('Новини та загальні', 'novyny'),         'en': ('News & general', 'news'),            'ru': ('Новости и общие', 'novosti')},
  'entertainment': {'uk': ('Розваги та кіно', 'rozvahy-ta-kino'),   'en': ('Entertainment & movies', 'entertainment'), 'ru': ('Развлечения и кино', 'razvlecheniya')},
- 'public':        {'uk': ('Суспільне та громадські', 'suspilne'),  'en': ('Public & community', 'public'),   'ru': ('Общественные', 'obshchestvennye')},
+ 'public':        {'uk': ('Суспільні та громадські', 'suspilne'),  'en': ('Public & community', 'public'),   'ru': ('Общественные', 'obshchestvennye')},
  'regional':      {'uk': ('Регіональні', 'rehionalni'),            'en': ('Regional', 'regional'),            'ru': ('Региональные', 'regionalnye')},
  'music':         {'uk': ('Музика', 'muzyka'),                      'en': ('Music', 'music'),                  'ru': ('Музыка', 'muzyka')},
  'kids':          {'uk': ('Дитячі', 'dytiachi'),                    'en': ('Kids', 'kids'),                    'ru': ('Детские', 'detskie')},
@@ -45,7 +45,7 @@ CAT_DESC = {
 S = {
  'uk': dict(
   site='Україна ТВ', logo=('Україна', 'ТВ'), domain_tag='ukraine-tv.uk',
-  nav_all='← Всі канали', subscribe='Підписатися', home='Головна', all_ch='Усі {cn} — обрати інший', search='Пошук каналу...',
+  nav_all='← Усі канали', subscribe='Підписатися', home='Головна', all_ch='Усі {cn} — обрати інший', search='Пошук каналу...',
   live='В ЕФІРІ', live_247='Пряма трансляція 24/7', watch_prompt='{name} — натисніть для перегляду', status_idle='Натисніть ▶ для запуску трансляції',
   similar='Схожі канали', popular='⭐ Популярні канали', about_h='Про канал {name}', faq_h='Часті питання про {name}',
   tg_banner='<b>Підпишіться в Telegram</b> — запасний спосіб дивитися, якщо сайт буде недоступний', tg_pulse='Дивитися канали в Telegram',

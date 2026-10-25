@@ -4,9 +4,9 @@
   var GA = 'G-ZPMY00Q91E', CL = 'xkacwjmx12', KEY = 'utv_consent';
   var LG = (document.documentElement.lang || 'uk').toLowerCase().slice(0, 2);
   var T = {
-    uk: { t: 'Ми використовуємо cookie для аналітики (Google Analytics, Microsoft Clarity), щоб покращувати сайт. Ви можете погодитися або відмовитися.', ok: 'Прийняти', no: 'Відхилити', more: 'Детальніше' },
-    en: { t: 'We use cookies for analytics (Google Analytics, Microsoft Clarity) to improve the site. You can accept or decline.', ok: 'Accept', no: 'Decline', more: 'Learn more' },
-    ru: { t: 'Мы используем cookie для аналитики (Google Analytics, Microsoft Clarity), чтобы улучшать сайт. Вы можете согласиться или отказаться.', ok: 'Принять', no: 'Отклонить', more: 'Подробнее' }
+    uk: { t: 'Ми використовуємо cookie для аналітики, щоб покращувати сайт. Ви можете погодитися або відмовитися.', ok: 'Прийняти', no: 'Відхилити', more: 'Детальніше' },
+    en: { t: 'We use cookies for analytics to improve the site. You can accept or decline.', ok: 'Accept', no: 'Decline', more: 'Learn more' },
+    ru: { t: 'Мы используем cookie для аналитики, чтобы улучшать сайт. Вы можете согласиться или отказаться.', ok: 'Принять', no: 'Отклонить', more: 'Подробнее' }
   }[LG] || null;
   T = T || { t: '', ok: 'OK', no: 'No', more: '' };
   var PRIV = { uk: '/privacy/', en: '/en/privacy/', ru: '/ru/privacy/' }[LG] || '/privacy/';
