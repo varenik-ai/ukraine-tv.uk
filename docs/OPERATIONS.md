@@ -47,5 +47,8 @@ PY
 - **Мини-апп в Telegram показывает старую версию.** Telegram кэширует мини-апп по адресу: меняйте `?v=N` в @BotFather (Edit Web App URL) и в `WEB_URL` бота (репозиторий `ukraine-tv-hub`, см. его `DONATE.md`/README). Сейчас `?v=4`.
 - **Страница выглядит старой.** HTML в кэше браузера до 10 минут; открыть с `?v=…` или жёстко обновить.
 
-## Старые воркеры (удалять только после падения трафика)
-`birch-stream` и `ukraine-worker` ещё получали основной трафик (старые версии мини-аппа и закэшированные страницы); `stream-gateway`, `ukraine-mirror`, `ukraine-proxy-2`, `ukraine-tv-uk` почти без трафика. Остаются маршруты `api.ukraine-tv.uk/*` и `stream.ukraine-tv.uk/*`. Перед удалением смотреть запросы за неделю в аналитике Workers; удаление необратимо — только с подтверждения владельца. Воркеры `russia-worker`, `birch-creek`, `oak-valley`, `bulgaria-worker`, `korea-worker` относятся к другим проектам и не трогаются.
+## Старые воркеры (удалены 2026-11-09)
+После миграции трафик на старые воркеры упал до нуля (за неделю: `birch-stream` — 9 запросов, `ukraine-worker` — 5), и 2026-11-09 удалены: воркеры `birch-stream`, `ukraine-worker`, `stream-gateway`, `ukraine-mirror`, `ukraine-proxy-2`, `ukraine-tv-uk`; маршруты `api.ukraine-tv.uk/*` и `stream.ukraine-tv.uk/*`; фиктивные DNS-записи `api` и `stream` (A 192.0.2.1). Рабочий контур: `ukraine-stream-a/b/c` (+ домен `s.ukraine-tv.uk`), `ukraine-tv-bot`. Старый код `ukraine-worker.js` остаётся в истории git репозитория `ukraine-tv-hub`. Воркеры `russia-worker`, `birch-creek`, `oak-valley`, `bulgaria-worker`, `korea-worker` и другие относятся к соседним проектам и не трогаются.
+
+## Токен Cloudflare
+Рабочий токен `ukraine-tv-deploy` нужен только на время правок DNS/маршрутов. После работ: отозвать в панели (My Profile → API Tokens) и удалить файл `.cf.env`.
