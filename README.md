@@ -3,7 +3,7 @@
 Бесплатный сайт для просмотра украинских телеканалов в прямом эфире (uk, en, ru). Статический сайт на GitHub Pages, генерируется Python-скриптом. Видеопотоки отдают воркеры Cloudflare; те же каналы доступны в Telegram-мини-аппе ([ukraine-tv-hub](https://github.com/varenik-ai/ukraine-tv-hub)).
 
 - Сайт: https://ukraine-tv.uk (uk — корень, `/en/`, `/ru/`)
-- Telegram: бот `@UkraineTVHub_bot`, канал `@UkraineTVHub`
+- Telegram: бот `@UkraineTVHub_bot`, канал `@UkraineTVHub`; в мини-аппе и под закреплённым постом канала есть кнопка «⭐ Подякувати» (Telegram Stars) — см. `ukraine-tv-hub/DONATE.md`
 - Эталон: https://russian-tv.com (`varenik-ai/russian-tv-site`, `varenik-ai/russia-tv-hub`)
 
 ## Как устроено
